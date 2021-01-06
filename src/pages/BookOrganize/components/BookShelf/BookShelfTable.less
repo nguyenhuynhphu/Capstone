@@ -1,0 +1,130 @@
+.grid,
+.grid * {
+  box-sizing: border-box;
+}
+.grid {
+  display: grid;
+  position: relative;
+  z-index: 999;
+  width: fit-content;
+  height: fit-content;
+  grid-column-gap: 7.5px;
+  row-gap: 7.5px;
+}
+.item {
+  background-color: #cce4f6;
+  width: 120px;
+  height: 60px;
+  transition: all 0.5s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.item * {
+  color: #0078d4;
+  font-family: fantasy;
+}
+.item:hover {
+  background-color: rgba(248, 248, 248);
+}
+
+.bookShelfSection {
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: auto;
+  align-items: center;
+  padding: 30px 30px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: none;
+  border-top: none;
+  justify-items: center;
+}
+
+.bookShelfSection::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+}
+.bookShelfSection::-webkit-scrollbar-thumb {
+  background: #888;
+}
+.shelfName {
+  position: absolute;
+  top: -38px;
+  left: 0;
+  z-index: 9999;
+  background-color: #0078d4;
+}
+.minimap {
+  height: 260px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto;
+  align-items: center;
+  padding: 10px 25px;
+  overflow: auto;
+  justify-content: space-around;
+}
+
+.minimapGrid,
+.minimapGrid * {
+  box-sizing: border-box;
+}
+.minimapGrid {
+  display: grid;
+  position: relative;
+  z-index: 999;
+  width: 100%;
+  height: fit-content;
+  grid-column-gap: 1px;
+  row-gap: 1px;
+  border: 1px solid rgba(0, 120, 212, 0.8);
+  transform: rotateY(180deg) rotateX(180deg);
+}
+.minimapGrid::before {
+  content: ' ';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  width: calc(100% + 12px);
+  height: calc(100% + 11px);
+  border: 1px solid #0078d4;
+  border-radius: 5px;
+}
+
+.minimapItem {
+  background-color: #cce4f6;
+  transition: all 0.5s;
+  width: 12px;
+  height: 8px;
+  cursor: pointer;
+  max-width: 100px;
+}
+.textTable {
+  line-height: 2;
+  margin: 0 10px;
+}
+.transferBook {
+  display: grid;
+  grid-template-columns: 100%;
+  justify-content: center;
+  height: 100%;
+  :global {
+    .ant-transfer-list {
+      width: 100% !important;
+      border-left: none;
+      border-right: none;
+    }
+    .ant-transfer-operation {
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-column-gap: 30px;
+      padding: 0 20px;
+    }
+  }
+}
