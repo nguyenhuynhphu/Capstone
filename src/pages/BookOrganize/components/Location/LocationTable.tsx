@@ -102,7 +102,7 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
             return {
               onDoubleClick: (event) => {
                 this.props.dispatch({
-                  type: 'organizebook/loadSelectLocation',
+                  type: 'organizebook/onSelectLocation',
                   payload: { ...record },
                 });
               },

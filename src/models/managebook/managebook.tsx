@@ -1,4 +1,11 @@
-import { deleteBookGroup, fetchCategories, insertBookGroup } from '@/services/bookgroup';
+import {
+  deleteBookGroup,
+  deleteCategory,
+  editBookGroup,
+  fetchCategories,
+  insertBookGroup,
+  insertCategory,
+} from '@/services/bookgroup';
 import { Effect, Reducer } from 'umi';
 
 export interface ManageBookState {
@@ -6,6 +13,8 @@ export interface ManageBookState {
   createBookVisible: boolean;
   editBookVisible: boolean;
   deleteBookVisible: boolean;
+
+  categoriesModalVisible: boolean;
 
   categories: any;
   choiceBook: any;
@@ -27,10 +36,17 @@ export interface ManageBookType {
 
     showDeleteBook: Effect;
     hideDeleteBook: Effect;
+
+    showCategories: Effect;
+    hideCategories: Effect;
     //#endregion
     insertBookGroup: Effect;
+    editBookGroup: Effect;
     deleteBookGroup: Effect;
     fetchCategories: Effect;
+
+    insertCategory: Effect;
+    deleteCategory: Effect;
   };
   reducers: {
     //#region Forms
@@ -38,6 +54,8 @@ export interface ManageBookType {
     displayCreateBook: Reducer<ManageBookState>;
     displayEditBook: Reducer<ManageBookState>;
     displayDeleteBook: Reducer<ManageBookState>;
+
+    displayCategoriesModal: Reducer<ManageBookState>;
 
     loadCategories: Reducer<ManageBookState>;
 
@@ -53,6 +71,7 @@ const ManageBookModel: ManageBookType = {
     createBookVisible: false,
     editBookVisible: false,
     deleteBookVisible: false,
+    categoriesModalVisible: false,
     choiceBook: {},
     categories: [],
   },
@@ -122,7 +141,7 @@ const ManageBookModel: ManageBookType = {
       });
     },
 
-    *showDeleteBook({ payload }, { call, put }) {
+    *showDeleteBook({}, { call, put }) {
       yield call(() => {});
 
       yield put({
@@ -138,16 +157,28 @@ const ManageBookModel: ManageBookType = {
       });
     },
 
+    *showCategories(_, { put }) {
+      yield put({
+        type: 'displayCategoriesModal',
+        payload: true,
+      });
+    },
+    *hideCategories(_, { put }) {
+      yield put({
+        type: 'displayCategoriesModal',
+        payload: false,
+      });
+    },
+
     //#endregion
     *insertBookGroup({ payload }, { call, put }) {
-      var tmp = payload.category;
-
-      payload.bookCategory = [];
-      tmp.forEach((cate: any) => {
-        payload.bookCategory.push({categoryId: cate})
+      var tmpCate: any = [];
+      payload.category.forEach((cate: any) => {
+        tmpCate.push({ categoryId: cate });
       });
-
       delete payload.category;
+      payload.bookCategory = tmpCate;
+
       yield call(insertBookGroup, payload);
       yield put({
         type: 'displayCreateBook',
@@ -155,8 +186,22 @@ const ManageBookModel: ManageBookType = {
       });
     },
 
-    *deleteBookGroup({ payload }, { call, put }) {
+    *editBookGroup({ payload }, { call, put }) {
+      var tmpCate: any = [];
+      payload.category.forEach((cate: any) => {
+        tmpCate.push({ categoryId: cate });
+      });
+      delete payload.category;
+      payload.bookCategory = tmpCate;
 
+      yield call(editBookGroup, payload);
+      yield put({
+        type: 'displayEditBook',
+        payload: false,
+      });
+    },
+
+    *deleteBookGroup({ payload }, { call, put }) {
       yield call(deleteBookGroup, payload);
       yield put({
         type: 'displayDeleteBook',
@@ -164,7 +209,7 @@ const ManageBookModel: ManageBookType = {
       });
     },
 
-    *fetchCategories({ payload }, { call, put }) {
+    *fetchCategories({}, { call, put }) {
       const response = yield call(fetchCategories);
 
       yield put({
@@ -172,25 +217,40 @@ const ManageBookModel: ManageBookType = {
         payload: response.data,
       });
     },
+
+    *insertCategory({ payload }, { call, put }) {
+      yield call(insertCategory, payload);
+    },
+    *deleteCategory({ payload }, { call, put }) {
+      yield call(deleteCategory, payload);
+    },
   },
   reducers: {
     //#region Forms
     displayViewBook(state, { payload }) {
-      return {
-        ...state,
-        viewBookVisible: payload.visible,
-        choiceBook: payload.record != undefined ? payload.record : state?.choiceBook,
-      };
+      if (payload.visible == true) {
+        return {
+          ...state,
+          viewBookVisible: payload.visible,
+          choiceBook: payload.record != undefined ? payload.record : state?.choiceBook,
+        };
+      } else {
+        return {
+          ...state,
+          viewBookVisible: payload.visible,
+          choiceBook: {},
+        };
+      }
     },
     displayCreateBook(state, { payload }) {
       return {
         ...state,
         createBookVisible: payload,
+        choiceBook: {},
       };
     },
     displayEditBook(state, { payload }) {
       const { visible } = payload;
-      console.log(state?.choiceBook)
       return {
         ...state,
         editBookVisible: visible,
@@ -201,6 +261,13 @@ const ManageBookModel: ManageBookType = {
       return {
         ...state,
         deleteBookVisible: payload,
+      };
+    },
+
+    displayCategoriesModal(state, { payload }) {
+      return {
+        ...state,
+        categoriesModalVisible: payload,
       };
     },
 

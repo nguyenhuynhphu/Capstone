@@ -23,16 +23,7 @@
             component: '../layouts/BasicLayout',
             authority: ['admin', 'user'],
             routes: [
-              {
-                path: '/',
-                redirect: '/welcome',
-              },
-              {
-                path: '/welcome',
-                name: 'welcome',
-                icon: 'smile',
-                component: './Welcome',
-              },
+              
               {
                 path: '/user',
                 name: 'User',
@@ -67,7 +58,7 @@
                   {
                     path: '/book/borrow-book',
                     name: 'Manage Borrow',
-                    component: './404',
+                    component: './ManageBorrow/ManageBorrowPage',
                     authority: ['admin'],
                   },
                 ],

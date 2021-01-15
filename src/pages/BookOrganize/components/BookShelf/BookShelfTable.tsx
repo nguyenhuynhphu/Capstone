@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, Row, Table } from 'antd';
+import { Button, Col, Popconfirm, Row, Space, Table } from 'antd';
 import Tag from 'antd/es/tag';
 import Search from 'antd/lib/input/Search';
 import Title from 'antd/lib/typography/Title';
@@ -10,15 +10,9 @@ const { Column } = Table;
 
 interface BookShelfTableProps {
   dispatch: Dispatch;
-  bookshelftable: any;
-  global: any;
-
-  onCreate: Function;
-  onView: Function;
-  onOrganize: Function;
-  dataSource: any;
-  pagination: any;
-  isLoading: boolean;
+  bookshelftable?: any;
+  organizebook?: any;
+  global?: any;
 }
 interface BookShelfTableState {
   colors: any;
@@ -76,7 +70,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
                 onClick={() =>
                   this.props.dispatch({
                     type: 'organizebook/showCreateBookShelf',
-                    payload: {  },
+                    payload: {},
                   })
                 }
                 size={'small'}
@@ -93,10 +87,14 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
           size={'middle'}
           onRow={(record) => {
             return {
-              onDoubleClick: () => {
-                this.props.onView(record);
-              }, // double click row,
+              onDoubleClick: () => {}, // double click row,
             };
+          }}
+          onChange={(pagination) => {
+            this.props.dispatch({
+              type: 'bookshelftable/fetchData',
+              payload: { filterName: bookshelftable.filterName, pagination: pagination.current },
+            });
           }}
         >
           <Column title="Name" dataIndex="name" key="name" />
@@ -114,28 +112,90 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
           <Column
             //title="Manage Book"
             align={'center'}
-            render={() => (
-              <>
-                <a style={{ textAlign: 'center' }} onClick={() => this.props.onOrganize()}>
-                  Edit
-                </a>
-              </>
+            render={(text, record) => (
+              <Space size="middle">
+                <a onClick={() => this.onEdit(record)}>Edit</a>
+              </Space>
             )}
           />
           <Column
             //title="Manage Book"
             align={'center'}
-            render={() => (
+            dataIndex={'id'}
+            render={(id) => (
               <>
-                <a style={{ textAlign: 'center' }} onClick={() => this.props.onOrganize()}>
-                  Delete
-                </a>
+                <Popconfirm
+                  title="Are you sure？"
+                  okText="Yes"
+                  cancelText="No"
+                  onConfirm={() =>
+                    this.props
+                      .dispatch({ type: 'organizebook/deleteBookShelf', payload: [id] })
+                      .then(() =>
+                        this.props.dispatch({
+                          type: 'bookshelftable/fetchData',
+                          payload: {filterName: bookshelftable.filterName, pagination: bookshelftable.pagination.current},
+                        }),
+                      )
+                  }
+                >
+                  <a style={{ textAlign: 'center' }} href={'#'}>
+                    Delete
+                  </a>
+                </Popconfirm>
               </>
             )}
           />
         </Table>
       </>
     );
+  }
+
+  onEdit(record: any) {
+    let promises: any = [];
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'organizebook/onSelectBookShelf',
+      payload: record,
+    }).then(() => {
+      promises.push(
+        dispatch({
+          type: 'transferbook/hideAllBooks',
+          payload: {},
+        }),
+        dispatch({
+          type: 'drawergrid/fetchData',
+          payload: {
+            ...this.props.organizebook.bookshelfLocate,
+            bookSheflId: record.id,
+          },
+        }),
+        dispatch({
+          type: 'drawergrid/onSelectDrawer',
+          payload: {},
+        }),
+        dispatch({
+          type: 'transferbook/selectedBooksDrawer',
+          payload: [],
+        }),
+        dispatch({
+          type: 'transferbook/selectedBooks',
+          payload: [],
+        }),
+        dispatch({
+          type: 'transferbook/fetchData',
+          payload: {
+            bookGroupId: '',
+            drawerId: '',
+            isInDrawer: false,
+            pageNumber: 1,
+            filterName: '',
+            pagination: 1,
+          },
+        }),
+      );
+      Promise.all(promises);
+    });
   }
 }
 export default connect((state) => ({ ...state }))(BookShelfTable);

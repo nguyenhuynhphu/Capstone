@@ -30,6 +30,7 @@ const BookShelfTableModel: BookShelfTableType = {
     pagination: {
       current: 1,
       total: 0,
+      
     },
     filterName: '',
     isLoading: false,

@@ -2,7 +2,7 @@ import { Button, Col, Row, Select, Space } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import React from 'react';
 const DescriptionItem = ({ title, content }: any) => (
-  <div className="site-description-item-profile-wrapper">
+  <div className="site-description-item-profile-wrapper" style={{lineHeight: 5}}>
     <p className="site-description-item-profile-p-label">{title}:</p>
     {content}
   </div>

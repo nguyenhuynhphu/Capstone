@@ -1,13 +1,16 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-import { Row, Col, Button, Drawer } from 'antd';
+import { Row, Col, Button, Drawer, Modal } from 'antd';
 import React from 'react';
 
 import styles from './ManageBookPage.less';
-import { InputForm } from './components/InputForm';
+import InputForm from './components/InputForm';
 import ViewForm from './components/ViewForm';
 import { connect, Dispatch, ManageBookType } from 'umi';
 import BookGroupTable from './components/BookGroupTable';
+import { storage } from '@/firebase/Firebase';
+import { FormInstance } from 'antd/lib/form';
+import ListCategories from './components/ListCategories';
 
 interface ManageBookPageProps {
   dispatch: Dispatch;
@@ -28,6 +31,7 @@ interface ManageBookPageState {
 
   bookGroup: any;
   selectedRowKeys: any;
+  formRef: any;
 }
 
 class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPageState> {
@@ -48,6 +52,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
       filter: '',
       bookGroup: {},
       selectedRowKeys: [],
+      formRef: React.createRef<FormInstance>(),
     };
     //#region bind function
     this.hideDeleteDrawer = this.hideDeleteDrawer.bind(this);
@@ -57,17 +62,17 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
     this.hideUpdateDrawer = this.hideUpdateDrawer.bind(this);
 
     this.handelSubmit = this.handelSubmit.bind(this);
-
+    this.hideCategoriesModal = this.hideCategoriesModal.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     //#endregion
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.props.dispatch({
       type: 'managebook/fetchCategories',
       payload: {},
-    })
+    });
   }
 
   render() {
@@ -112,7 +117,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
             </div>
           }
         >
-          <InputForm bookGroup={null} handelSubmit={this.handelSubmit} categories={managebook.categories}/>
+          <InputForm handelSubmit={this.handelSubmit} formRef={this.state.formRef} />
         </Drawer>
         <Drawer
           placement={'bottom'}
@@ -124,7 +129,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
         >
           <Row align={'middle'} style={{ height: '100%', paddingLeft: 50 }}>
             <Col span={8}>
-              <p style={{ margin: 0, fontWeight: 'bold' }} >
+              <p style={{ margin: 0, fontWeight: 'bold' }}>
                 Do you want to delete {this.state.selectedRowKeys.length} items ?
               </p>
             </Col>
@@ -151,14 +156,32 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
               <Button onClick={this.hideUpdateDrawer} style={{ marginRight: 8 }}>
                 Cancel
               </Button>
-              <Button onClick={this.hideUpdateDrawer} type="primary">
+              <Button
+                form={'inputForm'}
+                key="submit"
+                htmlType="submit"
+                type="primary"
+                onClick={this.hideUpdateDrawer}
+              >
                 Submit
               </Button>
             </div>
           }
         >
-          <InputForm bookGroup={managebook.choiceBook} handelSubmit={() => {}} categories={managebook.categories}/>
+          <InputForm handelSubmit={this.handelSubmit} formRef={this.state.formRef} />
         </Drawer>
+        <Modal
+          visible={managebook.categoriesModalVisible}
+          title="Manage Categories"
+          centered
+          width={460}
+          bodyStyle={{paddingBottom: 0}}
+          //className={styles.locationViewModal}
+          onCancel={this.hideCategoriesModal}
+          footer={null}
+        >
+          <ListCategories />
+        </Modal>
       </>
     );
   }
@@ -196,29 +219,168 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
     this.setState({ selectedRowKeys: selectedRowKeys });
   }
 
-  handelSubmit(bookGroup: any) {
-    const { dispatch, bookgrouptable } = this.props;
-    dispatch({
-      type: 'managebook/insertBookGroup',
-      payload: { ...bookGroup },
-    }).then(() =>
-      dispatch({
-        type: 'bookgrouptable/fetchData',
-        payload: {
-          filterName: bookgrouptable.filterName,
-          pagination: bookgrouptable.pagination.current,
-        },
-      }),
-    );
+  async handelSubmit(bookGroup: any) {
+    const { dispatch, bookgrouptable, managebook } = this.props;
+    console.log('bookGroup >> ', bookGroup);
+    if (managebook.choiceBook.id != undefined) {
+      //update
+      if (bookGroup.images != undefined) {
+        //up hinh
+        if (bookGroup.images.fileList != 0) {
+          //kiem tra xoa het
+          var promises: any = [];
+          var promises2: any = [];
+          var oldImage: any = [];
+          bookGroup.images.fileList.forEach((image: any) => {
+            if (image.key == undefined) {
+              //kiem tra tam nao moi tam nao cu
+              //tam nay moi
+              const task = storage
+                .ref()
+                .child(`${bookGroup.name}/${image.uid}_${image.name}`)
+                .put(image.originFileObj, { contentType: image.type });
+              promises.push(task);
+              task.on(
+                'state_changed',
+                function progress(snapshot) {},
+                function error() {},
+                () => {
+                  const loadUrl = task.snapshot.ref.getDownloadURL();
+                  promises2.push(loadUrl);
+                },
+              );
+            } else {
+              //hinh cu
+              oldImage.push(image);
+            }
+          });
+          let tmp: any = [];
+          Promise.all(promises).then((values) => {
+            Promise.all(promises2)
+              .then((images) => {
+                images.forEach((url) => {
+                  tmp.push({ url: url });
+                });
+                oldImage.forEach((image: any) => {
+                  tmp.push(image);
+                });
+              })
+              .finally(() => {
+                delete bookGroup.images;
+                Object.assign(bookGroup, { image: tmp });
+                dispatch({
+                  type: 'managebook/editBookGroup',
+                  payload: bookGroup,
+                }).then(() =>
+                  dispatch({
+                    type: 'bookgrouptable/fetchData',
+                    payload: {
+                      filterName: bookgrouptable.filterName,
+                      pagination: bookgrouptable.pagination.current,
+                    },
+                  }),
+                );
+              });
+          });
+          //xoa het
+        } else {
+          console.log('Xoa Het');
+          delete bookGroup.images;
+          dispatch({
+            type: 'managebook/editBookGroup',
+            payload: bookGroup,
+          }).then(() =>
+            dispatch({
+              type: 'bookgrouptable/fetchData',
+              payload: {
+                filterName: bookgrouptable.filterName,
+                pagination: bookgrouptable.pagination.current,
+              },
+            }),
+          );
+        }
+        //khong up hinh
+      } else {
+        console.log('Khong Up Hinh');
+        delete bookGroup.images;
+        bookGroup.image = managebook.choiceBook.image;
+        dispatch({
+          type: 'managebook/editBookGroup',
+          payload: bookGroup,
+        }).then(() =>
+          dispatch({
+            type: 'bookgrouptable/fetchData',
+            payload: {
+              filterName: bookgrouptable.filterName,
+              pagination: bookgrouptable.pagination.current,
+            },
+          }),
+        );
+      }
+    } else {
+      //insert
+      var promises: any = [];
+      var promises2: any = [];
+      bookGroup.images.fileList.forEach((image: any) => {
+        const task = storage
+          .ref()
+          .child(`${bookGroup.name}/${image.uid}_${image.name}`)
+          .put(image.originFileObj, { contentType: image.type });
+        promises.push(task);
+        task.on(
+          'state_changed',
+          function progress(snapshot) {},
+          function error() {},
+          () => {
+            const loadUrl = task.snapshot.ref.getDownloadURL();
+            promises2.push(loadUrl);
+          },
+        );
+      });
+      let tmp: any = [];
+      Promise.all(promises).then((values) => {
+        Promise.all(promises2)
+          .then((images) => {
+            images.forEach((url) => {
+              tmp.push({ url: url });
+            });
+          })
+          .finally(() => {
+            delete bookGroup.images;
+            Object.assign(bookGroup, { image: tmp });
+            dispatch({
+              type: 'managebook/insertBookGroup',
+              payload: bookGroup,
+            }).then(() =>
+              dispatch({
+                type: 'bookgrouptable/fetchData',
+                payload: {
+                  filterName: bookgrouptable.filterName,
+                  pagination: bookgrouptable.pagination.current,
+                },
+              }),
+            );
+          });
+      });
+    }
   }
 
   //#region page effect
 
+  hideCategoriesModal(){
+    this.props.dispatch({
+      type: 'managebook/hideCategories',
+      payload: {},
+    });
+  }
   hideViewDrawer() {
     this.props.dispatch({
       type: 'managebook/hideViewBook',
       payload: {},
-    });
+    }).then(this.props.dispatch({
+      type: 'listcomments/resetData',
+      payload: {}
+    }));
   }
 
   hideCreateDrawer() {
@@ -227,7 +389,6 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
       payload: {},
     });
   }
-
 
   hideDeleteDrawer() {
     this.setState({

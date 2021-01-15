@@ -4,11 +4,7 @@ import request from '@/utils/request';
 export async function fetchAllBookShelf(filterName: string, pagination: number): Promise<any> {
   return request(`/api/BookShelf?Name=${filterName}&PageNumber=${pagination}`);
 }
-// export async function deleteBookGroup(bookGroupId: number) {
-//   return request(`/api/BookGroup/${bookGroupId}`, {
-//     method: 'DELETE',
-//   });
-// }
+
 export async function insertBookShelf(values: any) {
   return request('/api/BookShelf', {
     method: 'POST',
@@ -16,3 +12,14 @@ export async function insertBookShelf(values: any) {
   });
 }
 
+
+export async function deleteBookShelf(bookshelfs: any) {
+  var tmp = '';
+  bookshelfs.forEach((id: any) => {
+    tmp += `id=${id}&`;
+  });
+  console.log("TMP: " + tmp);
+  return request(`/api/BookShelf?` + tmp, {
+    method: 'DELETE',
+  });
+}

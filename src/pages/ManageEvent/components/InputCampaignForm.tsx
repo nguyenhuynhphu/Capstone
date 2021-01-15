@@ -16,14 +16,18 @@ import {
 } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
-
+import { connect, Dispatch } from 'umi';
+interface InputCampaignFormProps {
+  dispatch: Dispatch;
+  manageevent?: any;
+}
 interface InputCampaignFormState {
   loading: boolean;
   imageUrl: any;
   mockData: any;
   targetKeys: any;
 }
-class InputCampaignForm extends React.Component<{}, InputCampaignFormState> {
+class InputCampaignForm extends React.Component<InputCampaignFormProps, InputCampaignFormState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -34,12 +38,12 @@ class InputCampaignForm extends React.Component<{}, InputCampaignFormState> {
       targetKeys: [],
     };
   }
+
   getBase64(img: Blob, callback: (arg0: string | ArrayBuffer | null) => any) {
     const reader = new FileReader();
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
   }
-
   handleChange = (info: { file: { status: string; originFileObj: any } }) => {
     if (info.file.status === 'uploading') {
       this.setState({ loading: true });
@@ -100,8 +104,6 @@ class InputCampaignForm extends React.Component<{}, InputCampaignFormState> {
                 listType="picture-card"
                 className="avatar-uploader"
                 showUploadList={false}
-                //action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-
                 onChange={this.handleChange}
               >
                 {imageUrl ? (
@@ -127,7 +129,7 @@ class InputCampaignForm extends React.Component<{}, InputCampaignFormState> {
                 label="Time"
                 rules={[{ required: true, message: 'Please select an owner' }]}
               >
-                <DatePicker.RangePicker />
+                <DatePicker onChange={() => {}} />
               </Form.Item>
             </Col>
           </Row>
@@ -147,32 +149,34 @@ class InputCampaignForm extends React.Component<{}, InputCampaignFormState> {
                   },
                 ]}
               >
-                <Input.TextArea rows={4} placeholder="please enter url description" />
+                <Input.TextArea rows={4} placeholder="Please enter url description" />
               </Form.Item>
             </Col>
           </Row>
-          <Title level={4}>Books in Campaign</Title>
           <Row>
-            <Col span={24}>
-              <Transfer
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'auto auto auto',
-                  justifyContent: 'center',
-                }}
-                dataSource={this.state.mockData}
-                showSearch
-                filterOption={this.filterOption}
-                targetKeys={this.state.targetKeys}
-                onChange={this.handleTransferChange}
-                onSearch={this.handleSearch}
-                render={(item) => item.title}
-              />
+            <Col span={12}>
+              <Title level={4}>Books in Campaign</Title>
             </Col>
+            <Col span={12} style={{ textAlign: 'right' }}>
+              <Button
+                type={'primary'}
+                onClick={() => this.props.dispatch({
+                  type: 'manageevent/showBooks',
+                  payload: {}
+                })}
+                icon={<PlusOutlined />}
+              >
+                Add sights
+              </Button>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col span={12}></Col>
           </Row>
         </Form>
       </>
     );
   }
 }
-export default InputCampaignForm;
+export default connect((state) => ({ ...state }))(InputCampaignForm);

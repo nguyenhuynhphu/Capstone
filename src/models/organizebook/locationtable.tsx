@@ -64,7 +64,7 @@ const LocationTableModel: LocationTableType = {
         response.data.forEach((location: any) => {
           location.key = location.id;
         });
-        console.log(response.data);
+
         return {
           ...state,
           filterName: filter.filterName,

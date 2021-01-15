@@ -10,7 +10,7 @@ const InputForm = (props: any) => {
 
   const getOptions = () => {
     let tmp: any = [];
-    console.log('PROPS: ', locationtable.data);
+
     locationtable.data.forEach((location: any) => {
       tmp.push(
         <Option value={location.id}>
@@ -35,7 +35,6 @@ const InputForm = (props: any) => {
       id="createBookShelf"
       form={form}
       onFinish={(value) => {
-        console.log('VALUE :', value);
         props
           .dispatch({
             type: 'organizebook/insertBookShelf',

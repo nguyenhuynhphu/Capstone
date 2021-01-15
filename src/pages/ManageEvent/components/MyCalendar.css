@@ -47,3 +47,13 @@
 .myCalendar .rbc-toolbar{
     display: none;
 }
+
+.buttonActive{
+
+}
+
+.active{
+    border: 1px solid #0078d4 !important;
+    background-color: white !important;
+    color: #0078d4 !important;
+}

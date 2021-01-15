@@ -13,21 +13,47 @@ export async function fetchAllBookGroup(params: BookGroupParamsType): Promise<an
 export async function fetchCategories(): Promise<any> {
   return request(`/api/Category`);
 }
+export async function insertCategory(values: any) {
+  return request(`/api/Category`, {
+    method: 'POST',
+    body: JSON.stringify(values),
+  });
+}
+export async function deleteCategory(ids: any) {
+  return request(`/api/Category?id=${ids[0]}`, {
+    method: 'DELETE',
+  });
+}
+
+
+export async function fetchComments({id, page}: any): Promise<any> {
+  return request(`/api/Feedback?BookGroupId=${id}&PageSize=10&PageNumber=${page}`);
+}
+
+export async function fetchBooks(bookGroupId: number): Promise<any> {
+  return request(`/api/Book?BookGroupId=${bookGroupId}`);
+}
 
 export async function deleteBookGroup(bookGroupIds: any) {
-  console.log('asdasdasd', bookGroupIds);
   var tmp = '';
   bookGroupIds.forEach((id: any) => {
     tmp += `id=${id}&`;
   });
-  console.log(tmp);
   return request(`/api/BookGroup?` + tmp, {
     method: 'DELETE',
   });
 }
 export async function insertBookGroup(values: any) {
+  console.log(values);
   return request('/api/BookGroup', {
     method: 'POST',
+    body: JSON.stringify(values),
+  });
+}
+
+export async function editBookGroup(values: any) {
+  return request(`/api/BookGroup?id=${values.id}`, {
+    method: 'PUT',
     body: JSON.stringify(values),
   });
 }

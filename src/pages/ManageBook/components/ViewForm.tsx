@@ -2,12 +2,17 @@ import { Drawer, Col, Row, Divider, Button, Space, Image, Carousel, Rate, List, 
 import styles from './ComponentsStyle.less';
 import React from 'react';
 import Title from 'antd/lib/typography/Title';
+import { Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, RightOutlined } from '@ant-design/icons';
 import Link from 'antd/lib/typography/Link';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import { fetchAllBook } from '@/services/book';
 import InfiniteScroll from 'react-infinite-scroller';
 import { connect, Dispatch } from 'umi';
+import bookgroup from 'mock/bookgroup';
+import ListComment from './ListComment';
+import ListBooks from './ListBooks';
+const { Text } = Typography;
 
 interface ViewFormProps {
   dispatch: Dispatch;
@@ -23,12 +28,6 @@ interface ViewFormState {
   count: number;
   totalBooks: number;
 }
-const DescriptionItem = ({ title, content }: any) => (
-  <div className="site-description-item-profile-wrapper">
-    <p className="site-description-item-profile-p-label">{title}:</p>
-    {content}
-  </div>
-);
 
 class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
   constructor(props: any) {
@@ -36,7 +35,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
     this.state = {
       viewBookQuantity: false,
       viewBookFeedbacks: false,
-   
+
       bookInGroup: [],
       booksListLoading: false,
       booksListHasMore: true,
@@ -47,19 +46,36 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
 
   render() {
     const { bookGroup } = this.props;
-    console.log('BOOKGROUP', bookGroup);
+    console.log(bookGroup);
     return (
       <>
         <Row align={'middle'}>
           <Col span={12}>
-            <Title level={2} className="site-description-item-profile-p">
+            <Title level={3} className="site-description-item-profile-p">
               Book Group Detail
             </Title>
             <Row align={'middle'}>
-              <Col span={12}>
-                <Rate allowClear={false} defaultValue={3} disabled />
+              <Col span={15}>
+                <Row align={'middle'}>
+                  <Col span={16}>
+                    <Rate
+                      allowHalf
+                      allowClear={false}
+                      value={bookGroup.ratingAverage != undefined ? bookGroup.ratingAverage : 0}
+                      defaultValue={0}
+                      disabled
+                    />
+                  </Col>
+                  <Col span={7} offset={1}>
+                    <Title style={{ margin: 0, marginTop: 5 }} level={4}>
+                      {bookGroup.ratingAverage != undefined
+                        ? bookGroup.ratingAverage.toFixed(2)
+                        : 0}
+                    </Title>
+                  </Col>
+                </Row>
               </Col>
-              <Col span={12}>
+              <Col span={9} style={{ marginTop: 6 }}>
                 <Link href="#" onClick={this.showFeedbackDrawer}>
                   View Feedbacks <RightOutlined style={{ fontSize: 12 }} />
                 </Link>
@@ -70,10 +86,10 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
             <Space className={styles.stickButton}>
               <Button
                 className={styles.buttonCustom}
-                onClick={() => 
+                onClick={() =>
                   this.props.dispatch({
                     type: 'managebook/showEditBook',
-                    payload: {  ...bookGroup },
+                    payload: { ...bookGroup },
                   })
                 }
                 icon={<EditOutlined style={{ color: '#0078d4' }} />}
@@ -96,59 +112,105 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
             <Carousel dots={true}>{this.imageHandel()}</Carousel>
           </Col>
           <Col span={14}>
-            <Row>
-              <Col span={24}>
-                <DescriptionItem title="Book Name" content={bookGroup.name} />
+            <Row className={styles.row}>
+              <Col span={6}>
+                <Text className={styles.title}>Book Name: </Text>
+              </Col>
+              <Col span={18}>
+                <Text>{bookGroup.name}</Text>
               </Col>
             </Row>
-            <Row>
-              <Col span={24}>
-                <DescriptionItem title="Author" content={bookGroup.author} />
+            <Row className={styles.row}>
+              <Col span={6}>
+                <Text className={styles.title}>Book Author: </Text>
+              </Col>
+              <Col span={18}>
+                <Text>{bookGroup.author}</Text>
               </Col>
             </Row>
-            <Row>
-              <Col span={4}>
-                <DescriptionItem title="Category" />
+            <Row className={styles.row}>
+              <Col span={6}>
+                <Text className={styles.title}>Category: </Text>
               </Col>
-              <Col span={20} style={{ paddingLeft: 7 }}>
-                <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}>
-                  Ant Design, a design language for background applications, is refined by Ant UED
-                  Team. Ant Design, a design language for background applications, is refined by Ant
-                  UED Team.
+              <Col span={18}>
+                <Paragraph
+                  style={{ marginBottom: 0 }}
+                  ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}
+                >
+                  {this.handelCategory()}
                 </Paragraph>
               </Col>
             </Row>
-            <Row>
-              <Col span={10}>
-                <DescriptionItem title="Page Number" content={bookGroup.pageNumber} />
+            <Row className={styles.row}>
+              <Col span={11}>
+                <Row>
+                  <Col span={13}>
+                    <Text className={styles.title}>Page Number: </Text>
+                  </Col>
+                  <Col span={9} offset={1}>
+                    <Text>{bookGroup.pageNumber}</Text>
+                  </Col>
+                </Row>
               </Col>
               <Col span={12}>
-                <DescriptionItem title="Size" content={`${bookGroup.width}x${bookGroup.height}`} />
+                <Row>
+                  <Col span={5}>
+                    <Text className={styles.title}>Size: </Text>
+                  </Col>
+                  <Col span={18}>
+                    <Text>{`${bookGroup.width}x${bookGroup.height}`}</Text>
+                  </Col>
+                </Row>
               </Col>
             </Row>
-            <Row>
-              <Col span={10}>
-                <DescriptionItem title="Book in system" content={bookGroup.quantity} />
+            <Row className={styles.row}>
+              <Col span={11}>
+                <Row>
+                  <Col span={13}>
+                    <Text className={styles.title}>Quantity: </Text>
+                  </Col>
+                  <Col span={9}>
+                    <Text>{bookGroup.quantity}</Text>
+                  </Col>
+                </Row>
               </Col>
               <Col span={12}>
                 <Link href="#" onClick={this.showChildrenDrawer}>
                   More detail <RightOutlined style={{ fontSize: 12 }} />
                 </Link>
               </Col>
+              <Col span={12}></Col>
             </Row>
-            <Row>
-              <Col span={24}>
-                <DescriptionItem title="Publishing Company" content={bookGroup.publishingCompany} />
+            <Row className={styles.row}>
+              <Col span={11}>
+                <Text className={styles.title}>Publishing Company: </Text>
+              </Col>
+              <Col span={12}>
+                <Text>{bookGroup.publishingCompany}</Text>
               </Col>
             </Row>
-            <Row>
-              <Col span={24}>
-                <DescriptionItem title="Publish date" content={bookGroup.publishDate} />
+            <Row className={styles.row}>
+              <Col span={11}>
+                <Text className={styles.title}>Publish date: </Text>
+              </Col>
+              <Col span={12}>
+                <Text>{bookGroup.publishDate}</Text>
               </Col>
             </Row>
-            <Row>
-              <Col span={24}>
-                <DescriptionItem title="Publishing Place" content={bookGroup.publishingPalace} />
+            <Row className={styles.row}>
+              <Col span={11}>
+                <Text className={styles.title}>Publish Number: </Text>
+              </Col>
+              <Col span={12}>
+                <Text>{bookGroup.publishNumber}</Text>
+              </Col>
+            </Row>
+            <Row className={styles.row}>
+              <Col span={11}>
+                <Text className={styles.title}>Publishing Place: </Text>
+              </Col>
+              <Col span={12}>
+                <Text>{bookGroup.publishingPalace}</Text>
               </Col>
             </Row>
           </Col>
@@ -165,94 +227,61 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
           onClose={this.onChildrenDrawerClose}
           visible={this.state.viewBookQuantity}
         >
-          <div style={{ overflow: 'auto', height: 300 }}>
-            <InfiniteScroll
-              initialLoad={false}
-              pageStart={0}
-              loadMore={this.handleInfiniteOnLoad}
-              hasMore={!this.state.booksListLoading && this.state.booksListHasMore}
-              useWindow={false}
-            >
-              <List
-                dataSource={this.state.bookInGroup}
-                renderItem={(item: any, index: number) => (
-                  <List.Item key={item.id}>
-                    <List.Item.Meta title={item.bookGroupId} />
-                    <div>{item.id}</div>
-                  </List.Item>
-                )}
-              >
-                {this.state.booksListLoading && this.state.booksListHasMore && (
-                  <div className="demo-loading-container">
-                    <Spin />
-                  </div>
-                )}
-              </List>
-            </InfiniteScroll>
-          </div>
+          <ListBooks />
         </Drawer>
         <Drawer
           title="Show Feedbacks"
-          width={320}
+          width={400}
           closable={false}
           onClose={this.onFeedbackDrawerClose}
           visible={this.state.viewBookFeedbacks}
         >
-          This is two-level drawer
+          <ListComment />
         </Drawer>
       </>
     );
+  }
+  handelCategory() {
+    const { bookGroup } = this.props;
+    let tmp = '';
+    try {
+      for (let i = 0; i < bookGroup.category.length; i++) {
+        const element = bookGroup.category[i];
+        if (i == bookGroup.category.length - 1) tmp += element.name;
+        else tmp += element.name + ', ';
+      }
+    } catch (error) {
+      tmp = 'Not have categories yet !';
+    }
+
+    return tmp;
   }
 
   imageHandel() {
     let tmp: any = [];
     const { bookGroup } = this.props;
     if (bookGroup != undefined)
-      bookGroup.image.forEach((image: any) => {
-        tmp.push(
-          <div>
-            <Image width={200} height={270} src={image.url} />
-          </div>,
-        );
-      });
+      if (bookGroup.image != undefined) {
+        bookGroup.image.forEach((image: any) => {
+          tmp.push(
+            <div>
+              <Image width={200} height={270} src={image.url} />
+            </div>,
+          );
+        });
+      }
     return tmp;
-  }
-
-  handleInfiniteOnLoad = () => {
-    let { bookInGroup, count, totalCount } = this.state;
-
-    this.setState({
-      booksListLoading: true,
-    });
-
-    if (bookInGroup.length >= totalCount) {
-      this.setState({
-        booksListHasMore: false,
-        booksListLoading: false,
-      });
-      return;
-    }
-    this.fetchAllBook(count);
-  };
-
-  async fetchAllBook(count: number) {
-    if (this.props.bookGroup.id != undefined) {
-      await fetchAllBook(this.props.bookGroup.id, count).then((value) =>
-        this.setState({
-          bookInGroup: this.state.bookInGroup.concat(value.data),
-          booksListLoading: false,
-          totalBooks: value.meta.totalCount,
-          count: value.meta.totalPages >= this.state.count ? count + 1 : this.state.count,
-        }),
-      );
-    }
   }
   //#region
   showChildrenDrawer = () => {
-    this.fetchAllBook(1);
     this.setState({
       viewBookQuantity: true,
       bookInGroup: [],
+    });
+    const { dispatch, bookGroup } = this.props;
+    dispatch({
+      type: 'listbooks/fetchData',
+      payload: bookGroup.id,
     });
   };
 
@@ -263,8 +292,13 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
   };
 
   showFeedbackDrawer = () => {
+    const { dispatch, bookGroup } = this.props;
     this.setState({
       viewBookFeedbacks: true,
+    });
+    dispatch({
+      type: 'listcomments/fetchData',
+      payload: { id: bookGroup.id, page: 1 },
     });
   };
 
@@ -272,9 +306,13 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
     this.setState({
       viewBookFeedbacks: false,
     });
+    this.props.dispatch({
+      type: 'listcomments/resetData',
+      payload: {},
+    });
   };
 
   //#endregion
 }
 
-export default connect() (ViewForm);
+export default connect((state) => ({ ...state }))(ViewForm);

@@ -1,7 +1,7 @@
 import { fetchAllBookGroup } from '@/services/bookgroup';
 import { Effect, Reducer } from 'umi';
 
-export interface BookGroupTableState {
+export interface ChoiceBookTableState {
   data: any;
   pagination: any;
   filterName: string;
@@ -9,22 +9,22 @@ export interface BookGroupTableState {
   selectedRowKeys: any;
 }
 
-export interface BookGroupTableType {
+export interface ChoiceBookTableType {
   namespace: string;
-  state: BookGroupTableState;
+  state: ChoiceBookTableState;
   effects: {
     fetchData: Effect;
     onSelect: Effect;
   };
   reducers: {
-    isLoading: Reducer<BookGroupTableState>;
-    loadData: Reducer<BookGroupTableState>;
-    selected: Reducer<BookGroupTableState>;
+    isLoading: Reducer<ChoiceBookTableState>;
+    loadData: Reducer<ChoiceBookTableState>;
+    selected: Reducer<ChoiceBookTableState>;
   };
 }
 
-const BookGroupTableModel: BookGroupTableType = {
-  namespace: 'bookgrouptable',
+const BookGroupTableModel: ChoiceBookTableType = {
+  namespace: 'choicebooktable',
   state: {
     data: [],
     pagination: {
@@ -68,7 +68,6 @@ const BookGroupTableModel: BookGroupTableType = {
     },
     loadData(state, { payload }) {
       const { response, filter } = payload;
-      
       if (filter != undefined) {
         response.data.forEach((bookGroup: any)=> {
           bookGroup.key = bookGroup.id;

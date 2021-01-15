@@ -1,5 +1,5 @@
 import { BookGroupTableState } from '@/models/managebook/bookgrouptable';
-import { PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Col, Row, Space, Table } from 'antd';
 import Search from 'antd/lib/input/Search';
 
@@ -24,25 +24,23 @@ const columns = [
     dataIndex: 'publishingCompany',
   },
 ];
-interface ViewBookGroupModalProps {
+interface BookGroupTableProps {
   dispatch: Dispatch;
 
   rowSelection: any;
 
   handleRowSelect: Function;
 
-  bookgrouptable: any;
+  bookgrouptable?: any;
 }
-interface ViewBookGroupModalState {
+interface BookGroupTableStates {
   selectedRowKeys: any;
-  bookGroup: any;
 }
-class BookGroupTable extends React.Component<ViewBookGroupModalProps, ViewBookGroupModalState> {
+class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTableStates> {
   constructor(props: any) {
     super(props);
     this.state = {
       selectedRowKeys: [], // Check here to configure the default column
-      bookGroup: {},
     };
   }
 
@@ -74,18 +72,29 @@ class BookGroupTable extends React.Component<ViewBookGroupModalProps, ViewBookGr
               enterButton
             />
           </Col>
-          <Col span={4} offset={10} style={{ textAlign: 'right' }}>
+          <Col span={8} offset={6} style={{ textAlign: 'right' }}>
             <Space size={20}>
               <Button
                 type="primary"
                 onClick={() =>
                   this.props.dispatch({
                     type: 'managebook/showCreateBook',
-                    payload: { },
+                    payload: {},
                   })
                 }
               >
                 <PlusOutlined /> New Book
+              </Button>
+              <Button
+                type="primary"
+                onClick={() =>
+                  this.props.dispatch({
+                    type: 'managebook/showCategories',
+                    payload: {},
+                  })
+                }
+              >
+                <EditOutlined /> Manage Categories
               </Button>
             </Space>
           </Col>
@@ -108,8 +117,8 @@ class BookGroupTable extends React.Component<ViewBookGroupModalProps, ViewBookGr
               onDoubleClick: () => {
                 this.props.dispatch({
                   type: 'managebook/showViewBook',
-                  payload: {...record},
-                })
+                  payload: { ...record },
+                });
               }, // double click row
             };
           }}
@@ -132,6 +141,6 @@ class BookGroupTable extends React.Component<ViewBookGroupModalProps, ViewBookGr
     this.setState({ selectedRowKeys });
   };
 }
-export default connect((state: BookGroupTableState) => ({
+export default connect((state) => ({
   ...state,
 }))(BookGroupTable);

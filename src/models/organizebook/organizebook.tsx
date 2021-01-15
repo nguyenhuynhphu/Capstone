@@ -1,4 +1,5 @@
-import { deleteLocation, insertBookShelf, insertLocation } from '@/services/organizebook';
+import { deleteBookShelf } from '@/services/bookshelf';
+import { deleteLocation, editLocation, insertBookShelf, insertLocation } from '@/services/organizebook';
 import { Effect, Reducer } from 'umi';
 
 export interface OrganizeBookState {
@@ -9,9 +10,14 @@ export interface OrganizeBookState {
 
   createBookShelfVisible: boolean;
 
+  organizeBookVisible: boolean;
+
+  bookshelfLocate: {};
+
   selectedRowKeys: any;
 
   choiceLocation: any;
+  choiceBookShelf: any;
 }
 
 export interface OrganizeBookType {
@@ -30,25 +36,35 @@ export interface OrganizeBookType {
 
     showCreateBookShelf: Effect;
     hideCreateBookShelf: Effect;
+
+    hideOrganizeBookShelf: Effect;
     //#endregion
     insertLocation: Effect;
     deleteLocation: Effect;
+    editLocation: Effect;
 
     insertBookShelf: Effect;
     deleteBookShelf: Effect;
+
+    resetBookShelfLocate: Effect;
+    filterBookShelfLocate: Effect;
+
     onSelectLocation: Effect;
+    onSelectBookShelf: Effect;
   };
   reducers: {
     //#region Forms
     displayCreateLocation: Reducer<OrganizeBookState>;
     displayViewLocation: Reducer<OrganizeBookState>;
     displayDeleteLocation: Reducer<OrganizeBookState>;
-
     displayCreateBookShelf: Reducer<OrganizeBookState>;
-
+    displayOrganizeBookShelf: Reducer<OrganizeBookState>;
     displayScrollBar: Reducer<OrganizeBookState>;
     //#endregion
     loadSelectLocation: Reducer<OrganizeBookState>;
+    loadSelectBookShelf: Reducer<OrganizeBookState>;
+    filterBookShelf: Reducer<OrganizeBookState>;
+    resetBookShelfLocate: Reducer<OrganizeBookState>;
   };
 }
 
@@ -59,9 +75,16 @@ const OrganizeBookModel: OrganizeBookType = {
     createLocationVisible: false,
     // editBookVisible: false,
     deleteLocationVisible: false,
-
+    organizeBookVisible: false,
     createBookShelfVisible: false,
+    bookshelfLocate: {
+      rowStart: 1,
+      rowEnd: 1,
+      colStart: 1,
+      colEnd: 1,
+    },
     choiceLocation: {},
+    choiceBookShelf: {},
     selectedRowKeys: [],
   },
   effects: {
@@ -97,7 +120,7 @@ const OrganizeBookModel: OrganizeBookType = {
     },
 
     *showDeleteLocation({ payload }, { call, put }) {
-      console.log('PAYLOAD', payload);
+
       yield call(() => {});
       yield put({
         type: 'displayDeleteLocation',
@@ -136,22 +159,50 @@ const OrganizeBookModel: OrganizeBookType = {
         payload: false,
       });
     },
+
+    *hideOrganizeBookShelf(_, { call, put }) {
+      yield call(() => {});
+      yield put({
+        type: 'displayScrollBar',
+        payload: true,
+      });
+      yield call(() => {});
+      yield put({
+        type: 'displayOrganizeBookShelf',
+        payload: false,
+      });
+    },
+    *resetBookShelfLocate(_, { call, put }) {
+      yield put({
+        type: 'displayOrganizeBookShelf',
+        payload: false,
+      });
+    },
     //#endregion
 
     *insertLocation({ payload }, { call, put }) {
-      console.log('INSERT CATE: ', payload);
+
       yield call(insertLocation, payload);
       yield put({
         type: 'displayCreateLocation',
         payload: false,
       });
     },
+    *editLocation({ payload }, { call, put }) {
+
+      yield call(editLocation, payload);
+      yield put({
+        type: 'displayCreateLocation',
+        payload: false,
+      });
+    },
+    
 
     *deleteLocation({ payload }, { call, put }) {
       yield call(deleteLocation, payload);
       yield put({
         type: 'displayDeleteLocation',
-        payload: {visible: false, data: []},
+        payload: { visible: false, data: [] },
       });
     },
 
@@ -163,23 +214,36 @@ const OrganizeBookModel: OrganizeBookType = {
       });
     },
 
+    *onSelectBookShelf({ payload }, { call, put }) {
+      yield put({
+        type: 'displayScrollBar',
+        payload: false,
+      });
+      yield put({
+        type: 'loadSelectBookShelf',
+        payload: { ...payload },
+      });
+    },
+
     *insertBookShelf({ payload }, { call, put }) {
-      console.log('INSERT CATE: ', payload);
+
       yield call(insertBookShelf, payload);
       yield put({
         type: 'displayCreateLocation',
         payload: false,
       });
-    },   
+    },
+
     *deleteBookShelf({ payload }, { call, put }) {
-      console.log('INSERT CATE: ', payload);
-      yield call(deleteLocation, payload);
+      yield call(deleteBookShelf, payload);
+    },
+
+    *filterBookShelfLocate({ payload }, { call, put }) {
       yield put({
-        type: 'displayDeleteLocation',
-        payload: false,
+        type: 'filterBookShelf',
+        payload: payload,
       });
-    },   
-     
+    },
   },
   reducers: {
     displayScrollBar(state, { payload }) {
@@ -224,12 +288,43 @@ const OrganizeBookModel: OrganizeBookType = {
         createBookShelfVisible: payload,
       };
     },
-
+    displayOrganizeBookShelf(state, { payload }) {
+      return {
+        ...state,
+        organizeBookVisible: payload,
+      };
+    },
     loadSelectLocation(state, { payload }) {
       return {
         ...state,
         viewLocationVisible: true,
         choiceLocation: payload,
+      };
+    },
+
+    loadSelectBookShelf(state, { payload }) {
+      return {
+        ...state,
+        organizeBookVisible: true,
+        choiceBookShelf: payload,
+      };
+    },
+
+    filterBookShelf(state, { payload }) {
+      return {
+        ...state,
+        bookshelfLocate: payload,
+      };
+    },
+    resetBookShelfLocate(state, { payload }) {
+      return {
+        ...state,
+        bookshelfLocate: {
+          rowStart: 1,
+          rowEnd: 1,
+          colStart: 1,
+          colEnd: 1,
+        },
       };
     },
   },

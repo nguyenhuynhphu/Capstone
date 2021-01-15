@@ -37,12 +37,12 @@
   grid-template-columns: auto;
   align-items: center;
   padding: 30px 30px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-bottom: none;
-  border-top: none;
   justify-items: center;
 }
-
+.titleTransfer{
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
 .bookShelfSection::-webkit-scrollbar {
   width: 5px;
   height: 8px;
@@ -100,7 +100,7 @@
 .minimapItem {
   background-color: #cce4f6;
   transition: all 0.5s;
-  width: 12px;
+  width: 100%;
   height: 8px;
   cursor: pointer;
   max-width: 100px;
@@ -109,6 +109,7 @@
   line-height: 2;
   margin: 0 10px;
 }
+
 .transferBook {
   display: grid;
   grid-template-columns: 100%;
@@ -127,4 +128,13 @@
       padding: 0 20px;
     }
   }
+}
+.booksInSystem{
+  background-color: white;
+  width: 100%;
+  height: 98%;
+  position: absolute;
+  z-index: 9;
+  top: 0;
+  transition: all 0.1s;
 }

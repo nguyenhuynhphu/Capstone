@@ -1,55 +1,85 @@
-import { Space, Table } from 'antd';
+import { Popconfirm, Space, Table } from 'antd';
 import React from 'react';
+import { connect, Dispatch } from 'umi';
 import styles from '../LibarianPage.less';
 
-class LibarianPageProps {
-  pagination: any;
-  isLoading: boolean;
-  dataSource: any;
+interface LibarianPageProps {
+  dispatch: Dispatch;
+  libariantable?: any;
 }
-class LibarianPageState {}
-const column = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text: any) => <a>{text}</a>,
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (text: any, record: any) => (
-      <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
+interface LibarianPageState {}
+
 class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState> {
-  constructor(props: any) {
-    super(props);
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'libariantable/fetchData',
+      payload: { filterName: '', pagination: 1 },
+    });
   }
+
   render() {
+    const { libariantable } = this.props;
+    const column = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        render: (text: any) => <a>{text}</a>,
+      },
+      {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (text: any, record: any) => (
+          <Popconfirm
+            title="Are you sure？"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => {
+              this.props.dispatch({
+                type: 'libarianpage/deleteLibarian',
+                payload: [record.id],
+              }).then(() => {
+                this.props.dispatch({
+                  type: 'libariantable/fetchData',
+                  payload: {
+                    filterName: libariantable.filterName,
+                    pagination: libariantable.pagination.current,
+                  },
+                });
+              });
+            }}
+          >
+            <a>Delete</a>
+          </Popconfirm>
+        ),
+      },
+    ];
+    
     return (
       <Table
         columns={column}
-        dataSource={this.props.dataSource}
-        loading={this.props.isLoading}
-        pagination={this.props.pagination}
-      ></Table>
+        dataSource={libariantable.data}
+        loading={libariantable.isLoading}
+        pagination={libariantable.pagination}
+        onRow={(record, rowIndex) => {
+          return {
+            onDoubleClick: (event) => {
+              this.props.dispatch({
+                type: 'libarianpage/showViewLibarian',
+                payload: {...record},
+              });
+            },
+          };
+        }}
+      />
     );
   }
 }
 
-export default LibarianTable;
+export default connect((state) => ({ ...state }))(LibarianTable);

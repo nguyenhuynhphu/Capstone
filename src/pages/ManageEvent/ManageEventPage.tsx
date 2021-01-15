@@ -1,44 +1,35 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './ManageEventPage.less';
 import React from 'react';
-import MyCalendar from './components/MyCalendar';
-import { Button, Col, DatePicker, Descriptions, Drawer, Row, Space } from 'antd';
+
+import { Avatar, Button, Card, Col, DatePicker, Descriptions, Drawer, Row, Space } from 'antd';
 import InputCampaignForm from './components/InputCampaignForm';
 import Title from 'antd/lib/typography/Title';
 import moment from 'moment';
+import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+import Meta from 'antd/lib/card/Meta';
+import { connect, Dispatch } from 'umi';
+import ChoiceBookTable from './components/ChoiceBookTable';
 
-interface ManageBorrowPageProps {}
-interface ManageBorrowPageState {
-  selectedDate: any;
-  createCampaignVisible: boolean;
+interface ManageEventPageProps {
+  dispatch: Dispatch;
+  manageevent?: any;
 }
-class ManageEventPage extends React.Component<ManageBorrowPageProps, ManageBorrowPageState> {
+interface ManageEventPageState {
+  selectedDate: any;
+}
+class ManageEventPage extends React.Component<ManageEventPageProps, ManageEventPageState> {
   constructor(props: any) {
     super(props);
     this.state = {
       selectedDate: moment().toDate(),
-      createCampaignVisible: false,
     };
-
-    this.showCreateCampaign = this.showCreateCampaign.bind(this);
-    this.onCreateCampaignClose = this.onCreateCampaignClose.bind(this);
+    this.hideCreateCampaign = this.hideCreateCampaign.bind(this);
+    this.hideBooks = this.hideBooks.bind(this);
   }
 
-  showCreateCampaign() {
-    this.setState({
-      createCampaignVisible: true,
-    });
-    document.getElementsByTagName('body')[0].style.overflow = 'hidden';
-    document.getElementsByTagName('body')[0].style.paddingRight = '17px';
-  }
-  onCreateCampaignClose() {
-    this.setState({
-      createCampaignVisible: false,
-    });
-    document.getElementsByTagName('body')[0].style.overflow = 'auto';
-    document.getElementsByTagName('body')[0].style.paddingRight = '0px';
-  }
   render() {
+    const { manageevent } = this.props;
     return (
       <>
         <PageHeaderWrapper
@@ -65,23 +56,221 @@ class ManageEventPage extends React.Component<ManageBorrowPageProps, ManageBorro
               picker={'month'}
               style={{ width: 250 }}
             />
-
-            <Button type="primary">New Event</Button>
-            <Button type="primary" style={{backgroundColor: 'rgba(74, 212, 92)', border: 'none'}} onClick={this.showCreateCampaign}>
+            <Button
+              type="primary"
+              style={{ border: 'none' }}
+              onClick={() =>
+                this.props.dispatch({
+                  type: 'manageevent/showCreateCampaign',
+                  payload: {},
+                })
+              }
+            >
               New Campaign
             </Button>
           </Space>
         </Row>
-        <Row>
+        <Row style={{ backgroundColor: 'white', padding: '25px 25px' }}>
           <Col span={24}>
-            <MyCalendar selectedDate={this.state.selectedDate} />
+            <Space
+              direction="horizontal"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'auto auto auto auto',
+                justifyContent: 'space-around',
+                rowGap: 20,
+                maxHeight: 600,
+                overflow: 'auto',
+              }}
+            >
+              <Card
+                style={{ width: 280 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  }
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+              <Card
+                style={{ width: 280 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  }
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+              <Card
+                style={{ width: 280 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  }
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+              <Card
+                style={{ width: 280 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  }
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+              <Card
+                style={{ width: 280 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  }
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+              <Card
+                style={{ width: 280 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  }
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+              <Card
+                style={{ width: 280 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  }
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+              <Card
+                style={{ width: 280 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  }
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+              <Card
+                style={{ width: 280 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  }
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+              <Card
+                style={{ width: 280 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+                }
+                actions={[<EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" />]}
+              >
+                <Meta
+                  avatar={
+                    <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  }
+                  title="Card title"
+                  description="This is the description"
+                />
+              </Card>
+            </Space>
           </Col>
         </Row>
         <Drawer
           title="Create Campaign"
           width={550}
-          onClose={this.onCreateCampaignClose}
-          visible={this.state.createCampaignVisible}
+          onClose={this.hideCreateCampaign}
+          visible={manageevent.createCampaignVisible}
           bodyStyle={{}}
           footer={
             <div
@@ -89,10 +278,10 @@ class ManageEventPage extends React.Component<ManageBorrowPageProps, ManageBorro
                 textAlign: 'right',
               }}
             >
-              <Button onClick={this.onCreateCampaignClose} style={{ marginRight: 8 }}>
+              <Button onClick={this.hideCreateCampaign} style={{ marginRight: 8 }}>
                 Cancel
               </Button>
-              <Button onClick={this.onCreateCampaignClose} type="primary">
+              <Button onClick={this.hideCreateCampaign} type="primary">
                 Submit
               </Button>
             </div>
@@ -100,8 +289,44 @@ class ManageEventPage extends React.Component<ManageBorrowPageProps, ManageBorro
         >
           <InputCampaignForm />
         </Drawer>
+        <Drawer
+          title="Add Books"
+          width={500}
+          onClose={this.hideBooks}
+          visible={manageevent.booksVisible}
+          bodyStyle={{paddingBottom: 0}}
+          footer={
+            <div
+              style={{
+                textAlign: 'right',
+              }}
+            >
+              <Button onClick={this.hideBooks} style={{ marginRight: 8 }}>
+                Cancel
+              </Button>
+              <Button onClick={this.hideBooks} type="primary">
+                Submit
+              </Button>
+            </div>
+          }
+        >
+          <ChoiceBookTable />
+        </Drawer>
+
       </>
     );
   }
+  hideCreateCampaign() {
+    this.props.dispatch({
+      type: 'manageevent/hideCreateCampaign',
+      payload: {},
+    })
+  }
+  hideBooks() {
+    this.props.dispatch({
+      type: 'manageevent/hideBooks',
+      payload: {},
+    })
+  }
 }
-export default ManageEventPage;
+export default connect((state) => ({ ...state }))(ManageEventPage);

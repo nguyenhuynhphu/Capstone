@@ -1,7 +1,8 @@
 import { fetchAllBookGroup } from '@/services/bookgroup';
+import { fetchLibarians } from '@/services/libarian';
 import { Effect, Reducer } from 'umi';
 
-export interface BookGroupTableState {
+export interface LibarianTableState {
   data: any;
   pagination: any;
   filterName: string;
@@ -9,22 +10,22 @@ export interface BookGroupTableState {
   selectedRowKeys: any;
 }
 
-export interface BookGroupTableType {
+export interface LibarianTableType {
   namespace: string;
-  state: BookGroupTableState;
+  state: LibarianTableState;
   effects: {
     fetchData: Effect;
     onSelect: Effect;
   };
   reducers: {
-    isLoading: Reducer<BookGroupTableState>;
-    loadData: Reducer<BookGroupTableState>;
-    selected: Reducer<BookGroupTableState>;
+    isLoading: Reducer<LibarianTableState>;
+    loadData: Reducer<LibarianTableState>;
+    selected: Reducer<LibarianTableState>;
   };
 }
 
-const BookGroupTableModel: BookGroupTableType = {
-  namespace: 'bookgrouptable',
+const LibarianTableModel: LibarianTableType = {
+  namespace: 'libariantable',
   state: {
     data: [],
     pagination: {
@@ -37,13 +38,11 @@ const BookGroupTableModel: BookGroupTableType = {
   },
   effects: {
     *fetchData({ payload }, { call, put }) {
-      yield call(() => {}, payload);
       yield put({
         type: 'isLoading',
         payload: {},
       });
-
-      const response = yield call(fetchAllBookGroup, payload);
+      const response = yield call(fetchLibarians, payload);
       yield put({
         type: 'loadData',
         payload: { response: response, filter: payload },
@@ -51,8 +50,6 @@ const BookGroupTableModel: BookGroupTableType = {
     },
 
     *onSelect({ payload }, { call, put }) {
-
-      yield call(() => {});
       yield put({
         type: 'loadData',
         payload: { payload },
@@ -98,4 +95,4 @@ const BookGroupTableModel: BookGroupTableType = {
   },
 };
 
-export default BookGroupTableModel;
+export default LibarianTableModel;
