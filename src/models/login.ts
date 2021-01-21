@@ -1,10 +1,10 @@
 import { stringify } from 'querystring';
 import { history, Reducer, Effect } from 'umi';
 
-import { fakeAccountLogin } from '@/services/login';
+import { login } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
-import { getPageQuery } from '@/utils/utils';
-import { message } from 'antd';
+import { deleteAllCookie, getPageQuery, removeLocalStorage, setCookie } from '@/utils/utils';
+import { decodeToken } from '@/utils/jwtservice';
 
 export interface StateType {
   status?: 'ok' | 'error';
@@ -33,16 +33,18 @@ const Model: LoginModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
+      const response = yield call(login, payload);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
-      // Login successfully
-      if (response.status === 'ok') {
+
+      if (response.token !== undefined) {
+        setCookie('APP_TOKEN', response.token);
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
-        message.success('🎉 🎉 🎉  登录成功！');
+        console.log(params);
+
         let { redirect } = params as { redirect: string };
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
@@ -60,7 +62,14 @@ const Model: LoginModelType = {
       }
     },
 
-    logout() {
+    *logout(_, { call, put }) {
+      deleteAllCookie();
+      // document.cookie.
+      removeLocalStorage('SYSTEM_ROLE');
+      // clear localStorage
+      yield put({ type: 'user/saveCurrentUser', payload: null });
+      // remove currentUser
+
       const { redirect } = getPageQuery();
       // Note: There may be security issues, please note
       if (window.location.pathname !== '/user/login' && !redirect) {
@@ -76,10 +85,13 @@ const Model: LoginModelType = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
+      if(payload.token != undefined){
+        let user: any = decodeToken(payload.token);
+        setAuthority(user.role);
+      }
       return {
         ...state,
-        status: payload.status,
+        status: payload.token != undefined ? 'ok' : 'error',
         type: payload.type,
       };
     },

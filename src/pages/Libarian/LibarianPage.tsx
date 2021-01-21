@@ -135,6 +135,8 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
     if (libarianpage.choiceLibarian.id != undefined) {
       //update
       libarian.id = libarianpage.choiceLibarian.id;
+      libarian.password = libarianpage.choiceLibarian.password;
+      libarian.role = libarianpage.choiceLibarian.role;
       dispatch({
         type: 'libarianpage/editLibarian',
         payload: libarian,

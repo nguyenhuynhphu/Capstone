@@ -1,6 +1,8 @@
 import { Effect, Reducer } from 'umi';
 
 import { queryCurrent, query as queryUsers } from '@/services/user';
+import { getCookie } from '@/utils/utils';
+import { decodeToken } from '@/utils/jwtservice';
 
 export interface CurrentUser {
   avatar?: string;
@@ -12,7 +14,7 @@ export interface CurrentUser {
     key: string;
     label: string;
   }[];
-  userid?: string;
+  id?: string;
   unreadCount?: number;
 }
 
@@ -48,20 +50,25 @@ const UserModel: UserModelType = {
         payload: response,
       });
     },
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+    *fetchCurrent({ payload }, { call, put }) {
+      const jwtToken = getCookie('APP_TOKEN');
+
+      if (jwtToken.length !== 0) {
+        const user = decodeToken(jwtToken);
+        console.log("GET COOOKIE >>"  , user)
+        yield put({
+          type: 'saveCurrentUser',
+          payload: user,
+        });
+      }
     },
   },
 
   reducers: {
-    saveCurrentUser(state, action) {
+    saveCurrentUser(state, { payload }) {
       return {
         ...state,
-        currentUser: action.payload || {},
+        currentUser: {...payload},
       };
     },
     changeNotifyCount(

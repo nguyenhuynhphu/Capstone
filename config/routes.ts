@@ -3,17 +3,17 @@
     path: '/',
     component: '../layouts/BlankLayout',
     routes: [
-      // {
-      //   path: '/user',
-      //   component: '../layouts/UserLayout',
-      //   routes: [
-      //     {
-      //       name: 'login',
-      //       path: '/user/login',
-      //       component: './user/login',
-      //     },
-      //   ],
-      // },
+      {
+        path: '/user',
+        component: '../layouts/UserLayout',
+        routes: [
+          {
+            name: 'login',
+            path: '/user/login',
+            component: './user/login',
+          },
+        ],
+      },
       {
         path: '/',
         component: '../layouts/SecurityLayout',
@@ -25,18 +25,18 @@
             routes: [
               
               {
-                path: '/user',
+                path: '/manage-user',
                 name: 'User',
                 icon: 'user',
                 routes: [
                   {
-                    path: '/user/libarian',
+                    path: '/manage-user/libarian',
                     name: 'Manage Libarian',
                     component: './Libarian/LibarianPage',
                     authority: ['admin'],
                   },
                   {
-                    path: '/user/customer',
+                    path: '/manage-user/customer',
                     name: 'Manage Customer',
                     component: './Customer/CustomerPage',
                     authority: ['admin'],

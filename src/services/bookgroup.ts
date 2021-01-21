@@ -10,6 +10,7 @@ export async function fetchAllBookGroup(params: BookGroupParamsType): Promise<an
   return request(`/api/BookGroup?Name=${params.filterName}&PageNumber=${params.pagination}`);
 }
 
+
 export async function fetchCategories(): Promise<any> {
   return request(`/api/Category`);
 }

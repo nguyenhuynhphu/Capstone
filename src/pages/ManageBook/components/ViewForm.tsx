@@ -1,4 +1,4 @@
-import { Drawer, Col, Row, Divider, Button, Space, Image, Carousel, Rate, List, Spin } from 'antd';
+import { Drawer, Col, Row, Divider, Button, Space, Image, Carousel, Rate } from 'antd';
 import styles from './ComponentsStyle.less';
 import React from 'react';
 import Title from 'antd/lib/typography/Title';
@@ -6,12 +6,10 @@ import { Typography } from 'antd';
 import { DeleteOutlined, EditOutlined, RightOutlined } from '@ant-design/icons';
 import Link from 'antd/lib/typography/Link';
 import Paragraph from 'antd/lib/typography/Paragraph';
-import { fetchAllBook } from '@/services/book';
-import InfiniteScroll from 'react-infinite-scroller';
 import { connect, Dispatch } from 'umi';
-import bookgroup from 'mock/bookgroup';
 import ListComment from './ListComment';
 import ListBooks from './ListBooks';
+import { formatDate } from '@/utils/utils';
 const { Text } = Typography;
 
 interface ViewFormProps {
@@ -194,7 +192,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                 <Text className={styles.title}>Publish date: </Text>
               </Col>
               <Col span={12}>
-                <Text>{bookGroup.publishDate}</Text>
+                <Text>{formatDate(bookGroup.publishDate)}</Text>
               </Col>
             </Row>
             <Row className={styles.row}>

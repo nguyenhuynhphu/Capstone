@@ -1,10 +1,11 @@
-import { BookGroupTableState } from '@/models/managebook/bookgrouptable';
+import { formatDate } from '@/utils/utils';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Col, Row, Space, Table } from 'antd';
 import Search from 'antd/lib/input/Search';
-
 import React from 'react';
 import { connect, Dispatch } from 'umi';
+import { Typography } from 'antd';
+const { Text } = Typography;
 
 const columns = [
   {
@@ -18,6 +19,8 @@ const columns = [
   {
     title: 'Publish Date',
     dataIndex: 'publishDate',
+    
+    render: (date: any) => (<Text>{formatDate(date)}</Text>)
   },
   {
     title: 'Publishing Company',

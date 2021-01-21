@@ -55,7 +55,7 @@ class InputForm extends React.Component<InputFormProps> {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item name="dateOfBirth" label="Date of birth" required>
+            <Form.Item name="doB" label="Date of birth" required>
               <DatePicker style={{ width: '100%' }} />
             </Form.Item>
           </Col>
@@ -105,9 +105,10 @@ class InputForm extends React.Component<InputFormProps> {
         address: libarianpage.choiceLibarian.address,
         email: libarianpage.choiceLibarian.email,
         gender: libarianpage.choiceLibarian.gender,
-        dateOfBirth: moment(libarianpage.choiceLibarian.doB),
+        doB: moment(libarianpage.choiceLibarian.doB),
         phone: libarianpage.choiceLibarian.phone,
         username: libarianpage.choiceLibarian.username,
+        
       });
     }
   }

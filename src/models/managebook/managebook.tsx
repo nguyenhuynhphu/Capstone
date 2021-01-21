@@ -9,13 +9,15 @@ import {
 import { Effect, Reducer } from 'umi';
 
 export interface ManageBookState {
+  //#region Form
   viewBookVisible: boolean;
   createBookVisible: boolean;
   editBookVisible: boolean;
   deleteBookVisible: boolean;
-
   categoriesModalVisible: boolean;
 
+  loadingButton: boolean;
+  //#endregion
   categories: any;
   choiceBook: any;
 }
@@ -58,6 +60,7 @@ export interface ManageBookType {
     displayCategoriesModal: Reducer<ManageBookState>;
 
     loadCategories: Reducer<ManageBookState>;
+    loadingButtonRender: Reducer;
 
     displayScrollBar: Reducer<ManageBookState>;
     //#endregion
@@ -74,6 +77,7 @@ const ManageBookModel: ManageBookType = {
     categoriesModalVisible: false,
     choiceBook: {},
     categories: [],
+    loadingButton: false,
   },
   effects: {
     //#region Forms
@@ -172,6 +176,11 @@ const ManageBookModel: ManageBookType = {
 
     //#endregion
     *insertBookGroup({ payload }, { call, put }) {
+      yield put({
+        type: 'loadingButton',
+        payload: {}
+      });
+
       var tmpCate: any = [];
       payload.category.forEach((cate: any) => {
         tmpCate.push({ categoryId: cate });
@@ -187,6 +196,11 @@ const ManageBookModel: ManageBookType = {
     },
 
     *editBookGroup({ payload }, { call, put }) {
+      yield put({
+        type: 'loadingButton',
+        payload: {}
+      });
+
       var tmpCate: any = [];
       payload.category.forEach((cate: any) => {
         tmpCate.push({ categoryId: cate });
@@ -246,6 +260,7 @@ const ManageBookModel: ManageBookType = {
       return {
         ...state,
         createBookVisible: payload,
+        loadingButton: false,
         choiceBook: {},
       };
     },
@@ -254,6 +269,7 @@ const ManageBookModel: ManageBookType = {
       return {
         ...state,
         editBookVisible: visible,
+        loadingButton: false
       };
     },
 
@@ -268,6 +284,13 @@ const ManageBookModel: ManageBookType = {
       return {
         ...state,
         categoriesModalVisible: payload,
+      };
+    },
+
+    loadingButtonRender(state, { payload }) {
+      return {
+        ...state,
+        loadingButton: true,
       };
     },
 

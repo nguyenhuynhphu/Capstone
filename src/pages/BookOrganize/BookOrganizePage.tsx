@@ -182,9 +182,11 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
         <Drawer
           title="Organize Book"
           width={'100vw'}
+          height={'100vh'}
           closable={true}
           onClose={this.hideOrganizeBook}
           visible={organizebook.organizeBookVisible}
+          placement={'bottom'}
           bodyStyle={{ padding: 0 }}
         >
           <Row style={{ height: '100%' }} className={'organizeRow'}>

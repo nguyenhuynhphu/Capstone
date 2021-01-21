@@ -23,9 +23,7 @@ const codeMessage = {
   504: '网关超时。',
 };
 
-/**
- * 异常处理程序
- */
+
 const errorHandler = (error: { response: Response }): Response => {
   const { response } = error;
   if (response && response.status) {
@@ -45,9 +43,7 @@ const errorHandler = (error: { response: Response }): Response => {
   return response;
 };
 
-/**
- * 配置request请求时的默认参数
- */
+
 const request = extend({
   prefix: API_BASE,
   headers: {

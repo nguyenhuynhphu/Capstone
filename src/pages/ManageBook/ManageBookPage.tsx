@@ -11,9 +11,11 @@ import BookGroupTable from './components/BookGroupTable';
 import { storage } from '@/firebase/Firebase';
 import { FormInstance } from 'antd/lib/form';
 import ListCategories from './components/ListCategories';
+import sendNotification from '@/utils/Notification';
 
 interface ManageBookPageProps {
   dispatch: Dispatch;
+  
   managebook: any;
   bookgrouptable: any;
 }
@@ -111,7 +113,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
               <Button onClick={() => this.hideCreateDrawer()} style={{ marginRight: 8 }}>
                 Cancel
               </Button>
-              <Button form={'inputForm'} key="submit" htmlType="submit" type="primary">
+              <Button loading={managebook.loadingButton} form={'inputForm'} key="submit" htmlType="submit" type="primary">
                 Add Book
               </Button>
             </div>
@@ -162,8 +164,9 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
                 htmlType="submit"
                 type="primary"
                 onClick={this.hideUpdateDrawer}
+                loading={managebook.loadingButton}
               >
-                Submit
+                Save
               </Button>
             </div>
           }
@@ -192,6 +195,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
       type: 'managebook/deleteBookGroup',
       payload: this.state.selectedRowKeys,
     }).then(() => {
+      sendNotification('Delete Success !', `Successfull delete ${this.state.selectedRowKeys.length} items`, 'success');
       this.setState({ selectedRowKeys: [] });
       dispatch({
         type: 'bookgrouptable/fetchData',
@@ -317,6 +321,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           }),
         );
       }
+      sendNotification('Update BookGroup Success !', 'Successfull update informationn of ' + bookGroup.name , 'success');
     } else {
       //insert
       var promises: any = [];
@@ -348,6 +353,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           .finally(() => {
             delete bookGroup.images;
             Object.assign(bookGroup, { image: tmp });
+            sendNotification('Insert BookGroup Success !', '', 'success');
             dispatch({
               type: 'managebook/insertBookGroup',
               payload: bookGroup,
@@ -404,4 +410,4 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
   }
   //#endregion
 }
-export default connect((state: ManageBookType) => ({ ...state }))(ManageBookPage);
+export default connect((state) => ({ ...state }))(ManageBookPage);
