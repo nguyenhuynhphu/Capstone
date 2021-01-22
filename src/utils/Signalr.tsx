@@ -1,8 +1,8 @@
-import { HubConnectionBuilder } from '@microsoft/signalr';
+import { HttpTransportType, HubConnectionBuilder } from '@microsoft/signalr';
 
 export const getWishlist = () => {
   const connection = new HubConnectionBuilder()
-    .withUrl('https://localhost:5001/hubs/chat')
+    .withUrl('http://171.244.5.88:90/home/index')
     .withAutomaticReconnect()
     .build();
   if (connection) {
@@ -10,7 +10,7 @@ export const getWishlist = () => {
       .start()
       .then((result) => {
         console.log('Connected!');
-        connection.on('ReceiveMessage', (message) => {
+        connection.on('4444', (message) => {
           return message;
         });
       })

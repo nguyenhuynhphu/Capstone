@@ -5,6 +5,7 @@ import moment from 'moment';
 import { connect, Dispatch } from 'umi';
 import { Avatar, Button, Col, List, Result, Row, Spin, Steps } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import { getWishlist } from '@/utils/Signalr';
 const { Step } = Steps;
 const data = [
   {
@@ -29,6 +30,9 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
   constructor(props: any) {
     super(props);
     this.state = {};
+  }
+  componentDidMount(){
+    getWishlist();
   }
 
   render() {

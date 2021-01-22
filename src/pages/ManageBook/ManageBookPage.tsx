@@ -15,7 +15,7 @@ import sendNotification from '@/utils/Notification';
 
 interface ManageBookPageProps {
   dispatch: Dispatch;
-  
+
   managebook: any;
   bookgrouptable: any;
 }
@@ -113,7 +113,13 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
               <Button onClick={() => this.hideCreateDrawer()} style={{ marginRight: 8 }}>
                 Cancel
               </Button>
-              <Button loading={managebook.loadingButton} form={'inputForm'} key="submit" htmlType="submit" type="primary">
+              <Button
+                loading={managebook.loadingButton}
+                form={'inputForm'}
+                key="submit"
+                htmlType="submit"
+                type="primary"
+              >
                 Add Book
               </Button>
             </div>
@@ -178,7 +184,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           title="Manage Categories"
           centered
           width={460}
-          bodyStyle={{paddingBottom: 0}}
+          bodyStyle={{ paddingBottom: 0 }}
           //className={styles.locationViewModal}
           onCancel={this.hideCategoriesModal}
           footer={null}
@@ -195,7 +201,11 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
       type: 'managebook/deleteBookGroup',
       payload: this.state.selectedRowKeys,
     }).then(() => {
-      sendNotification('Delete Success !', `Successfull delete ${this.state.selectedRowKeys.length} items`, 'success');
+      sendNotification(
+        'Delete Success !',
+        `Successfull delete ${this.state.selectedRowKeys.length} items`,
+        'success',
+      );
       this.setState({ selectedRowKeys: [] });
       dispatch({
         type: 'bookgrouptable/fetchData',
@@ -277,12 +287,17 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
                   payload: bookGroup,
                 }).then(() =>
                   dispatch({
-                    type: 'bookgrouptable/fetchData',
-                    payload: {
-                      filterName: bookgrouptable.filterName,
-                      pagination: bookgrouptable.pagination.current,
-                    },
-                  }),
+                    type: 'managebook/hideViewBook',
+                    payload: {},
+                  }).then(() =>
+                    dispatch({
+                      type: 'bookgrouptable/fetchData',
+                      payload: {
+                        filterName: bookgrouptable.filterName,
+                        pagination: bookgrouptable.pagination.current,
+                      },
+                    }),
+                  ),
                 );
               });
           });
@@ -295,12 +310,17 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
             payload: bookGroup,
           }).then(() =>
             dispatch({
-              type: 'bookgrouptable/fetchData',
-              payload: {
-                filterName: bookgrouptable.filterName,
-                pagination: bookgrouptable.pagination.current,
-              },
-            }),
+              type: 'managebook/hideViewBook',
+              payload: {},
+            }).then(() =>
+              dispatch({
+                type: 'bookgrouptable/fetchData',
+                payload: {
+                  filterName: bookgrouptable.filterName,
+                  pagination: bookgrouptable.pagination.current,
+                },
+              }),
+            ),
           );
         }
         //khong up hinh
@@ -313,15 +333,24 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           payload: bookGroup,
         }).then(() =>
           dispatch({
-            type: 'bookgrouptable/fetchData',
-            payload: {
-              filterName: bookgrouptable.filterName,
-              pagination: bookgrouptable.pagination.current,
-            },
-          }),
+            type: 'managebook/hideViewBook',
+            payload: {},
+          }).then(() =>
+            dispatch({
+              type: 'bookgrouptable/fetchData',
+              payload: {
+                filterName: bookgrouptable.filterName,
+                pagination: bookgrouptable.pagination.current,
+              },
+            }),
+          ),
         );
       }
-      sendNotification('Update BookGroup Success !', 'Successfull update informationn of ' + bookGroup.name , 'success');
+      sendNotification(
+        'Update BookGroup Success !',
+        'Successfull update informationn of ' + bookGroup.name,
+        'success',
+      );
     } else {
       //insert
       var promises: any = [];
@@ -373,20 +402,24 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   //#region page effect
 
-  hideCategoriesModal(){
+  hideCategoriesModal() {
     this.props.dispatch({
       type: 'managebook/hideCategories',
       payload: {},
     });
   }
   hideViewDrawer() {
-    this.props.dispatch({
-      type: 'managebook/hideViewBook',
-      payload: {},
-    }).then(this.props.dispatch({
-      type: 'listcomments/resetData',
-      payload: {}
-    }));
+    this.props
+      .dispatch({
+        type: 'managebook/hideViewBook',
+        payload: {},
+      })
+      .then(
+        this.props.dispatch({
+          type: 'listcomments/resetData',
+          payload: {},
+        }),
+      );
   }
 
   hideCreateDrawer() {

@@ -44,7 +44,6 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
 
   render() {
     const { bookGroup } = this.props;
-    console.log(bookGroup);
     return (
       <>
         <Row align={'middle'}>

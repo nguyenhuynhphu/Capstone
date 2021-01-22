@@ -159,8 +159,8 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
                       enterButton
                     />
                   </Col>
-                  <Col span={12} style={{ textAlign: 'right' }} onClick={this.displayBookDrawer}>
-                    <Button size="small" type={'primary'}>
+                  <Col span={12} style={{ textAlign: 'right' }} >
+                    <Button size="small" type={'primary'} onClick={this.displayBookDrawer}>
                       {transferbook.allBooksVisible == '0px' ? 'Add Books' : 'Hide Books'}
                     </Button>
                   </Col>
