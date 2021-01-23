@@ -1,10 +1,8 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import React from 'react';
 
-import moment from 'moment';
 import { connect, Dispatch } from 'umi';
 import { Avatar, Button, Col, List, Result, Row, Spin, Steps } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
 import { getWishlist } from '@/utils/Signalr';
 const { Step } = Steps;
 const data = [
@@ -25,14 +23,29 @@ interface ManageBorrowPageProps {
   dispatch: Dispatch;
   manageborrow?: any;
 }
+const connection = getWishlist();
 interface ManageBorrowPageState {}
 class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorrowPageState> {
   constructor(props: any) {
     super(props);
     this.state = {};
   }
-  componentDidMount(){
-    getWishlist();
+  componentDidMount() {
+    if (connection != undefined) {
+      connection.send
+      connection.start().then((value) => {
+        
+        connection.on("ReceiveMessage", (value) => {
+          console.log("user", value);
+        })
+      }).catch((e) => console.log("ERROR >> " , e));
+      connection.onclose(() => {
+        console.log("Disconnect !");
+      })
+    }else{
+      console.log("LOST CONNECTION");
+    
+    }
   }
 
   render() {

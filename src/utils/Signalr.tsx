@@ -1,19 +1,15 @@
-import { HttpTransportType, HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnectionBuilder } from '@microsoft/signalr';
+import { connect } from 'umi';
 
 export const getWishlist = () => {
   const connection = new HubConnectionBuilder()
-    .withUrl('http://171.244.5.88:90/home/index')
+    .withUrl('http://171.244.5.88:90/message')
     .withAutomaticReconnect()
     .build();
+
   if (connection) {
-    connection
-      .start()
-      .then((result) => {
-        console.log('Connected!');
-        connection.on('4444', (message) => {
-          return message;
-        });
-      })
-      .catch((e) => console.log('Signalr >> Connection failed: ', e));
+    return connection;
   }
+ 
+
 };
