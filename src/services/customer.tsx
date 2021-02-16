@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-export async function fetchLibarians({filterName, pagination}: any): Promise<any> {
+export async function fetchCustomers({filterName, pagination}: any): Promise<any> {
   return request(`/api/Staff?Name=${filterName}&PageNumber=${pagination}`);
 }
 export async function insertLibarian(values: any) {
