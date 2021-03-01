@@ -19,8 +19,8 @@ const columns = [
   {
     title: 'Publish Date',
     dataIndex: 'publishDate',
-    
-    render: (date: any) => (<Text>{formatDate(date)}</Text>)
+
+    render: (date: any) => <Text>{formatDate(date)}</Text>,
   },
   {
     title: 'Publishing Company',
@@ -35,6 +35,7 @@ interface BookGroupTableProps {
   handleRowSelect: Function;
 
   bookgrouptable?: any;
+  user?: any;
 }
 interface BookGroupTableStates {
   selectedRowKeys: any;
@@ -49,6 +50,8 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
 
   componentDidMount() {
     const { dispatch } = this.props;
+    console.log(this.props.user.currentUser);
+    
     dispatch({
       type: 'bookgrouptable/fetchData',
       payload: { filterName: '', pagination: 1 },
@@ -75,32 +78,36 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
               enterButton
             />
           </Col>
-          <Col span={8} offset={6} style={{ textAlign: 'right' }}>
-            <Space size={20}>
-              <Button
-                type="primary"
-                onClick={() =>
-                  this.props.dispatch({
-                    type: 'managebook/showCreateBook',
-                    payload: {},
-                  })
-                }
-              >
-                <PlusOutlined /> New Book
-              </Button>
-              <Button
-                type="primary"
-                onClick={() =>
-                  this.props.dispatch({
-                    type: 'managebook/showCategories',
-                    payload: {},
-                  })
-                }
-              >
-                <EditOutlined /> Manage Categories
-              </Button>
-            </Space>
-          </Col>
+          {this.props.user.currentUser.role == 'user' && this.props.user.currentUser ? (
+            <Col span={8} offset={6} style={{ textAlign: 'right' }}>
+              <Space size={20}>
+                <Button
+                  type="primary"
+                  onClick={() =>
+                    this.props.dispatch({
+                      type: 'managebook/showCreateBook',
+                      payload: {},
+                    })
+                  }
+                >
+                  <PlusOutlined /> New Book
+                </Button>
+                <Button
+                  type="primary"
+                  onClick={() =>
+                    this.props.dispatch({
+                      type: 'managebook/showCategories',
+                      payload: {},
+                    })
+                  }
+                >
+                  <EditOutlined /> Manage Categories
+                </Button>
+              </Space>
+            </Col>
+          ) : (
+            <></>
+          )}
         </Row>
         <Table
           rowSelection={rowSelection}
@@ -144,6 +151,6 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
     this.setState({ selectedRowKeys });
   };
 }
-export default connect((state) => ({
+export default connect((state: any) => ({
   ...state,
 }))(BookGroupTable);

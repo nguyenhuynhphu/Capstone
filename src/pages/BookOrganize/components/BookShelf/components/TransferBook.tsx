@@ -21,6 +21,7 @@ interface TransferBookProps {
   dispatch: Dispatch;
   transferbook?: any;
   drawergrid?: any;
+  user?: any;
 }
 
 interface TransferBookState {}
@@ -159,11 +160,15 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
                       enterButton
                     />
                   </Col>
-                  <Col span={12} style={{ textAlign: 'right' }} >
-                    <Button size="small" type={'primary'} onClick={this.displayBookDrawer}>
-                      {transferbook.allBooksVisible == '0px' ? 'Add Books' : 'Hide Books'}
-                    </Button>
-                  </Col>
+                  {this.props.user.currentUser.role == 'admin' ? (
+                    <Col span={12} style={{ textAlign: 'right' }}>
+                      <Button size="small" type={'primary'} onClick={this.displayBookDrawer}>
+                        {transferbook.allBooksVisible == '0px' ? 'Add Books' : 'Hide Books'}
+                      </Button>
+                    </Col>
+                  ) : (
+                    <></>
+                  )}
                 </Row>
                 <Table
                   size={'small'}
