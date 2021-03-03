@@ -18,7 +18,6 @@ interface ManageBookPageProps {
 
   managebook: any;
   bookgrouptable: any;
- 
 }
 
 interface ManageBookPageState {
@@ -72,7 +71,6 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
   }
 
   componentDidMount() {
-    
     this.props.dispatch({
       type: 'managebook/fetchCategories',
       payload: {},

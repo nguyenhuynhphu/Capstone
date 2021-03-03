@@ -54,9 +54,8 @@ const UserModel: UserModelType = {
       const jwtToken = getCookie('APP_TOKEN');
 
       if (jwtToken.length !== 0) {
-        var user: any = decodeToken(jwtToken);
+        const user = decodeToken(jwtToken);
         console.log("GET COOOKIE >>"  , user)
-        user.name = user.userName;
         yield put({
           type: 'saveCurrentUser',
           payload: user,

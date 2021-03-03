@@ -33,7 +33,7 @@
                     path: '/manage-user/libarian',
                     name: 'Manage Libarian',
                     component: './Libarian/LibarianPage',
-                    authority: ['admin','user'],
+                    authority: ['admin'],
                   },
                   {
                     path: '/manage-user/customer',
@@ -47,19 +47,19 @@
                 path: '/book',
                 name: 'Book',
                 icon: 'book',
-                authority: ['user', 'admin'],
+                authority: ['admin'],
                 routes: [
                   {
                     path: '/book/manage-book',
                     name: 'Manage Book',
                     component: './ManageBook/ManageBookPage',
-                    authority: ['user', 'admin'],
+                    authority: ['admin'],
                   },
                   {
                     path: '/book/borrow-book',
                     name: 'Manage Borrow',
                     component: './ManageBorrow/ManageBorrowPage',
-                    authority: ['user'],
+                    authority: ['admin'],
                   },
                 ],
               },
@@ -68,9 +68,15 @@
                 name: 'Organize Books',
                 icon: 'table',
                 component: './BookOrganize/BookOrganizePage',
-                authority: ['admin', 'user'],
+                authority: ['admin'],
               },
-            
+              {
+                path: '/libaryevent',
+                name: 'Manage Events',
+                icon: 'table',
+                component: './ManageEvent/ManageEventPage',
+                authority: ['admin'],
+              },
               {
                 component: './404',
               },
