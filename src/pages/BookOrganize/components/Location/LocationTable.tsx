@@ -13,6 +13,7 @@ interface LocationTableProps {
   global: any;
   locationtable: any;
   organizebook: any;
+  user: any;
 }
 interface LocationTableState {
   selectedRowKeys: any;
@@ -70,20 +71,24 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
                 size={'small'}
               />
             </Col>
-            <Col span={8} offset={4} style={{ textAlign: 'right' }}>
-              <Button
-                type="primary"
-                onClick={() =>
-                  this.props.dispatch({
-                    type: 'organizebook/showCreateLocation',
-                    payload: {},
-                  })
-                }
-                size={'small'}
-              >
-                <PlusOutlined /> New Location
-              </Button>
-            </Col>
+            {this.props.user.currentUser.role == 'admin' ? (
+              <Col span={8} offset={4} style={{ textAlign: 'right' }}>
+                <Button
+                  type="primary"
+                  onClick={() =>
+                    this.props.dispatch({
+                      type: 'organizebook/showCreateLocation',
+                      payload: {},
+                    })
+                  }
+                  size={'small'}
+                >
+                  <PlusOutlined /> New Location
+                </Button>
+              </Col>
+            ) : (
+              <></>
+            )}
           </Row>
         </div>
         <Table
