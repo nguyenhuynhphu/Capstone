@@ -227,7 +227,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
   }
 
   handelFile(images: any) {
-    console.log(images);
+
     this.setState({ fileList: images.fileList });
   }
 

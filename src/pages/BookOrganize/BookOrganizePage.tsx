@@ -109,6 +109,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
 
   render() {
     const { organizebook, locationtable, global } = this.props;
+    
     return (
       <>
         <PageHeaderWrapper style={{ marginBottom: '20px' }}></PageHeaderWrapper>

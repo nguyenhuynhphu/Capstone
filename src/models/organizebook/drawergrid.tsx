@@ -61,6 +61,7 @@ const DrawerGridModel: DrawerGridType = {
     },
     loadData(state, { payload }) {
       const { response } = payload;
+
       response.forEach((drawer: any) => {
         drawer.key = drawer.id;
       });

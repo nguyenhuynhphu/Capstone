@@ -25,8 +25,10 @@ class CustomBookShelf extends React.Component<CustomBookShelfProps, CustomBookSh
 
   renderGrid() {
     var { drawergrid } = this.props;
+
     var tmp: any = [];
     drawergrid.data.forEach((drawer: any, index: number) => {
+
       tmp.push(
         <Badge.Ribbon text={'15'}>
           <div

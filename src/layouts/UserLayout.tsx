@@ -5,7 +5,7 @@ import React from 'react';
 import { ConnectState } from '@/models/connect';
 import styles from './UserLayout.less';
 import { Col, Row } from 'antd';
-
+import '../main.css';
 export interface UserLayoutProps extends Partial<ConnectProps> {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;

@@ -77,9 +77,7 @@ export async function fetchBookInSystem(params: TransferBookParamsType): Promise
 }
 
 export async function addBookToDrawer(values: any): Promise<any> {
-  console.log("PASSING == ", values);
-  console.log("JSON == ", JSON.stringify(values));
-  return request('/api/BookDrawer', {
+  return request(`/api/Book`, {
     method: 'POST',
     body: JSON.stringify(values),
   });
@@ -91,8 +89,9 @@ export async function removeBooksFromDrawer(values: any): Promise<any> {
     tmp += `id=${id}&`;
   });
   console.log(tmp);
-  return request(`/api/BookDrawer?` + tmp, {
-    method: 'DELETE',
+  return request(`/api/Book`, {
+    method: 'POST',
+    body: JSON.stringify({isDeleted: true, drawerId: null, id: values[0]}),
   });
 }
 ///api/BookDrawer?id=1&id=2

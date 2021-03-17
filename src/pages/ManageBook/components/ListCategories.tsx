@@ -31,7 +31,7 @@ class ListCategories extends React.Component<ListCategoriesProps, ListCategories
   }
 
   handleClose = (removedTag: any) => {
-    console.log(removedTag);
+ 
   };
   handleInputConfirm = () => {};
 

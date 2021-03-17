@@ -47,8 +47,10 @@ const errorHandler = (error: { response: Response }): Response => {
 const request = extend({
   prefix: API_BASE,
   headers: {
-    'Content-Type':'application/json',
+    'Content-Type': 'application/json;charset=utf-8',
     'Access-Control-Allow-Origin': '*',
+    "Access-Control-Allow-Methods": "DELETE, POST, GET, PUT",
+    'Access-Control-Allow-Credentials': 'true'
   },
   errorHandler,
 });

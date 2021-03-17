@@ -10,6 +10,4 @@ export const getWishlist = () => {
   if (connection) {
     return connection;
   }
- 
-
 };

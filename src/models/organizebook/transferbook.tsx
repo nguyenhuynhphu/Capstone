@@ -146,10 +146,8 @@ const TransferModel: TransferBookType = {
       let tmp: any = [];
       arrayLength.forEach((ele: any) => {
         tmp.push({
-          bookId: ele,
+          id: ele,
           drawerId: payload.drawerId,
-          time: moment(new Date()),
-          staffId: 1 //cai nay EDIT sau
         })
       });
      

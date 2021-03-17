@@ -43,7 +43,6 @@ const Model: LoginModelType = {
         setCookie('APP_TOKEN', response.token);
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
-        console.log(params);
 
         let { redirect } = params as { redirect: string };
         if (redirect) {
@@ -87,6 +86,9 @@ const Model: LoginModelType = {
     changeLoginStatus(state, { payload }) {
       if(payload.token != undefined){
         let user: any = decodeToken(payload.token);
+        if(user.role == 2) user.role = 'user'
+        else if (user.role == 1) user.role = 'admin'
+       // if(user.role == 'librarian') user.role = 'user' 
         setAuthority(user.role);
       }
       return {

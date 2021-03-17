@@ -50,8 +50,7 @@ const ListCommentsModel: ListCategoriesType = {
       payload.data.forEach((category: any) => {
         category.key = category.id;
       });
-      console.log("FETCH DATA >> ", payload);
-      
+
       return {
         ...state,
         data: payload.data,

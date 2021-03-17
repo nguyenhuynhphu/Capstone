@@ -59,7 +59,6 @@ const ListBooksModel: ListBooksType = {
       payload.data.forEach((book: any) => {
         book.key = book.id;
       });
-      console.log('FETCH DATA >> ', payload);
 
       return {
         ...state,

@@ -18,6 +18,7 @@ interface ManageBookPageProps {
 
   managebook: any;
   bookgrouptable: any;
+ 
 }
 
 interface ManageBookPageState {
@@ -71,6 +72,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
   }
 
   componentDidMount() {
+    
     this.props.dispatch({
       type: 'managebook/fetchCategories',
       payload: {},
@@ -235,7 +237,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   async handelSubmit(bookGroup: any) {
     const { dispatch, bookgrouptable, managebook } = this.props;
-    console.log('bookGroup >> ', bookGroup);
+ 
     if (managebook.choiceBook.id != undefined) {
       //update
       if (bookGroup.images != undefined) {
@@ -303,7 +305,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           });
           //xoa het
         } else {
-          console.log('Xoa Het');
+
           delete bookGroup.images;
           dispatch({
             type: 'managebook/editBookGroup',
@@ -325,7 +327,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
         }
         //khong up hinh
       } else {
-        console.log('Khong Up Hinh');
+     
         delete bookGroup.images;
         bookGroup.image = managebook.choiceBook.image;
         dispatch({

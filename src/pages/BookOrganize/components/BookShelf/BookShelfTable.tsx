@@ -13,6 +13,7 @@ interface BookShelfTableProps {
   bookshelftable?: any;
   organizebook?: any;
   global?: any;
+  user?: any;
 }
 interface BookShelfTableState {
   colors: any;
@@ -44,6 +45,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
     bookshelftable.data.forEach((bookshelf: any) => {
       this.state.colors.set(bookshelf.locationName, bookshelf.locationColor);
     });
+  
     return (
       <>
         <div style={{ marginBottom: 10, marginTop: 12 }}>
@@ -64,20 +66,24 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
                 size={'small'}
               />
             </Col>
-            <Col span={6} offset={10} style={{ textAlign: 'right' }}>
-              <Button
-                type="primary"
-                onClick={() =>
-                  this.props.dispatch({
-                    type: 'organizebook/showCreateBookShelf',
-                    payload: {},
-                  })
-                }
-                size={'small'}
-              >
-                <PlusOutlined /> New Book Shelf
-              </Button>
-            </Col>
+            {this.props.user.currentUser.role == 1 ? (
+              <Col span={6} offset={10} style={{ textAlign: 'right' }}>
+                <Button
+                  type="primary"
+                  onClick={() =>
+                    this.props.dispatch({
+                      type: 'organizebook/showCreateBookShelf',
+                      payload: {},
+                    })
+                  }
+                  size={'small'}
+                >
+                  <PlusOutlined /> New Book Shelf
+                </Button>
+              </Col>
+            ) : (
+              <></>
+            )}
           </Row>
         </div>
         <Table
@@ -118,34 +124,41 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
               </Space>
             )}
           />
-          <Column
-            //title="Manage Book"
-            align={'center'}
-            dataIndex={'id'}
-            render={(id) => (
-              <>
-                <Popconfirm
-                  title="Are you sure？"
-                  okText="Yes"
-                  cancelText="No"
-                  onConfirm={() =>
-                    this.props
-                      .dispatch({ type: 'organizebook/deleteBookShelf', payload: [id] })
-                      .then(() =>
-                        this.props.dispatch({
-                          type: 'bookshelftable/fetchData',
-                          payload: {filterName: bookshelftable.filterName, pagination: bookshelftable.pagination.current},
-                        }),
-                      )
-                  }
-                >
-                  <a style={{ textAlign: 'center' }} href={'#'}>
-                    Delete
-                  </a>
-                </Popconfirm>
-              </>
-            )}
-          />
+          {this.props.user.currentUser.role == 1 ? (
+            <Column
+              //title="Manage Book"
+              align={'center'}
+              dataIndex={'id'}
+              render={(id) => (
+                <>
+                  <Popconfirm
+                    title="Are you sure？"
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={() =>
+                      this.props
+                        .dispatch({ type: 'organizebook/deleteBookShelf', payload: [id] })
+                        .then(() =>
+                          this.props.dispatch({
+                            type: 'bookshelftable/fetchData',
+                            payload: {
+                              filterName: bookshelftable.filterName,
+                              pagination: bookshelftable.pagination.current,
+                            },
+                          }),
+                        )
+                    }
+                  >
+                    <a style={{ textAlign: 'center' }} href={'#'}>
+                      Delete
+                    </a>
+                  </Popconfirm>
+                </>
+              )}
+            />
+          ) : (
+            <></>
+          )}
         </Table>
       </>
     );

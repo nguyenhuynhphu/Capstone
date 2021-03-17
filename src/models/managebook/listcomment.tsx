@@ -63,7 +63,6 @@ const ListCommentsModel: ListCommentsType = {
       payload.data.forEach((comment: any) => {
         comment.key = comment.id;
       });
-      console.log('FETCH DATA >> ', payload);
 
       return {
         ...state,

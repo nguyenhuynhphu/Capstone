@@ -23,7 +23,6 @@
             component: '../layouts/BasicLayout',
             authority: ['admin', 'user'],
             routes: [
-              
               {
                 path: '/manage-user',
                 name: 'User',
@@ -33,7 +32,7 @@
                     path: '/manage-user/libarian',
                     name: 'Manage Libarian',
                     component: './Libarian/LibarianPage',
-                    authority: ['admin'],
+                    authority: ['admin','user'],
                   },
                   {
                     path: '/manage-user/customer',
@@ -47,19 +46,19 @@
                 path: '/book',
                 name: 'Book',
                 icon: 'book',
-                authority: ['admin'],
+                authority: ['user', 'admin'],
                 routes: [
                   {
                     path: '/book/manage-book',
                     name: 'Manage Book',
                     component: './ManageBook/ManageBookPage',
-                    authority: ['admin'],
+                    authority: ['user', 'admin'],
                   },
                   {
                     path: '/book/borrow-book',
                     name: 'Manage Borrow',
                     component: './ManageBorrow/ManageBorrowPage',
-                    authority: ['admin'],
+                    authority: ['user'],
                   },
                 ],
               },
@@ -68,15 +67,16 @@
                 name: 'Organize Books',
                 icon: 'table',
                 component: './BookOrganize/BookOrganizePage',
-                authority: ['admin'],
+                authority: ['admin', 'user'],
               },
               {
-                path: '/libaryevent',
-                name: 'Manage Events',
+                path: '/upload',
+                name: 'Video',
                 icon: 'table',
-                component: './ManageEvent/ManageEventPage',
-                authority: ['admin'],
+                component: './UploadVideo/UploadVideo',
+                authority: ['admin', 'user'],
               },
+            
               {
                 component: './404',
               },
