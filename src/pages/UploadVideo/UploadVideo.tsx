@@ -375,8 +375,6 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
     const { fileList } = this.state;
     const formData = new FormData();
 
-    console.log(fileList);
-
     formData.append('files', fileList[0].originFileObj);
     axios
       .post('http://127.0.0.1:5000/upload', formData, {
@@ -385,10 +383,12 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
         },
       })
       .then((response) => {
-        this.uploadSuccess(response.data[0]);
+        console.log("yyyyyyyyyyyyyyyyyyyyy >>>>" , response);
+        
+       // this.uploadSuccess(response.data[0]);
       })
       .catch(function (error) {
-        console.log(error);
+        console.log("ERROR >>", error);
       });
       
   };

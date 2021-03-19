@@ -200,7 +200,9 @@ const ManageBookModel: ManageBookType = {
         type: 'loadingButton',
         payload: {}
       });
-
+      console.log("PAYLOAD ", payload);
+      console.log("date: ", payload.publishDate.utc());
+      
       var tmpCate: any = [];
       payload.category.forEach((cate: any) => {
         tmpCate.push({ categoryId: cate });

@@ -174,7 +174,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
             ]}
           />
           <Table
-            dataSource={[]}
+            dataSource={manageborrow.borrowDetail}
             size={'middle'}
             onRow={(record) => {
               return {
@@ -183,9 +183,9 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
             }}
             onChange={(pagination) => {}}
           >
-            <Column title="Name" dataIndex="name" key="name" />
-            <Column title="Total Row" dataIndex="row" key="row" align={'center'} />
-            <Column title="Total Column" dataIndex="col" key="col" align={'center'} />
+            <Column title="Name" dataIndex="bookName" key="name" />
+            <Column title="Total Row" dataIndex="fee" key="row" align={'center'} />
+            <Column title="Total Column" dataIndex="startTime" key="col" align={'center'} />
           </Table>
         </>
       );
@@ -392,16 +392,18 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
         .then((value) => {
           connection.on('ReceiveMessage', (value) => {
             if (value.staffId !== this.props.user.currentUser.id) {
-              console.log(value);
-
+             // console.log(value);
               this.fetchWishList(value.wishlist, 1);
             }
           });
           connection.on('ReceiveMessageToReturn', (value) => {
             if (value.staffId !== this.props.user.currentUser.id) {
               console.log(value);
-
-              this.fetchWishList(value.wishlist, 1);
+              
+              this.props.dispatch({
+                type: 'manageborrow/fetchBorrowDetail',
+                payload: value.borrowId,
+              })
             }
           });
         })

@@ -12,6 +12,7 @@ import { storage } from '@/firebase/Firebase';
 import { FormInstance } from 'antd/lib/form';
 import ListCategories from './components/ListCategories';
 import sendNotification from '@/utils/Notification';
+import moment from 'moment';
 
 interface ManageBookPageProps {
   dispatch: Dispatch;
@@ -237,9 +238,12 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   async handelSubmit(bookGroup: any) {
     const { dispatch, bookgrouptable, managebook } = this.props;
- 
+    
+    console.log("BOOK GROUP >>>", bookGroup);
+    
     if (managebook.choiceBook.id != undefined) {
       //update
+      //bookGroup.publishDate = bookGroup.publishDate.format();
       if (bookGroup.images != undefined) {
         //up hinh
         if (bookGroup.images.fileList != 0) {

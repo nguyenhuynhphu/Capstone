@@ -86,10 +86,10 @@ const Model: LoginModelType = {
     changeLoginStatus(state, { payload }) {
       if(payload.token != undefined){
         let user: any = decodeToken(payload.token);
-        if(user.role == 2) user.role = 'user'
-        else if (user.role == 1) user.role = 'admin'
-       // if(user.role == 'librarian') user.role = 'user' 
-        setAuthority(user.role);
+        if(user.roleId == 3) setAuthority('user');
+        else if (user.roleId == 1) setAuthority('admin');
+
+        user.role = user.roleId;
       }
       return {
         ...state,

@@ -194,6 +194,8 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
   initForm() {
     const { managebook } = this.props;
     if (managebook.choiceBook != undefined) {
+      console.log("CURRENT >>>>", managebook.choiceBook);
+      
       this.props.formRef.current?.setFieldsValue({
         name: managebook.choiceBook.name,
         author: managebook.choiceBook.author,
@@ -206,7 +208,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         category: this.handelCate(managebook.choiceBook.category),
         images: managebook.choiceBook.images,
         publishingCompany: managebook.choiceBook.publishingCompany,
-        publishDate: moment(managebook.choiceBook.publishDate),
+        publishDate: moment.utc(managebook.choiceBook.publishDate),
         publishNumber: managebook.choiceBook.publishNumber,
         publishingPalace: managebook.choiceBook.publishingPalace,
         description: managebook.choiceBook.description,

@@ -1,4 +1,4 @@
-import { confirmBorrow, fetchCustomer } from '@/services/manageborrow';
+import { confirmBorrow, fetchBorrowDetail, fetchCustomer } from '@/services/manageborrow';
 import { Effect, ManageBookState, Reducer } from 'umi';
 
 export interface ManageBorrowState {
@@ -12,6 +12,7 @@ export interface ManageBorrowState {
 
   wishlist: any;
   customer: any;
+  borrowDetail: any;
 }
 
 export interface ManageBorrowType {
@@ -23,6 +24,9 @@ export interface ManageBorrowType {
 
     fetchCustomer: Effect;
     loadWishlist: Effect;
+
+    fetchBorrowDetail: Effect;
+      
 
     confirmBorrow: Effect;
   };
@@ -36,6 +40,7 @@ export interface ManageBorrowType {
     renderReturnScreen: Reducer;
     loading: Reducer;
 
+    loadBorrowDetail: Reducer;  
     anotherBorrowRequest: Reducer;
   };
 }
@@ -50,6 +55,7 @@ const ManageBorrowModel: ManageBorrowType = {
     processStep: 0,
     wishlist: {},
     customer: {},
+    borrowDetail: []
   },
   effects: {
     *changeScreen({ payload }, { call, put }) {
@@ -80,6 +86,15 @@ const ManageBorrowModel: ManageBorrowType = {
     *confirmBorrow({ payload }, { call, put }) {
       yield call(confirmBorrow, payload);
     },
+    *fetchBorrowDetail({ payload }, { call, put }) {
+      const response = yield call(fetchBorrowDetail, payload);
+    
+      yield put({
+        type: 'loadBorrowDetail',
+        payload: response.data,
+      });
+    },
+    
   },
   reducers: {
     resetState(state) {
@@ -142,6 +157,15 @@ const ManageBorrowModel: ManageBorrowType = {
       return {
         ...state,
         customer: payload,
+      };
+    },
+
+    loadBorrowDetail(state, { payload }) {
+      console.log(payload);
+      
+      return {
+        ...state,
+        borrowDetail: payload,
       };
     },
 

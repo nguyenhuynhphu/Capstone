@@ -160,7 +160,7 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
                       enterButton
                     />
                   </Col>
-                  {this.props.user.currentUser.role == 2 ? (
+                  {this.props.user.currentUser.roleId != 1 ? (
                     <Col span={12} style={{ textAlign: 'right' }}>
                       <Button size="small" type={'primary'} onClick={this.displayBookDrawer}>
                         {transferbook.allBooksVisible == '0px' ? 'Add Books' : 'Hide Books'}

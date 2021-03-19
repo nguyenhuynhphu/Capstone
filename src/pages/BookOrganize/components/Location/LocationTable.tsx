@@ -71,7 +71,7 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
                 size={'small'}
               />
             </Col>
-            {this.props.user.currentUser.role == 1 ? (
+            {this.props.user.currentUser.roleId == 1 ? (
               <Col span={8} offset={4} style={{ textAlign: 'right' }}>
                 <Button
                   type="primary"

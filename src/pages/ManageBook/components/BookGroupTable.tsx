@@ -77,7 +77,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
               enterButton
             />
           </Col>
-          {this.props.user.currentUser.role == 2 && this.props.user.currentUser ? (
+          {this.props.user.currentUser.roleId == 3 && this.props.user.currentUser ? (
             <Col span={8} offset={6} style={{ textAlign: 'right' }}>
               <Space size={20}>
                 <Button

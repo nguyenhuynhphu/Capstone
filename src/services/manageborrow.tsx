@@ -22,3 +22,8 @@ export async function confirmBorrow(value: any): Promise<any> {
     body: JSON.stringify(value),
   });
 }
+
+
+export async function fetchBorrowDetail(borrowId: number): Promise<any> {
+  return request(`/api/BorrowDetail?BorrowId=${borrowId}`);
+}

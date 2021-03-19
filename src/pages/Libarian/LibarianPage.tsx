@@ -37,7 +37,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
     return (
       <>
         <PageHeaderWrapper></PageHeaderWrapper>
-        <Row>
+        <Row style={{backgroundColor: 'white', padding: '10px 20px'}}>
           <Col span={24}>
             <Row style={{ margin: '10px 0px' }}>
               <Col span={10}>
@@ -65,7 +65,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
               </Col>
             </Row>
             <Row>
-              <Col span={24}>
+              <Col span={24} >
                 <LibarianTable />
               </Col>
             </Row>

@@ -66,7 +66,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
                 size={'small'}
               />
             </Col>
-            {this.props.user.currentUser.role == 1 ? (
+            {this.props.user.currentUser.roleId == 1 ? (
               <Col span={6} offset={10} style={{ textAlign: 'right' }}>
                 <Button
                   type="primary"
@@ -124,7 +124,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
               </Space>
             )}
           />
-          {this.props.user.currentUser.role == 1 ? (
+          {this.props.user.currentUser.roleId == 1 ? (
             <Column
               //title="Manage Book"
               align={'center'}
