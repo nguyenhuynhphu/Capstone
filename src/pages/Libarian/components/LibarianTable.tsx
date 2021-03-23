@@ -26,7 +26,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
     return (
       <Table
         // columns={column}
-
+        className={styles.librarianTable}
         dataSource={libariantable.data}
         size={'small'}
         loading={libariantable.isLoading}
@@ -104,7 +104,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
             <Popover
               content={
                 <Space direction="vertical" >
-                  <Space direction="horizontal" align={'center'} style={{marginBottom: 8}} >
+                  <Space direction="horizontal" align={'center'} style={{marginBottom: 8, cursor: 'pointer'}} >
                     <EditOutlined style={{ color: '#40A9FF', fontSize: 20 }} />
                     <p style={{ marginBottom: '0px' }}>Edit</p>
                   </Space>
@@ -129,7 +129,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
                         });
                     }}
                   >
-                    <Space direction="horizontal" align={'center'} >
+                    <Space direction="horizontal" align={'center'} style={{cursor: 'pointer'}}>
                       <DeleteOutlined style={{ color: 'red', fontSize: 20 }} />
                       <p style={{ marginBottom: '0px' }}>Delete</p>
                     </Space>

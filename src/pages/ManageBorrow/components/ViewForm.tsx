@@ -1,4 +1,16 @@
-import { Button, Col, Divider, Row, Space, Typography } from 'antd';
+import { BookOutlined, EuroCircleOutlined, EuroOutlined } from '@ant-design/icons';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Col,
+  Descriptions,
+  Image,
+  List,
+  Row,
+  Space,
+  Typography,
+} from 'antd';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
@@ -15,58 +27,54 @@ class ViewForm extends React.Component<ViewFormProps> {
   render() {
     const { manageborrowpage } = this.props;
     const { choiceBorrow } = manageborrowpage;
-    const titleSpace = 7;
-    const fieldSpace = 17;
+    console.log('choiceBorrow >>>', choiceBorrow);
+
     return (
       <div>
-        <Row align={'middle'} style={{ marginBottom: 20 }}>
-          <Col span={12}>
-            <Title level={4} style={{ marginTop: 6 }}>
-              Borrow Detail
-            </Title>
-          </Col>
-        </Row>
-        <Divider />
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            Customer Name:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceBorrow.customerName}
-          </Col>
-        </Row>
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            Start Time:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceBorrow.startTime}
-          </Col>
-        </Row>
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            End Time:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceBorrow.endTime}
-          </Col>
-        </Row>
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            Quantity:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceBorrow.quantity}
-          </Col>
-        </Row>
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            Total Fee:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceBorrow.total}
-          </Col>
-        </Row>
+        <Descriptions column={1} bordered>
+          <Descriptions.Item label="Customer Name"> {choiceBorrow.customerName}</Descriptions.Item>
+          <Descriptions.Item label="Start Time">
+            {choiceBorrow.startTime?.split('T')[0]}
+          </Descriptions.Item>
+          <Descriptions.Item label="Return Time">
+            <Space>
+              <p style={{ marginBottom: 0 }}>{choiceBorrow.endTime?.split('T')[0]}</p>
+              <Badge status="processing" title="Valid" />
+            </Space>
+          </Descriptions.Item>
+          <Descriptions.Item label="Quantity">
+            <Space>
+              <p style={{ marginBottom: 0 }}>{choiceBorrow.quantity}</p>
+              <BookOutlined style={{ color: '#3FA8FF' }} />
+            </Space>
+          </Descriptions.Item>
+          <Descriptions.Item label="Total Fee">
+            <Space>
+              <p style={{ marginBottom: 0 }}> {choiceBorrow.total}</p>
+              <EuroOutlined style={{ color: '#EEBB33' }} />
+            </Space>
+          </Descriptions.Item>
+        </Descriptions>
+        <div>
+          <List
+            itemLayout="horizontal"
+            dataSource={choiceBorrow.borrowDetail}
+            renderItem={(item: any) => (
+              <List.Item>
+                <Space style={{ width: '100%' }}>
+                  <Image width={50} height={77} src={item.image != undefined ? item.image : null} />
+                  <Space direction="vertical">
+                    <p style={{ marginBottom: 0 }}>{item.bookName}</p>
+                    <Space direction="horizontal">
+                      <p style={{ marginBottom: 0 }}>Fee: {item.fee} <EuroCircleOutlined style={{color: 'rgb(238, 187, 51)'}} /></p>
+                      <p style={{ marginBottom: 0, marginLeft: 25 }}>Punish Fee: {item.punishFee} <EuroCircleOutlined style={{color: '#FF4D4F'}}/></p>
+                    </Space>
+                  </Space>
+                </Space>
+              </List.Item>
+            )}
+          />
+        </div>
       </div>
     );
   }

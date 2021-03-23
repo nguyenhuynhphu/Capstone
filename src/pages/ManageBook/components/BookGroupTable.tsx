@@ -1,31 +1,149 @@
 import { formatDate } from '@/utils/utils';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Col, Row, Space, Table } from 'antd';
+import {
+  BookOutlined,
+  EditOutlined,
+  EuroCircleOutlined,
+  ExclamationOutlined,
+  PayCircleOutlined,
+  PlusOutlined,
+  StarFilled,
+  TagOutlined,
+  WarningOutlined,
+} from '@ant-design/icons';
+import { Button, Col, Popover, Rate, Row, Space, Table, Tag } from 'antd';
 import Search from 'antd/lib/input/Search';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
-import { Typography } from 'antd';
+import { Typography, Image } from 'antd';
+import styles from '../ManageBookPage.less';
+import 'antd/dist/antd.css';
 const { Text } = Typography;
 
 const columns = [
   {
     title: 'Name',
     dataIndex: 'name',
+    width: 300,
+    render: (text: String, record: any) => (
+      <Space>
+        <Image
+          width={50}
+          height={77}
+          src={record.image.length != 0 ? record.image[0]?.url : null}
+        />
+        <p style={{ marginBottom: 0 }}>{text}</p>
+      </Space>
+    ),
+  },
+  {
+    title: 'Categories',
+    dataIndex: 'category',
+    align: 'left',
+    render: (text: string, record: any) => {
+      if (record.category != undefined) {
+        var tmp: any = [];
+        if (record.category.length >= 2) {
+          return (
+            <Popover
+              content={
+                <div style={{ width: 50 }}>
+                  {record.category.map((cate: any, index: number) => (
+                    <Tag icon={<TagOutlined />} color="#2db7f5">
+                      {cate.name}
+                    </Tag>
+                  ))}
+                </div>
+              }
+              title="All Categories"
+              trigger="hover"
+            >
+              {record.category.map((cate: any, index: number) =>
+                index <= 1 ? (
+                  <Tag icon={<TagOutlined />} color="#2db7f5">
+                    {cate.name}
+                  </Tag>
+                ) : (
+                  <></>
+                ),
+              )}
+              <p
+                style={{
+                  fontSize: 14,
+                  marginBottom: 0,
+                  width: '100%',
+                  textAlign: 'center',
+                  color: '#2db7f5',
+                }}
+              >
+                ...
+              </p>
+            </Popover>
+          );
+        } else {
+          record.category.map((cate: any) =>
+            tmp.push(
+              <Tag icon={<TagOutlined />} color="#2db7f5">
+                {cate.name}
+              </Tag>,
+            ),
+          );
+        }
+
+        return tmp;
+      } else {
+        return (
+          <Tag icon={<WarningOutlined />} color="#cd201f">
+            No category
+          </Tag>
+        );
+      }
+    },
+  },
+  {
+    title: 'Rate',
+    dataIndex: 'ratingAverage',
+    render: (text: string, record: any) => (
+      <Space direction="horizontal">
+        <p style={{ marginBottom: 0 }}>
+          {record.ratingAverage != undefined ? parseFloat(text).toFixed(2) : 0}
+        </p>
+        <StarFilled style={{ color: 'yellowgreen' }} />
+      </Space>
+    ),
   },
   {
     title: 'Author',
     dataIndex: 'author',
   },
   {
-    title: 'Publish Date',
-    dataIndex: 'publishDate',
-
-    render: (date: any) => <Text>{formatDate(date)}</Text>,
+    title: 'Fee',
+    dataIndex: 'fee',
+    align: 'right',
+    render: (fee: any) => (
+      <Space>
+        <Text>{fee}</Text>
+        <EuroCircleOutlined style={{ fontSize: 18, color: '#2db7f5' }} />
+      </Space>
+    ),
   },
   {
-    title: 'Publishing Company',
-    dataIndex: 'publishingCompany',
+    title: 'PunishFee',
+    dataIndex: 'punishFee',
+    align: 'right',
+    render: (fee: any) => (
+      <Space>
+        <Text>{fee}</Text>
+        <EuroCircleOutlined style={{ fontSize: 18, color: 'red' }} />
+      </Space>
+    ),
   },
+  {
+    title: 'Publish Date',
+    dataIndex: 'publishDate',
+    align: 'center',
+    render: (date: any) => <Text>{formatDate(date)}</Text>,
+  },
+  
 ];
 interface BookGroupTableProps {
   dispatch: Dispatch;
@@ -71,13 +189,16 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
         <Row style={{ margin: '10px 0px' }}>
           <Col span={10}>
             <Search
-              placeholder="input search text"
-              style={{ width: 250 }}
+              placeholder="Type book name"
+              enterButton="Search"
+   
+              style={{ width: 350 }}
+              suffix={<BookOutlined style={{color: '#40A9FF'}}/>}
               onSearch={(value) => this.handleFilter(value)}
-              enterButton
             />
+            
           </Col>
-          {this.props.user.currentUser.roleId == 3 && this.props.user.currentUser ? (
+          {this.props.user.currentUser.roleId != 1 ? (
             <Col span={8} offset={6} style={{ textAlign: 'right' }}>
               <Space size={20}>
                 <Button
@@ -111,6 +232,8 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
         <Table
           rowSelection={rowSelection}
           columns={columns}
+          className={styles.bookTable}
+          scroll={{ y: 500 }}
           loading={bookgrouptable.isLoading}
           pagination={{ ...bookgrouptable.pagination, showSizeChanger: false }}
           dataSource={bookgrouptable.data}

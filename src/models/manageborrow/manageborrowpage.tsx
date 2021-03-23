@@ -1,8 +1,11 @@
+import { fetchBorrowDetail } from '@/services/manageborrow';
 import { Effect, Reducer } from 'umi';
 
 export interface ManageBorrowPageState {
   viewBorrowVisible: boolean;
   choiceBorrow: any;
+
+  borrowDetail: any;
 }
 
 export interface ManageBorrowPageType {
@@ -13,8 +16,10 @@ export interface ManageBorrowPageType {
     hideViewBorrow: Effect;
   };
   reducers: {
-    displayScrollBar: Reducer<ManageBorrowPageState>;
-    displayViewBorrow: Reducer<ManageBorrowPageState>;
+    displayScrollBar: Reducer;
+    displayViewBorrow: Reducer;
+
+    loadBorrowDetail: Reducer;
   };
 }
 
@@ -23,14 +28,17 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
   state: {
     viewBorrowVisible: false,
     choiceBorrow: {},
+    borrowDetail: {}
   },
   effects: {
     //===================================
-    *showViewBorrow({ payload }, { put }) {
+    *showViewBorrow({ payload }, { put, call }) {
       yield put({
         type: 'displayScrollBar',
         payload: false,
       });
+      const data = yield call(fetchBorrowDetail, payload.id)
+      payload.borrowDetail = data.data;
       yield put({
         type: 'displayViewBorrow',
         payload: {visible: true, record: payload},
@@ -46,6 +54,7 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
         payload: {visible: false, record: {}},
       });
       
+    
     }
   },
   reducers: {

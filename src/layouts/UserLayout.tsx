@@ -3,8 +3,6 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useIntl, ConnectProps, connect } from 'umi';
 import React from 'react';
 import { ConnectState } from '@/models/connect';
-import styles from './UserLayout.less';
-import { Col, Row } from 'antd';
 import '../main.css';
 export interface UserLayoutProps extends Partial<ConnectProps> {
   breadcrumbNameMap: {
@@ -40,13 +38,9 @@ const UserLayout: React.FC<UserLayoutProps> = (props) => {
         <meta name="description" content={title} />
       </Helmet>
 
-      <div className={styles.container}>
-        <Row style={{ width: '70%', margin: '0 auto' }} align={'middle'}>
-          <Col span={16} style={{width: 1300, height: 500}}>
-            <div className={styles.decoration}></div>
-          </Col>
-          <Col span={8}>{children}</Col>
-        </Row>
+      <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center' }}>
+        
+        {children}
       </div>
     </HelmetProvider>
   );

@@ -11,61 +11,56 @@ interface UploadRecordTableProps {
   trackingDetail: Function;
   uploadrecordtable?: any;
 }
-interface UploadRecordTableState {
-
-}
+interface UploadRecordTableState {}
 
 const columns = [
   {
-    title: 'ID',
+    title: '#',
     dataIndex: 'id',
     align: 'center',
     render: (text) => <p>{text}</p>,
   },
   {
-    title: 'Staff Name',
-    className: 'column-money',
-    dataIndex: 'staffName',
-    align: 'center',
+    title: 'Book Shelf',
+    dataIndex: 'bookShelfName',
+    align: 'left',
+    width: 200
   },
   {
-    title: 'Video URL',
-    dataIndex: 'url',
-  },
+    title: 'Staff Upload',
+    dataIndex: 'staffName',
+    align: 'center',
+  }
 ];
 
 class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRecordTableState> {
   constructor(props: any) {
     super(props);
-
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.props.dispatch({
-      type: 'uploadrecordtable/fetchData'
-    })
+      type: 'uploadrecordtable/fetchData',
+    });
   }
-
 
   render() {
     const { uploadrecordtable } = this.props;
     return (
       <>
         <Table
-            columns={columns}
-            dataSource={uploadrecordtable.data}
-            loading={uploadrecordtable.isLoading}
-            bordered
-            onRow={(record) => {
-              return {
-                onDoubleClick: () => this.props.trackingDetail(record), // double click row,
-              };
-            }}
-           
-          />
+          columns={columns}
+          dataSource={uploadrecordtable.data}
+          loading={uploadrecordtable.isLoading}
+          bordered
+          onRow={(record) => {
+            return {
+              onDoubleClick: () => this.props.trackingDetail(record), // double click row,
+            };
+          }}
+        />
       </>
     );
   }
- 
 }
 export default connect((state) => ({ ...state }))(UploadRecordTable);

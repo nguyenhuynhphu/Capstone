@@ -109,20 +109,24 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
 
   render() {
     const { organizebook, locationtable, global } = this.props;
-    
+
     return (
       <>
         <PageHeaderWrapper style={{ marginBottom: '20px' }}></PageHeaderWrapper>
         <Row gutter={25}>
           <Col span={16}>
-            <div className={styles.bookShelfTable}>
-              <BookShelfTable />
-            </div>
+            <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
+              <Col span={24}>
+                <BookShelfTable />
+              </Col>
+            </Row>
           </Col>
           <Col span={8}>
-            <div className={styles.bookShelfTable}>
-              <LocationTable />
-            </div>
+            <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
+              <Col span={24}>
+                <LocationTable />
+              </Col>
+            </Row>
           </Col>
         </Row>
         <Drawer
@@ -412,7 +416,6 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                     key="submit"
                     htmlType="submit"
                     className={styles.buttonCustom}
-         
                     icon={<EditOutlined style={{ color: '#0078d4' }} />}
                   >
                     Save

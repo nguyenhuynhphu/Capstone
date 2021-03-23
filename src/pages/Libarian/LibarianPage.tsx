@@ -4,13 +4,16 @@ import React from 'react';
 import LibarianTable from './components/LibarianTable';
 import styles from './LibarianPage.less';
 import Search from 'antd/lib/input/Search';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, UserAddOutlined, UsergroupAddOutlined, UserOutlined } from '@ant-design/icons';
 
 import { connect, Dispatch } from 'umi';
 import InputForm from './components/InputForm';
 import ViewForm from './components/ViewForm';
 import { FormInstance } from 'antd/lib/form';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import Title from 'antd/lib/typography/Title';
+import Text from 'antd/lib/typography/Text';
+import TableHeader from '@/components/CustomDesign/TableHeader';
 
 interface LibarianPageProps {
   dispatch: Dispatch;
@@ -36,22 +39,21 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
     const { libarianpage } = this.props;
     return (
       <>
-        <PageHeaderWrapper></PageHeaderWrapper>
-        <Row style={{backgroundColor: 'white', padding: '10px 20px'}}>
+        <PageHeaderWrapper onBack={() => window.history.back()} />
+        <Row style={{ backgroundColor: 'white', padding: '20px 25px', margin: '20px 0', borderRadius: 15 }}>
           <Col span={24}>
-            <Row style={{ margin: '10px 0px' }}>
-              <Col span={10}>
-                <Search
-                  placeholder="input search text"
-                  style={{ width: 250 }}
-                  // onSearch={(value) => this.handleFilter(value)}
-                  enterButton
-                />
+            <Row style={{ marginBottom: 15 }}>
+              <Col span={14}>
+                <TableHeader title={'List Librarian'} description={'Current librarian in system'} />
               </Col>
-              <Col span={4} offset={10} style={{ textAlign: 'right' }}>
-                <Space size={20}>
+              <Col
+                span={10}
+                style={{ textAlign: 'right', display: 'flex', justifyContent: 'flex-end' }}
+              >
+                <Space size={20} style={{ justifyItems: 'center' }}>
                   <Button
                     type="primary"
+                    size="middle"
                     onClick={() =>
                       this.props.dispatch({
                         type: 'libarianpage/showCreateLibarian',
@@ -59,13 +61,22 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
                       })
                     }
                   >
-                    <PlusOutlined /> New Libarian
+                    <UserAddOutlined style={{fontSize: 18}}/> New Libarian
                   </Button>
+                  <Search
+                    placeholder="Search by name"
+                    enterButton="Search"
+                    size="middle"
+                    style={{ width: 300 }}
+                    suffix={<UserOutlined style={{color: '#40A9FF'}}/>}
+                    //onSearch={onSearch}
+                  />
+                  
                 </Space>
               </Col>
             </Row>
             <Row>
-              <Col span={24} >
+              <Col span={24}>
                 <LibarianTable />
               </Col>
             </Row>
@@ -124,7 +135,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
             </div>
           }
         >
-          <InputForm  formRef={this.state.form} handelSubmit={this.handelSubmit} />
+          <InputForm formRef={this.state.form} handelSubmit={this.handelSubmit} />
         </Drawer>
       </>
     );

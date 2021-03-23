@@ -57,6 +57,7 @@ const UserModel: UserModelType = {
         var user: any = decodeToken(jwtToken);
   
         user.name = user.userName;
+        user.avatar = user.image;
         yield put({
           type: 'saveCurrentUser',
           payload: user,

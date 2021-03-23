@@ -32,6 +32,7 @@ import styles from './ManageBorrowPage.less';
 import moment from 'moment';
 import Column from 'antd/lib/table/Column';
 import { fetchDrawer } from '@/services/organizebook';
+import ReturnBookTable from './components/ReturnBookTable';
 
 // import moment from 'moment';
 const { Step } = Steps;
@@ -192,16 +193,44 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     } else {
       return (
         <Spin spinning={manageborrow.screenLoading}>
-          <ManageBorrowTable />
-          <Drawer
-            width={420}
-            placement="right"
-            closable={false}
-            onClose={this.hideViewBorrow}
-            visible={manageborrowpage.viewBorrowVisible}
-          >
-            <ViewForm />
-          </Drawer>
+          <Row gutter={15} style={{marginBottom: 15}}>
+            <Col span={10}>
+              <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
+                
+              </Row>
+            </Col>
+            <Col span={14}>
+              <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
+                
+              </Row>
+            </Col>
+          </Row>
+          <Row gutter={15}>
+            <Col span={9}>
+              <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
+                <Col span={24}>
+                  <ReturnBookTable />
+                </Col>
+              </Row>
+            </Col>
+            <Col span={15}>
+              <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
+                <Col span={24}>
+                  <ManageBorrowTable />
+                  <Drawer
+                    title={'Borrow Detail'}
+                    width={500}
+                    placement="right"
+                    closable={false}
+                    onClose={this.hideViewBorrow}
+                    visible={manageborrowpage.viewBorrowVisible}
+                  >
+                    <ViewForm />
+                  </Drawer>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </Spin>
       );
     }
@@ -392,18 +421,18 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
         .then((value) => {
           connection.on('ReceiveMessage', (value) => {
             if (value.staffId !== this.props.user.currentUser.id) {
-             // console.log(value);
+              // console.log(value);
               this.fetchWishList(value.wishlist, 1);
             }
           });
           connection.on('ReceiveMessageToReturn', (value) => {
             if (value.staffId !== this.props.user.currentUser.id) {
               console.log(value);
-              
+
               this.props.dispatch({
                 type: 'manageborrow/fetchBorrowDetail',
                 payload: value.borrowId,
-              })
+              });
             }
           });
         })

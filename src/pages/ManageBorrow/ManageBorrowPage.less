@@ -17,3 +17,34 @@
 .wishlistCol::-webkit-scrollbar-thumb {
   background: #888;
 }
+.borrowTable {
+  :global {
+    .ant-table-thead > tr > th {
+      height: 60px !important;
+      background-color: rgba(64, 169, 255, 0.2);
+    }
+    .ant-table-body {
+      height: 600px;
+    }
+  }
+}
+.returnTable {
+  :global {
+    .ant-table-thead > tr > th {
+      height: 60px !important;
+      background-color: rgba(64, 169, 255, 0.2);
+    }
+    .ant-table-body {
+      height: 600px;
+    }
+  }
+}
+.handelBookMark {
+  height: calc(47px);
+  :global {
+    .ant-ribbon {
+      top: -11px;
+      right: -16px;
+    }
+  }
+}

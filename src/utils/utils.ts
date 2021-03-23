@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { parse } from 'querystring';
 
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
@@ -62,6 +63,15 @@ export const isAntDesignProOrDev = (): boolean => {
     return true;
   }
   return isAntDesignPro();
+};
+
+export const isLate = (orgTime: any) => {
+  var momentOrgTime = moment(orgTime);
+  if(moment().diff(momentOrgTime, 'days') < 0){
+    console.log(moment().diff(momentOrgTime, 'days'))
+    return false;
+  }
+  return true;
 };
 
 export const getPageQuery = () => parse(window.location.href.split('?')[1]);

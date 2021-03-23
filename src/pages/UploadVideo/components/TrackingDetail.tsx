@@ -21,14 +21,12 @@ const columns = [
   {
     title: 'Drawer Barcode',
     dataIndex: 'drawerBarcode',
+    key: 'drawerBarcode'
   },
   {
     title: 'Drawer Id',
     dataIndex: 'drawerId',
-  },
-  {
-    title: 'BookShelf',
-    dataIndex: 'bookShelfName',
+    key: 'drawerId'
   },
 ];
 class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetailState> {
@@ -57,7 +55,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
               Tracking Detail
             </Title>
             <Space style={{ width: '100%' }} direction={'vertical'}>
-              <Description name={'Video Name:'} value={'Testing Video'} />
+              <Description name={'Bookshelf:'} value={this.props.record.bookShelfName} />
               <Description name={'Date'} value={'18/06/2021'} />
               <Description name={'Staff Upload'} value={this.props.record.staffName} />
             </Space>
@@ -75,8 +73,6 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                       onDoubleClick: () => {
                         console.log(record);
                         this.onSelectRow(record);
-                       
-                        
                         this.props.dispatch({
                           type: 'trackingdetail/fetchError',
                           payload: record.id
@@ -88,11 +84,10 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                   className={styles.tablelDrawer}
                   scroll={{ x: 0, y: 485 }}
                   pagination={false}
-                  //title={() => <Title level={3}>Drawer Detected</Title>}
                   style={{ height: '100%', marginLeft: 5, borderLeft: 'none' }}
                 />
                 <Drawer
-                  title="Basic Drawer"
+                  title="Drawer Error"
                   placement="right"
                   closable={false}
                   onClose={this.onClose}

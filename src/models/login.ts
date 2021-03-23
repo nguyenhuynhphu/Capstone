@@ -84,10 +84,10 @@ const Model: LoginModelType = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      if(payload.token != undefined){
+      if (payload.token != undefined) {
         let user: any = decodeToken(payload.token);
-        if(user.roleId == 3) setAuthority('user');
-        else if (user.roleId == 1) setAuthority('admin');
+        if (user.roleId == 1) setAuthority('admin');
+        else setAuthority('user');
 
         user.role = user.roleId;
       }

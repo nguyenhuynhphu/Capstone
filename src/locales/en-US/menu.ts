@@ -49,8 +49,14 @@ export default {
   'menu.editor.flow': 'Flow Editor',
   'menu.editor.mind': 'Mind Editor',
   'menu.editor.koni': 'Koni Editor',
-  'menu.libarian': 'Libarian',
-  'menu.book': 'Book',
-  'menu.bookorganize': 'Book Organize',
-  'menu.manageborrow': 'Manage Borrow',
+  
+  'menu.Book': 'Book',
+  "menu.Book.Manage Book": "Manage Book",
+  "menu.Book.Manage Borrow": "Manage Borrow",
+  'menu.User': 'User',
+  "menu.User.Manage Libarian": "Manage Libarian",
+  "menu.User.Manage Customer": "Manage Customer",
+  "menu.Organize Books": "Organize Books",
+  "menu.Video": "Video"
+
 };

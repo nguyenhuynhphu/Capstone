@@ -46,10 +46,12 @@ const Login: React.FC<LoginProps> = (props) => {
 
   return (
     <div className={styles.main}>
+      <p style={{textAlign: 'center'}}>PAPV</p>
       <ProForm
         initialValues={{
           autoLogin: true,
         }}
+        
         submitter={{
           render: (_, dom) => dom.pop(),
           submitButtonProps: {
@@ -120,23 +122,6 @@ const Login: React.FC<LoginProps> = (props) => {
             />
           </>
         )}
-
-        <div
-          style={{
-            marginBottom: 24,
-          }}
-        >
-          <ProFormCheckbox noStyle name="autoLogin">
-            <FormattedMessage id="pages.login.rememberMe" defaultMessage="自动登录" />
-          </ProFormCheckbox>
-          <a
-            style={{
-              float: 'right',
-            }}
-          >
-            <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码" />
-          </a>
-        </div>
       </ProForm>
     </div>
   );

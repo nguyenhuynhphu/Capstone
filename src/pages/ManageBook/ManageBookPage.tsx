@@ -1,6 +1,6 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-import { Row, Col, Button, Drawer, Modal } from 'antd';
+import { Row, Col, Button, Drawer, Modal, Space } from 'antd';
 import React from 'react';
 
 import styles from './ManageBookPage.less';
@@ -13,13 +13,15 @@ import { FormInstance } from 'antd/lib/form';
 import ListCategories from './components/ListCategories';
 import sendNotification from '@/utils/Notification';
 import moment from 'moment';
+import TableHeader from '@/components/CustomDesign/TableHeader';
+import NewBookInSystem from './components/NewBookInSystem';
+import { RedoOutlined } from '@ant-design/icons';
 
 interface ManageBookPageProps {
   dispatch: Dispatch;
 
   managebook: any;
   bookgrouptable: any;
- 
 }
 
 interface ManageBookPageState {
@@ -73,7 +75,6 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
   }
 
   componentDidMount() {
-    
     this.props.dispatch({
       type: 'managebook/fetchCategories',
       payload: {},
@@ -85,12 +86,59 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
     return (
       <>
         <PageHeaderWrapper style={{ marginBottom: '20px' }}></PageHeaderWrapper>
-        <div className={styles.section}>
-          <BookGroupTable
-            rowSelection={this.state.selectedRowKeys}
-            handleRowSelect={this.handleRowSelect}
-          />
-        </div>
+        <Row gutter={16} style={{ margin: '10px 0' }}>
+          <Col
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '15px',
+              width: 'calc(100% - 45% - 10px)',
+            }}
+          >
+         
+          </Col>
+          <Col
+            style={{
+              width: '45%',
+              backgroundColor: 'white',
+              padding: '20px 25px',
+              borderRadius: '15px',
+              marginLeft: 10,
+            }}
+          >
+            <Space
+              direction="horizontal"
+              style={{ width: '100%', justifyContent: 'space-between' }}
+            >
+              <TableHeader
+                title={'New books'}
+                description={'The newest books have just been added to the system'}
+              />
+              <Button
+                type="primary"
+                icon={<RedoOutlined />}
+                onClick={() => {
+                  this.props.dispatch({
+                    type: 'newbooklist/fetchData',
+                  });
+                }}
+              >
+                Refresh
+              </Button>
+            </Space>
+
+            <NewBookInSystem />
+          </Col>
+        </Row>
+        <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
+          <Col span={24}>
+            <TableHeader title={'List books'} description={'All books in system'} />
+            <BookGroupTable
+              rowSelection={this.state.selectedRowKeys}
+              handleRowSelect={this.handleRowSelect}
+            />
+          </Col>
+        </Row>
+
         <Drawer
           width={700}
           placement="right"
@@ -238,9 +286,9 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   async handelSubmit(bookGroup: any) {
     const { dispatch, bookgrouptable, managebook } = this.props;
-    
-    console.log("BOOK GROUP >>>", bookGroup);
-    
+
+    console.log('BOOK GROUP >>>', bookGroup);
+
     if (managebook.choiceBook.id != undefined) {
       //update
       //bookGroup.publishDate = bookGroup.publishDate.format();
@@ -309,7 +357,6 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           });
           //xoa het
         } else {
-
           delete bookGroup.images;
           dispatch({
             type: 'managebook/editBookGroup',
@@ -331,7 +378,6 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
         }
         //khong up hinh
       } else {
-     
         delete bookGroup.images;
         bookGroup.image = managebook.choiceBook.image;
         dispatch({

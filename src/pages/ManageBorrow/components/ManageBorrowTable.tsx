@@ -1,6 +1,11 @@
-import { Button, Col, Popconfirm, Row, Space, Table } from 'antd';
+import TableHeader from '@/components/CustomDesign/TableHeader';
+import { compareTime, isLate } from '@/utils/utils';
+import { ClockCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Badge, Button, Col, Popconfirm, Popover, Row, Space, Table } from 'antd';
 import Search from 'antd/lib/input/Search';
+import Countdown from 'antd/lib/statistic/Countdown';
 import Title from 'antd/lib/typography/Title';
+import moment from 'moment';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
 import styles from '../ManageBorrowPage.less';
@@ -24,72 +29,141 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
     const { manageborrowtable } = this.props;
     const column = [
       {
-        title: 'Customer Name',
+        title: 'Name',
         dataIndex: 'customerName',
         key: 'customerName',
-        render: (text: any) => <a>{text}</a>,
+
+        render: (text: string, record: any) => (
+          <Space>
+            <Avatar size={50} src={record.image} />
+            <p style={{ marginBottom: '0px' }}>{text}</p>
+          </Space>
+        ),
       },
       {
         title: 'Start Time',
         dataIndex: 'startTime',
         key: 'startTime',
+
+        render: (text: any) => <p style={{ marginBottom: 0 }}>{text.split('T')[0]}</p>,
       },
       {
         title: 'End Time',
         dataIndex: 'endTime',
         key: 'endTime',
+width: 150,
+   
+        render: (text: any, record: any) =>
+          isLate(record.endTime) ? (
+            <Popover
+              content={
+                <>
+                  <Row gutter={16}>
+                    <Col span={24} style={{ marginTop: 32 }}>
+                      <Countdown value={moment(record.endTime).valueOf()} format="DD:HH:mm:ss" />
+                    </Col>
+                  </Row>
+                </>
+              }
+            >
+              <Badge
+                style={{ marginLeft: 5 }}
+                count={true ? <ClockCircleOutlined style={{ color: '#f5222d' }} /> : 0}
+              >
+                <p style={{ cursor: 'pointer', marginBottom: 0, padding: '2px 10px' }}>
+                  {text.split('T')[0]}
+                </p>
+              </Badge>
+            </Popover>
+          ) : (
+            <Popover
+              content={
+                <>
+                  <Row gutter={16}>
+                    <Col span={24} style={{ marginTop: 32 }}>
+                      <Countdown
+                        title={'Time remaining'}
+                        value={moment(record.endTime).valueOf()}
+                        format="DD:HH:mm:ss"
+                      />
+                    </Col>
+                  </Row>
+                </>
+              }
+            >
+              <Badge
+                style={{ marginLeft: 5 }}
+                count={true ? <ClockCircleOutlined style={{ color: '#87d068' }} /> : 0}
+              >
+                <p style={{ cursor: 'pointer', marginBottom: 0, padding: '2px 10px' }}>
+                  {text.split('T')[0]}
+                </p>
+              </Badge>
+            </Popover>
+          ),
       },
       {
         title: 'Quantity',
         dataIndex: 'quantity',
         key: 'quantity',
+        align: 'center',
+        width: 100
       },
       {
         title: 'Total Fee',
         dataIndex: 'total',
         key: 'total',
-      }
+        align: 'center',
+        width: 100
+      },
     ];
-    
+
     return (
       <>
-      <div style={{ marginBottom: 10, marginTop: 12 }}>
-          <Title level={3} style={{ marginBottom: 5 }}>
-            Customer
-          </Title>
-          <Row style={{ marginBottom: 1 }}>
-            <Col span={8}>
-              <Search
-                placeholder="input search text"
-                onSearch={(value) =>
-                  this.props.dispatch({
-                    type: 'manageborrowtable/fetchData',
-                    payload: { filterName: value, pagination: manageborrowtable.pagination.current },
-                  })
-                }
-                enterButton
-                size={'small'}
-              />
-            </Col>
-          </Row>
-        </div>
-        <Table
-        columns={column}
-        dataSource={manageborrowtable.data}
-        loading={manageborrowtable.isLoading}
-        pagination={manageborrowtable.pagination}
-        onRow={(record, rowIndex) => {
-          return {
-            onDoubleClick: (event) => {
+        <Space
+          style={{
+            marginBottom: 15,
+            width: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <TableHeader title="List Borrow" description="List borrow detail" />
+          <Search
+            placeholder="Type customer name"
+            enterButton="Search"
+            style={{ width: 350 }}
+            suffix={<UserOutlined style={{ color: '#40A9FF' }} />}
+            onSearch={(value) =>
               this.props.dispatch({
-                type: 'manageborrowpage/showViewBorrow',
-                payload: {...record},
-              });
-            },
-          };
-        }}
-       />
-      </>      
+                type: 'manageborrowtable/fetchData',
+                payload: {
+                  filterName: value,
+                  pagination: manageborrowtable.pagination.current,
+                },
+              })
+            }
+          />
+        </Space>
+        <Table
+          columns={column}
+          scroll={{ y: 600 }}
+          dataSource={manageborrowtable.data}
+          loading={manageborrowtable.isLoading}
+          pagination={manageborrowtable.pagination}
+          className={styles.borrowTable}
+          onRow={(record, rowIndex) => {
+            return {
+              onDoubleClick: (event) => {
+                this.props.dispatch({
+                  type: 'manageborrowpage/showViewBorrow',
+                  payload: { ...record },
+                });
+              },
+            };
+          }}
+        />
+      </>
     );
   }
 }

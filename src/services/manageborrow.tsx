@@ -27,3 +27,7 @@ export async function confirmBorrow(value: any): Promise<any> {
 export async function fetchBorrowDetail(borrowId: number): Promise<any> {
   return request(`/api/BorrowDetail?BorrowId=${borrowId}`);
 }
+
+export async function fetchReturnBook({ filterName, pagination }: any): Promise<any> {
+  return request(`/api/ReturnBook?CustomerName=${filterName}&PageNumber=${pagination}`);
+}
