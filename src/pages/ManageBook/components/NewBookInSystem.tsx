@@ -34,7 +34,7 @@ class NewBookInSystem extends React.Component<NewBookInSystemProps> {
                     height={215}
                     src={item.image.length != 0 ? item.image[0].url : null}
                   />
-                  {console.log(item)}
+
                   <Descriptions  className={styles.hoverDescription} style={{ width: 250 }} size="small" column={1}>
                     <Descriptions.Item label="Name">{item.name}</Descriptions.Item>
                     <Descriptions.Item label="Author">{item.author}</Descriptions.Item>

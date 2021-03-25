@@ -52,17 +52,17 @@ export interface ManageBookType {
   };
   reducers: {
     //#region Forms
-    displayViewBook: Reducer<ManageBookState>;
-    displayCreateBook: Reducer<ManageBookState>;
-    displayEditBook: Reducer<ManageBookState>;
-    displayDeleteBook: Reducer<ManageBookState>;
+    displayViewBook: Reducer;
+    displayCreateBook: Reducer;
+    displayEditBook: Reducer;
+    displayDeleteBook: Reducer;
 
-    displayCategoriesModal: Reducer<ManageBookState>;
+    displayCategoriesModal: Reducer;
 
-    loadCategories: Reducer<ManageBookState>;
+    loadCategories: Reducer;
     loadingButtonRender: Reducer;
 
-    displayScrollBar: Reducer<ManageBookState>;
+    displayScrollBar: Reducer;
     //#endregion
   };
 }
@@ -178,7 +178,7 @@ const ManageBookModel: ManageBookType = {
     *insertBookGroup({ payload }, { call, put }) {
       yield put({
         type: 'loadingButton',
-        payload: {}
+        payload: {},
       });
 
       var tmpCate: any = [];
@@ -198,11 +198,9 @@ const ManageBookModel: ManageBookType = {
     *editBookGroup({ payload }, { call, put }) {
       yield put({
         type: 'loadingButton',
-        payload: {}
+        payload: {},
       });
-      console.log("PAYLOAD ", payload);
-      console.log("date: ", payload.publishDate.utc());
-      
+
       var tmpCate: any = [];
       payload.category.forEach((cate: any) => {
         tmpCate.push({ categoryId: cate });
@@ -245,6 +243,8 @@ const ManageBookModel: ManageBookType = {
     //#region Forms
     displayViewBook(state, { payload }) {
       if (payload.visible == true) {
+        console.log('PASSING PAYLOAD == ', payload);
+
         return {
           ...state,
           viewBookVisible: payload.visible,
@@ -271,7 +271,7 @@ const ManageBookModel: ManageBookType = {
       return {
         ...state,
         editBookVisible: visible,
-        loadingButton: false
+        loadingButton: false,
       };
     },
 

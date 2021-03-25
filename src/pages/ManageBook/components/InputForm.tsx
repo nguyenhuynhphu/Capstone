@@ -151,7 +151,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name="publishingCompany" label="Publishing Company" required>
+            <Form.Item name="publishCompany" label="Publishing Company" required>
               <Input placeholder="Please enter publishing company" />
             </Form.Item>
             <Row gutter={16}>
@@ -161,12 +161,12 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="publishNumber" label="Publishing Number" required>
+                <Form.Item name="edition" label="Publishing Number" required>
                   <Input placeholder="Please enter publishing place" />
                 </Form.Item>
               </Col>
             </Row>
-            <Form.Item name="publishingPalace" label="Publishing Palace" required>
+            <Form.Item name="publishPlace" label="Publishing Palace" required>
               <Input placeholder="Please enter publishing place" />
             </Form.Item>
           </Col>
@@ -207,10 +207,10 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         punishFee: managebook.choiceBook.punishFee,
         category: this.handelCate(managebook.choiceBook.category),
         images: managebook.choiceBook.images,
-        publishingCompany: managebook.choiceBook.publishingCompany,
+        publishCompany: managebook.choiceBook.publishCompany,
         publishDate: moment.utc(managebook.choiceBook.publishDate),
-        publishNumber: managebook.choiceBook.publishNumber,
-        publishingPalace: managebook.choiceBook.publishingPalace,
+        edition: managebook.choiceBook.edition,
+        publishPlace: managebook.choiceBook.publishPlace,
         description: managebook.choiceBook.description,
       });
       let tmp: any = [];

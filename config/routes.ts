@@ -24,6 +24,14 @@
             authority: ['admin', 'user'],
             routes: [
               {
+                path: '/',
+                name: 'Dashboard',
+                icon: 'dashboard',
+
+                component: './Welcome',
+                authority: ['admin', 'user'],
+              },
+              {
                 path: '/manage-user',
                 name: 'User',
                 icon: 'user',
@@ -32,7 +40,7 @@
                     path: '/manage-user/libarian',
                     name: 'Manage Libarian',
                     component: './Libarian/LibarianPage',
-                    authority: ['admin','user'],
+                    authority: ['admin', 'user'],
                   },
                   {
                     path: '/manage-user/customer',
@@ -42,6 +50,7 @@
                   },
                 ],
               },
+
               {
                 path: '/book',
                 name: 'Book',
@@ -71,12 +80,12 @@
               },
               {
                 path: '/upload',
-                name: 'Video',
-                icon: 'table',
+                name: 'Detect',
+                icon: 'upload',
                 component: './UploadVideo/UploadVideo',
                 authority: ['admin', 'user'],
               },
-            
+
               {
                 component: './404',
               },

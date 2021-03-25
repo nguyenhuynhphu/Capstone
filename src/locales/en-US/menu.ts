@@ -57,6 +57,6 @@ export default {
   "menu.User.Manage Libarian": "Manage Libarian",
   "menu.User.Manage Customer": "Manage Customer",
   "menu.Organize Books": "Organize Books",
-  "menu.Video": "Video"
+  "menu.Detect": "Detect"
 
 };

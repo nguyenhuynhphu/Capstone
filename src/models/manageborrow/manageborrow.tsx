@@ -161,8 +161,7 @@ const ManageBorrowModel: ManageBorrowType = {
     },
 
     loadBorrowDetail(state, { payload }) {
-      console.log(payload);
-      
+
       return {
         ...state,
         borrowDetail: payload,

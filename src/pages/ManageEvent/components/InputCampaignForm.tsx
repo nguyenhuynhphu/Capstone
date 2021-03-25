@@ -87,10 +87,6 @@ class InputCampaignForm extends React.Component<InputCampaignFormProps, InputCam
     this.setState({ targetKeys });
   };
 
-  handleSearch = (dir: any, value: any) => {
-    console.log('search:', dir, value);
-  };
-
   render() {
     var { loading, imageUrl } = this.state;
     return (

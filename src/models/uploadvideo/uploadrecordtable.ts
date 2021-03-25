@@ -37,8 +37,6 @@ const UploadRecordTableModel: UploadRecordTableType = {
         type: 'isLoading',
       });
       const response = yield call(fetchRecord, payload);
-      console.log(response);
-
       yield put({
         type: 'loadData',
         payload: response,

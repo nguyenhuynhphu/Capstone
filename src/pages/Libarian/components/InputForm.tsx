@@ -1,7 +1,8 @@
-import { Form, Col, Row, Input, DatePicker, Select } from 'antd';
+import { Form, Col, Row, Input, DatePicker, Select, Upload, Button, message } from 'antd';
 import React from 'react';
 import moment from 'moment';
 import { connect, Dispatch } from 'umi';
+import { UploadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 interface InputFormProps {
@@ -10,9 +11,18 @@ interface InputFormProps {
   handelSubmit: Function;
   formRef: any;
 }
-class InputForm extends React.Component<InputFormProps> {
+interface InputFormState {
+  fileList: any;
+}
+
+const props = {};
+
+class InputForm extends React.Component<InputFormProps, InputFormState> {
   constructor(props: any) {
     super(props);
+    this.state = {
+      fileList: [],
+    };
   }
 
   componentDidMount() {
@@ -26,12 +36,16 @@ class InputForm extends React.Component<InputFormProps> {
   }
 
   render() {
+    console.log(this.state.fileList);
     return (
       <Form
         ref={this.props.formRef}
         layout="vertical"
         id={'inputLibarian'}
-        onFinish={(value) => this.props.handelSubmit(value)}
+        onFinish={(value) => {
+          value.image = this.state.fileList[0];
+          this.props.handelSubmit(value);
+        }}
       >
         <Row gutter={16}>
           <Col span={12}>
@@ -93,6 +107,33 @@ class InputForm extends React.Component<InputFormProps> {
         ) : (
           <></>
         )}
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item name="image" label="Avatar" required>
+              <Upload
+                listType="picture"
+                fileList={this.state.fileList}
+                beforeUpload={(file: { type: string; name: any }) => {
+                  return false;
+                }}
+                onChange={(info: any) => {
+                  var file = info.fileList[info.fileList.length - 1];
+                  if (
+                    file.type === 'image/png' ||
+                    file.type === 'image/jpeg' ||
+                    file.type === 'image/jpg'
+                  ) {
+                    this.setState({ fileList: [file] });
+                  } else {
+                    message.error(`${file.name} is not a valid file`);
+                  }
+                }}
+              >
+                <Button icon={<UploadOutlined />}>Upload png only</Button>
+              </Upload>
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     );
   }
@@ -108,8 +149,16 @@ class InputForm extends React.Component<InputFormProps> {
         doB: moment(libarianpage.choiceLibarian.doB),
         phone: libarianpage.choiceLibarian.phone,
         username: libarianpage.choiceLibarian.username,
-        
       });
+      let tmp = {
+        key: `${libarianpage.choiceLibarian.id}`,
+        uid: `${libarianpage.choiceLibarian.id}`,
+        name: 'Current avatar',
+        url: libarianpage.choiceLibarian.image,
+      };
+      console.log('TMP >>>>', tmp);
+
+      this.setState({ fileList: [tmp] });
     }
   }
 }

@@ -27,7 +27,6 @@ class ViewForm extends React.Component<ViewFormProps> {
   render() {
     const { manageborrowpage } = this.props;
     const { choiceBorrow } = manageborrowpage;
-    console.log('choiceBorrow >>>', choiceBorrow);
 
     return (
       <div>

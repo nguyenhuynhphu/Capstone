@@ -39,13 +39,6 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
                 payload: { ...record },
               });
             },
-            onMouseEnter: (event: any) => {
-              console.log('YEAH');
-
-              <Popover content={'YEAH'} visible={true}>
-                {' '}
-              </Popover>;
-            },
           };
         }}
       >
@@ -103,10 +96,24 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
           render={(text: any, record: any) => (
             <Popover
               content={
-                <Space direction="vertical" >
-                  <Space direction="horizontal" align={'center'} style={{marginBottom: 8, cursor: 'pointer'}} >
+                <Space direction="vertical">
+                  <Space
+                    direction="horizontal"
+                    align={'center'}
+                    style={{ marginBottom: 8, cursor: 'pointer' }}
+                  >
                     <EditOutlined style={{ color: '#40A9FF', fontSize: 20 }} />
-                    <p style={{ marginBottom: '0px' }}>Edit</p>
+                    <p
+                      style={{ marginBottom: '0px' }}
+                      onClick={() =>
+                        this.props.dispatch({
+                          type: 'libarianpage/showViewLibarian',
+                          payload: { ...record },
+                        })
+                      }
+                    >
+                      Edit
+                    </p>
                   </Space>
                   <Popconfirm
                     title="Are you sure？"
@@ -129,7 +136,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
                         });
                     }}
                   >
-                    <Space direction="horizontal" align={'center'} style={{cursor: 'pointer'}}>
+                    <Space direction="horizontal" align={'center'} style={{ cursor: 'pointer' }}>
                       <DeleteOutlined style={{ color: 'red', fontSize: 20 }} />
                       <p style={{ marginBottom: '0px' }}>Delete</p>
                     </Space>
@@ -137,7 +144,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
                 </Space>
               }
               title="Actions"
-              trigger="click"
+              trigger="hover"
             >
               <MoreOutlined style={{ fontSize: 20 }} />
             </Popover>

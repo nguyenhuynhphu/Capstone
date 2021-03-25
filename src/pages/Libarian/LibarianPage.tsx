@@ -4,7 +4,12 @@ import React from 'react';
 import LibarianTable from './components/LibarianTable';
 import styles from './LibarianPage.less';
 import Search from 'antd/lib/input/Search';
-import { PlusOutlined, UserAddOutlined, UsergroupAddOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  UserAddOutlined,
+  UsergroupAddOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 
 import { connect, Dispatch } from 'umi';
 import InputForm from './components/InputForm';
@@ -14,6 +19,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import Title from 'antd/lib/typography/Title';
 import Text from 'antd/lib/typography/Text';
 import TableHeader from '@/components/CustomDesign/TableHeader';
+import { storage } from '@/firebase/Firebase';
 
 interface LibarianPageProps {
   dispatch: Dispatch;
@@ -40,7 +46,14 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
     return (
       <>
         <PageHeaderWrapper onBack={() => window.history.back()} />
-        <Row style={{ backgroundColor: 'white', padding: '20px 25px', margin: '20px 0', borderRadius: 15 }}>
+        <Row
+          style={{
+            backgroundColor: 'white',
+            padding: '20px 25px',
+            margin: '20px 0',
+            borderRadius: 15,
+          }}
+        >
           <Col span={24}>
             <Row style={{ marginBottom: 15 }}>
               <Col span={14}>
@@ -61,17 +74,16 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
                       })
                     }
                   >
-                    <UserAddOutlined style={{fontSize: 18}}/> New Libarian
+                    <UserAddOutlined style={{ fontSize: 18 }} /> New Libarian
                   </Button>
                   <Search
                     placeholder="Search by name"
                     enterButton="Search"
                     size="middle"
                     style={{ width: 300 }}
-                    suffix={<UserOutlined style={{color: '#40A9FF'}}/>}
+                    suffix={<UserOutlined style={{ color: '#40A9FF' }} />}
                     //onSearch={onSearch}
                   />
-                  
                 </Space>
               </Col>
             </Row>
@@ -143,37 +155,87 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
 
   handelSubmit(libarian: any) {
     const { dispatch, libarianpage, libariantable } = this.props;
+    console.log('>>>>>>', libarian);
+
     if (libarianpage.choiceLibarian.id != undefined) {
       //update
       libarian.id = libarianpage.choiceLibarian.id;
       libarian.password = libarianpage.choiceLibarian.password;
-      libarian.role = libarianpage.choiceLibarian.role;
-      dispatch({
-        type: 'libarianpage/editLibarian',
-        payload: libarian,
-      }).then(() => {
-        dispatch({
-          type: 'libariantable/fetchData',
-          payload: {
-            filterName: libariantable.filterName,
-            pagination: libariantable.pagination.current,
+      libarian.roleId = libarianpage.choiceLibarian.roleId;
+      console.log("libarian.image", libarian.image);
+      
+      if (libarian.image.url == undefined) {
+        // co up hinh moi
+        const task = storage
+          .ref()
+          .child(`${libarian.name}/${libarian.image.uid}_${libarian.image.name}`)
+          .put(libarian.image.originFileObj, { contentType: libarian.image.type });
+
+        task.on(
+          'state_changed',
+          function progress(snapshot) {},
+          function error() {},
+          async () => {
+            const loadUrl = await task.snapshot.ref.getDownloadURL();
+            libarian.image = loadUrl;
+            dispatch({
+              type: 'libarianpage/editLibarian',
+              payload: libarian,
+            }).then(() => {
+              dispatch({
+                type: 'libariantable/fetchData',
+                payload: {
+                  filterName: libariantable.filterName,
+                  pagination: libariantable.pagination.current,
+                },
+              });
+            });
           },
+        );
+      } else {
+        // khong up hinh
+        libarian.image = libarian.image.url;
+        dispatch({
+          type: 'libarianpage/editLibarian',
+          payload: libarian,
+        }).then(() => {
+          dispatch({
+            type: 'libariantable/fetchData',
+            payload: {
+              filterName: libariantable.filterName,
+              pagination: libariantable.pagination.current,
+            },
+          });
         });
-      });
+      }
     } else {
       //insert
-      dispatch({
-        type: 'libarianpage/insertLibarian',
-        payload: libarian,
-      }).then(() => {
-        dispatch({
-          type: 'libariantable/fetchData',
-          payload: {
-            filterName: libariantable.filterName,
-            pagination: libariantable.pagination.current,
-          },
-        });
-      });
+      const task = storage
+        .ref()
+        .child(`${libarian.name}/${libarian.image.uid}_${libarian.image.name}`)
+        .put(libarian.image.originFileObj, { contentType: libarian.image.type });
+
+      task.on(
+        'state_changed',
+        function progress(snapshot) {},
+        function error() {},
+        async () => {
+          const loadUrl = await task.snapshot.ref.getDownloadURL();
+          libarian.image = loadUrl;
+          dispatch({
+            type: 'libarianpage/insertLibarian',
+            payload: libarian,
+          }).then(() => {
+            dispatch({
+              type: 'libariantable/fetchData',
+              payload: {
+                filterName: libariantable.filterName,
+                pagination: libariantable.pagination.current,
+              },
+            });
+          });
+        },
+      );
     }
   }
 

@@ -56,7 +56,7 @@ class MyCalendar extends React.Component<MyCalendarProps, MyCalendarState> {
     
   }
   render() {
-    console.log("DATE", this.props.selectedDate._d)
+
     return (
       <div className={'myCalendar'}>
         <Calendar

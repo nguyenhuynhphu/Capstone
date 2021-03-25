@@ -183,7 +183,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                 <Text className={styles.title}>Publishing Company: </Text>
               </Col>
               <Col span={12}>
-                <Text>{bookGroup.publishingCompany}</Text>
+                <Text>{bookGroup.publishCompany}</Text>
               </Col>
             </Row>
             <Row className={styles.row}>
@@ -196,10 +196,10 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
             </Row>
             <Row className={styles.row}>
               <Col span={11}>
-                <Text className={styles.title}>Publish Number: </Text>
+                <Text className={styles.title}>Edition: </Text>
               </Col>
               <Col span={12}>
-                <Text>{bookGroup.publishNumber}</Text>
+                <Text>{bookGroup.edition}</Text>
               </Col>
             </Row>
             <Row className={styles.row}>
@@ -207,7 +207,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                 <Text className={styles.title}>Publishing Place: </Text>
               </Col>
               <Col span={12}>
-                <Text>{bookGroup.publishingPalace}</Text>
+                <Text>{bookGroup.publishPlace}</Text>
               </Col>
             </Row>
           </Col>

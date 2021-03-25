@@ -20,8 +20,9 @@ import { RedoOutlined } from '@ant-design/icons';
 interface ManageBookPageProps {
   dispatch: Dispatch;
 
-  managebook: any;
-  bookgrouptable: any;
+  managebook?: any;
+  bookgrouptable?: any;
+  user?: any;
 }
 
 interface ManageBookPageState {
@@ -286,11 +287,11 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   async handelSubmit(bookGroup: any) {
     const { dispatch, bookgrouptable, managebook } = this.props;
-
-    console.log('BOOK GROUP >>>', bookGroup);
-
+    console.log(managebook, bookGroup);
+    
     if (managebook.choiceBook.id != undefined) {
       //update
+      bookGroup.quantity = managebook.choiceBook.quantity;
       //bookGroup.publishDate = bookGroup.publishDate.format();
       if (bookGroup.images != undefined) {
         //up hinh
@@ -434,6 +435,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           .finally(() => {
             delete bookGroup.images;
             Object.assign(bookGroup, { image: tmp });
+            bookGroup.staffId = this.props.user.currentUser.id;
             sendNotification('Insert BookGroup Success !', '', 'success');
             dispatch({
               type: 'managebook/insertBookGroup',

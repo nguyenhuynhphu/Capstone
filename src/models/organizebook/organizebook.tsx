@@ -54,17 +54,17 @@ export interface OrganizeBookType {
   };
   reducers: {
     //#region Forms
-    displayCreateLocation: Reducer<OrganizeBookState>;
-    displayViewLocation: Reducer<OrganizeBookState>;
-    displayDeleteLocation: Reducer<OrganizeBookState>;
-    displayCreateBookShelf: Reducer<OrganizeBookState>;
-    displayOrganizeBookShelf: Reducer<OrganizeBookState>;
-    displayScrollBar: Reducer<OrganizeBookState>;
+    displayCreateLocation: Reducer;
+    displayViewLocation: Reducer;
+    displayDeleteLocation: Reducer;
+    displayCreateBookShelf: Reducer;
+    displayOrganizeBookShelf: Reducer;
+    displayScrollBar: Reducer;
     //#endregion
-    loadSelectLocation: Reducer<OrganizeBookState>;
-    loadSelectBookShelf: Reducer<OrganizeBookState>;
-    filterBookShelf: Reducer<OrganizeBookState>;
-    resetBookShelfLocate: Reducer<OrganizeBookState>;
+    loadSelectLocation: Reducer;
+    loadSelectBookShelf: Reducer;
+    filterBookShelf: Reducer;
+    resetBookShelfLocate: Reducer;
   };
 }
 

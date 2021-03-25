@@ -1,3 +1,5 @@
+import TableHeader from '@/components/CustomDesign/TableHeader';
+import { UserOutlined } from '@ant-design/icons';
 import { Button, Col, Popconfirm, Row, Space, Table } from 'antd';
 import Search from 'antd/lib/input/Search';
 import Title from 'antd/lib/typography/Title';
@@ -48,48 +50,52 @@ class CustomerTable extends React.Component<CustomerPageProps, CustomerPageState
         title: 'Phone',
         dataIndex: 'phone',
         key: 'phone',
-      }
+      },
     ];
-    
+
     return (
       <>
-      <div style={{ marginBottom: 10, marginTop: 12 }}>
-          <Title level={3} style={{ marginBottom: 5 }}>
-            Customer
-          </Title>
-          <Row style={{ marginBottom: 1 }}>
-            <Col span={8}>
-              <Search
-                placeholder="input search text"
-                onSearch={(value) =>
-                  this.props.dispatch({
-                    type: 'customertable/fetchData',
-                    payload: { filterName: value, pagination: customertable.pagination.current },
-                  })
-                }
-                enterButton
-                size={'small'}
-              />
-            </Col>
-          </Row>
-        </div>
-        <Table
-        columns={column}
-        dataSource={customertable.data}
-        loading={customertable.isLoading}
-        pagination={customertable.pagination}
-        onRow={(record, rowIndex) => {
-          return {
-            onDoubleClick: (event) => {
+        <Space
+          style={{
+            marginBottom: 10,
+            marginTop: 12,
+            width: '100%',
+            justifyContent: 'space-between',
+          }}
+        >
+          <TableHeader title={'List Customers'} description="List of all customer in system !" />
+
+          <Search
+            placeholder="Search by name"
+            enterButton="Search"
+            size="middle"
+            style={{ width: 300 }}
+            suffix={<UserOutlined style={{ color: '#40A9FF' }} />}
+            onSearch={(value: any) => {
               this.props.dispatch({
-                type: 'customerpage/showViewCustomer',
-                payload: {...record},
+                type: 'customertable/fetchData',
+                payload: { filterName: value, pagination: customertable.pagination.current },
               });
-            },
-          };
-        }}
-       />
-      </>      
+            }}
+          />
+        </Space>
+        <Table
+          columns={column}
+          dataSource={customertable.data}
+          loading={customertable.isLoading}
+          pagination={customertable.pagination}
+          onRow={(record, rowIndex) => {
+            return {
+              onDoubleClick: (event) => {
+                this.props.dispatch({
+                  type: 'customerpage/showViewCustomer',
+                  payload: { ...record },
+                });
+              },
+            };
+          }}
+        />
+      </>
     );
   }
 }

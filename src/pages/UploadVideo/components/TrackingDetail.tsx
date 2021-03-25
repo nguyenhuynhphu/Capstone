@@ -1,4 +1,4 @@
-import { Avatar, Col, Drawer, List, Row, Space, Table } from 'antd';
+import { Avatar, Button, Col, Drawer, List, Row, Space, Table, Tabs } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import ReactPlayer from 'react-player';
@@ -6,37 +6,42 @@ import styles from '../UploadVideo.less';
 import { connect, Dispatch } from 'umi';
 import Description from './Description';
 import BookTrackingItem from './BookTrackingItem';
+import {
+  AndroidOutlined,
+  AppleOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  QuestionOutlined,
+} from '@ant-design/icons';
 
 interface TrackingDetailProps {
   dispatch: Dispatch;
   record: any;
   model: any;
-
 }
 interface TrackingDetailState {
-  visible: boolean
+  visible: boolean;
 }
 
 const columns = [
   {
     title: 'Drawer Barcode',
     dataIndex: 'drawerBarcode',
-    key: 'drawerBarcode'
+    key: 'drawerBarcode',
   },
   {
     title: 'Drawer Id',
     dataIndex: 'drawerId',
-    key: 'drawerId'
+    key: 'drawerId',
   },
 ];
 class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetailState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      visible: false
+      visible: false,
     };
   }
-
 
   render() {
     return (
@@ -47,9 +52,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
               controls
               width={'100%'}
               height={'fit-content'}
-              url={
-                this.props.record.url
-              }
+              url={this.props.record.url}
             />
             <Title style={{ textAlign: 'left', fontFamily: 'roboto', margin: '20px 0' }} level={2}>
               Tracking Detail
@@ -75,10 +78,9 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                         this.onSelectRow(record);
                         this.props.dispatch({
                           type: 'trackingdetail/fetchError',
-                          payload: record.id
-                        })
+                          payload: record.id,
+                        });
                       }, // double click row,
-                    
                     };
                   }}
                   className={styles.tablelDrawer}
@@ -87,7 +89,6 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                   style={{ height: '100%', marginLeft: 5, borderLeft: 'none' }}
                 />
                 <Drawer
-                  title="Drawer Error"
                   placement="right"
                   closable={false}
                   onClose={this.onClose}
@@ -96,12 +97,61 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                   getContainer={false}
                   style={{ position: 'absolute' }}
                 >
-                   <div>
-                    {this.props.model.listError.map((record: any) =>  
-                      <BookTrackingItem record={record}/>)
-                    }
-                 
-                  </div>
+                  <Tabs
+                    defaultActiveKey="1"
+                    type={'card'}
+                    tabBarExtraContent={{
+                      right: (
+                        <Button
+                          type={'text'}
+                          disabled
+                          style={{ color: 'black', cursor: 'context-menu' }}
+                        >
+                          List Errors
+                        </Button>
+                      ),
+                    }}
+                  >
+                    <Tabs.TabPane
+                      tab={
+                        <span>
+                          <QuestionOutlined />
+                          Unverify error
+                        </span>
+                      }
+                      key="1"
+                    >
+                      {this.props.model.listError.map((record: any) =>
+                        (!record.isConfirm && !record.isReject) ? <BookTrackingItem record={record} /> : <></>,
+                      )}
+                    </Tabs.TabPane>
+                    <Tabs.TabPane
+                      tab={
+                        <span>
+                          <CheckOutlined />
+                          Verify error
+                        </span>
+                      }
+                      key="2"
+                    >
+                      {this.props.model.listError.map((record: any) =>
+                        record.isConfirm ? <BookTrackingItem record={record} /> : <></>,
+                      )}
+                    </Tabs.TabPane>
+                    <Tabs.TabPane
+                      tab={
+                        <span>
+                          <CloseOutlined />
+                          Reject error
+                        </span>
+                      }
+                      key="3"
+                    >
+                      {this.props.model.listError.map((record: any) =>
+                        record.isReject ? <BookTrackingItem record={record} /> : <></>,
+                      )}
+                    </Tabs.TabPane>
+                  </Tabs>
                 </Drawer>
               </Col>
             </Row>

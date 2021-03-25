@@ -62,86 +62,36 @@ const responseDetect = [
     list_code: [
       {
         books: [
-          'A008513',
-          'A150208',
-          'R208010',
-          'R308011',
-          'K241209',
-          'U238417',
-          'K140611',
-          'H562417',
-          'O789428',
-          'M032611',
-          'A000101',
-          'A130913',
-          'D050308',
-          'J620311',
           'A000202',
-        ],
-        drawler: 'KS2030',
-      },
-      {
-        books: ['A001506', 'Z999936', 'A001102', 'K678930', 'H071210', 'M032611', 'A000101'],
-        drawler: 'KS2000',
-      },
-      {
-        books: [
-          'A001506',
-          'Z999936',
-          'K140611',
-          'H562417',
-          'O789428',
-          'M032611',
-          'A001102',
-          'K678930',
-          'H071210',
-          'M032611',
           'A000101',
+          'D050308',
+          'M032611',
+          'H562417',
+          'R208010',
+          'J620311',
+          'U238417',
+          'A150208',
+          'K140611',
+          'KS203099',
+          'K241209',
+          'A008513',
+          'O789428',
+          'R308011',
         ],
-        drawler: 'KS2050',
+        drawer: 'KS200099',
+      },
+      {
+        books: ["H071210","A001102","KS201099","Z999936","A001506","K678930","A130913"],
+        drawer: 'KS201099',
+      },
+      {
+        books: ["A000202","KS203099","J620311","D050308"],
+        drawer: 'KS203099',
       },
     ],
   },
 ];
 
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    render: (text) => <p>{text}</p>,
-  },
-  {
-    title: 'Cash Assets',
-    className: 'column-money',
-    dataIndex: 'money',
-    align: 'right',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-];
-
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    money: '￥300,000.00',
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    money: '￥1,256,000.00',
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    money: '￥120,000.00',
-    address: 'Sidney No. 1 Lake Park',
-  },
-];
 const key = 'updatable';
 class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
   constructor(props: any) {
@@ -155,7 +105,6 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
       isUpload: false,
       isHidding: false,
     };
-    this.uploadSuccess = this.uploadSuccess.bind(this);
     this.openNotification = this.openNotification.bind(this);
     this.trackingDetail = this.trackingDetail.bind(this);
   }
@@ -388,7 +337,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
     const formData = new FormData();
 
     formData.append('files', fileList[0].originFileObj);
-    //this.uploadSuccess2(responseDetect[0]);
+   // this.uploadSuccess2(responseDetect[0]);
     axios
       .post('http://127.0.0.1:5000/upload', formData, {
         headers: {
@@ -396,6 +345,8 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
         },
       })
       .then((response) => {
+        console.log(response);
+        
         this.uploadSuccess2(response.data[0]);
       })
       .catch(function (error) {
@@ -403,225 +354,23 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
       });
   };
 
-  async uploadSuccess(data: any) {
-    var msgToServer: any = {
-      staffId: this.props.user.currentUser.id,
-      url: data.link,
-      imageThumbnail: 'string',
-    };
-
-    await fetchDrawer(this.state.selectedBookShelf).then((values) => {
-      var promises: any = [];
-      values.forEach((drawer: any) => {
-        promises.push(fetchBookInDrawer(drawer.id));
-      });
-
-      Promise.all(promises)
-        .then((bookDrawers: any) => {
-          for (let i = 0; i < values.length; i++) {
-            var drawer = values[i];
-            var bookInDrawer = bookDrawers[i];
-            drawer.books = bookInDrawer.data;
-          }
-        })
-
-        .finally(async () => {
-          await values.forEach((drawer: any) => {
-            // xác định vị trí cho những cuốn sai
-            data.list_code.forEach((scanDrawer: any) => {
-              //matching pair
-              let tmp: any = [];
-              let removeBarcode: any = [];
-              if (drawer.drawerBarcode != undefined) {
-                if (drawer.drawerBarcode.trim() == scanDrawer.drawler.trim()) {
-                  drawer.books.map((orgBook: any) => {
-                    scanDrawer.books.map((barcode: any) => {
-                      if (
-                        orgBook.barCode != undefined &&
-                        orgBook.barCode.trim() == barcode.trim()
-                      ) {
-                        tmp.push(orgBook);
-                        removeBarcode.push(barcode);
-                      }
-                    });
-                  });
-                  _.pullAll(drawer.books, tmp);
-                  _.pullAll(scanDrawer.books, removeBarcode);
-                  drawer.wrongPosition = scanDrawer.books;
-                }
-              }
-            });
-          });
-          let removeDrawer: any = [];
-          values.forEach((drawer: any) => {
-            if (
-              (drawer.books.length == 0 && drawer.wrongPosition == undefined) ||
-              drawer.drawerBarcode == undefined
-            ) {
-              removeDrawer.push(drawer);
-            }
-          });
-          _.pullAll(values, removeDrawer);
-          // => xác định những cuốn sai
-          var checkWrong = new Promise<void>((resolve, reject) => {
-            values.forEach((drawer: any, index: number, array: any) => {
-              //những cuốn bị còn lại trong list check
-              var errorMsg: any = [];
-              var promises: any = [];
-              var promises2: any = [];
-              var promises3: any = [];
-
-              if (drawer.wrongPosition != undefined) {
-                // những cuốn sách bị quét dư ra => bị sai vị trí
-                if (drawer.wrongPosition.length != 0) {
-                  //phat hien sach sai vi tri va fetch data cho no
-                  drawer.wrongPosition.forEach((barcode: any) => {
-                    promises.push(checkingPosition(barcode));
-                  });
-                }
-              }
-              console.log('DRAWER >>>>>', drawer);
-
-              Promise.all(promises)
-                .then((listPosition: any) => {
-                  console.log('REAL POSITION', listPosition);
-
-                  listPosition.forEach((position: any) => {
-                    if (position.data[0] != undefined) {
-                      promises2.push(getRealPosition(position.data[0].id));
-                    } else {
-                      console.log('BAR CODE NAY KHONG CO TRONG HE THONG');
-                      console.log(position);
-                    }
-                  });
-                })
-                .finally(() => {
-                  Promise.all(promises2)
-                    .then((values: any) => {
-                      values.forEach((realPosition: any) => {
-                        let data = realPosition.data;
-                        errorMsg.push({
-                          errorMessage: `Book wrong position. Actual position is in BookShelf: ${data.bookShelfName}, Drawer ID: ${data.drawerId}`,
-                          bookId: data.id,
-                          isError: true,
-                        });
-                      });
-                    })
-                    .finally(() => {
-                      if (drawer.books != undefined) {
-                        //những cuốn sách bị quét thiếu => bị mất
-                        if (drawer.books.length != 0) {
-                          drawer.books.forEach((book: any) => {
-                            promises3.push(getRealPosition(book.id));
-                          });
-                          Promise.all(promises3)
-                            .then((values: any) => {
-                              values.forEach((book: any, index: number) => {
-                                if (book.data.isAvailable == true) {
-                                  // chưa được mượn
-                                  if (book.data.customerId == undefined) {
-                                    // chưa từng đưọcw mượn
-                                    errorMsg.push({
-                                      errorMessage: `Sách mất, cuốn này chưa từng được ai mượn !`,
-                                      bookId: book.data.id,
-                                      isError: true,
-                                    });
-                                  } else {
-                                    // lần cuối mượn và trả rồi
-                                    errorMsg.push({
-                                      errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${book.data.customerName}`,
-                                      bookId: book.data.id,
-                                      isError: true,
-                                    });
-                                  }
-                                } else {
-                                  //được mượn
-                                  errorMsg.push({
-                                    errorMessage: `Sách mất. Sách chưa được trả bởi ${book.data.customerName}`,
-                                    bookId: book.data.id,
-                                    isError: true,
-                                  });
-                                }
-                              });
-                            })
-                            .then(() => Object.assign(drawer, { errorMsg: errorMsg }))
-                            .finally(() => {
-                              let drawerDetection: any = [];
-                              values.forEach((drawer: any, index: number) => {
-                                var tmp: any = {
-                                  drawerId: drawer.id,
-                                  time: moment(),
-                                  detectionError: drawer.errorMsg,
-                                };
-                                drawerDetection.push(tmp);
-                              });
-                              Object.assign(msgToServer, {
-                                drawerDetection: drawerDetection ? drawerDetection : [],
-                              });
-                              if (index == array.length - 1) {
-                                resolve();
-                              }
-                            });
-                        }
-                      }
-                    });
-                });
-            });
-          });
-
-          checkWrong.finally(() => {
-            this.props
-              .dispatch({
-                type: 'uploadvideo/insertRecord',
-                payload: msgToServer,
-              })
-              .finally(() => {
-                this.setState({ isUpload: false });
-                if (!this.props.uploadvideo.uploadModalVisible) {
-                  this.changeNotification();
-                }
-                setTimeout(() => {
-                  this.props.dispatch({
-                    type: 'uploadvideo/renderModel',
-                    payload: false,
-                  });
-                  this.props.dispatch({
-                    type: 'uploadrecordtable/fetchData',
-                  });
-                  this.setState({
-                    uploadStep: 0,
-                    fileList: [],
-                    modalWidth: 600,
-                    selectedBookShelf: -1,
-                    selectedRecord: {},
-                  });
-                }, 2000);
-              });
-          });
-        });
-    });
-
-    // call api roi so sanh o day luon, xong mo popup len thoi
-    // this.setState({ modalWidth: 1400, uploadStep: 3 });
-  }
-
   async uploadSuccess2(data: any) {
     var msgToServer: any = {
       staffId: this.props.user.currentUser.id,
       url: data.link,
+      bookShelfId: this.state.selectedBookShelf,
       time: moment(),
-      imageThumbnail: 'string',
+      thumbnail: 'string',
     };
 
     var drawerInSystem = await fetchDrawer(this.state.selectedBookShelf);
-    console.log('DRAWER IN SYSTEM: ', drawerInSystem);
 
     var found: any = [];
     var notFound: any = [];
     data.list_code.forEach((scanDrawer: any) => {
       drawerInSystem.forEach((drawerInSystem: any) => {
-        if (drawerInSystem.drawerBarcode != undefined) {
-          if (scanDrawer.drawler == drawerInSystem.drawerBarcode.trim()) {
+        if (drawerInSystem.barcode != undefined) {
+          if (scanDrawer.drawer.trim() == drawerInSystem.barcode.trim()) {
             found.push(drawerInSystem);
           } else {
             notFound.push(drawerInSystem);
@@ -630,8 +379,6 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
       });
     });
 
-    console.log('Found IN VIDEO =', found);
-    console.log('Not Found IN VIDEO =', notFound);
     var promises: any = [];
     found.forEach((drawer: any) => {
       promises.push(fetchBookInDrawer(drawer.id));
@@ -650,8 +397,8 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
         //matching pair
         let tmp: any = [];
         let removeBarcode: any = [];
-        if (drawer.drawerBarcode != undefined) {
-          if (drawer.drawerBarcode.trim() == scanDrawer.drawler.trim()) {
+        if (drawer.barcode != undefined) {
+          if (drawer.barcode.trim() == scanDrawer.drawer.trim()) {
             drawer.books.map((orgBook: any) => {
               scanDrawer.books.map((barcode: any) => {
                 if (orgBook.barCode != undefined && orgBook.barCode.trim() == barcode.trim()) {
@@ -667,8 +414,6 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
         }
       });
     });
-
-    console.log('Tim Nhung cuon sai vi tri', found);
 
     //xu ly sach sai vi tri
     var drawerDetection: any = [];
@@ -738,21 +483,19 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
         drawerDetection.push({
           drawerId: drawer.id,
           detectionError: errorMsg,
-          undefinedError: undefinedError
+          undefinedError: undefinedError,
         });
 
         if (index == array.length - 1) {
           resolve();
         }
-
-        console.log('>>>>>>>>>>>>>>>>>', errorMsg);
       });
     });
     checkWrong.finally(() => {
       Object.assign(msgToServer, {
         drawerDetection: drawerDetection ? drawerDetection : [],
       });
-      console.log('MSG TO SERVER >>>>>', msgToServer);
+
       this.props
         .dispatch({
           type: 'uploadvideo/insertRecord',
@@ -784,8 +527,6 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
   }
 
   trackingDetail(record: any) {
-    console.log('>>>>>>>>>>>>>', record);
-
     this.setState({ selectedRecord: record, uploadStep: 3, modalWidth: 1400 });
     this.props.dispatch({
       type: 'uploadvideo/renderModel',

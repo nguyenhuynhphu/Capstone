@@ -86,7 +86,7 @@ class ListComment extends React.Component<ListCommentProps, ListCommentState> {
                       allowHalf
                       allowClear={false}
                       style={{ fontSize: 14 }}
-                      value={item.rating != undefined ? item.rating : 0}
+                      value={item.rate != undefined ? item.rate : 0}
                       disabled
                     />
                     <p>{item.reviewContent}</p>

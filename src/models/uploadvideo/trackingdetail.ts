@@ -1,10 +1,23 @@
-import { fetchError, fetchRecord, fetchTrackingDetail, findBookShelf, insertRecord } from '@/services/upload';
+import {
+  confirmError,
+  confirmErrorUndefined,
+  fetchError,
+  fetchRecord,
+  fetchTrackingDetail,
+  fetchUndifileError,
+  findBookShelf,
+  insertRecord,
+  updateError,
+  updateUndefined,
+} from '@/services/upload';
+import { response } from 'express';
+import _ from 'lodash';
 import { Effect, Reducer } from 'umi';
 
 export interface TrackingDetailState {
- data: any;
- isLoading: boolean;
- listError: any;
+  data: any;
+  isLoading: boolean;
+  listError: any;
 }
 
 export interface TrackingDetailType {
@@ -13,6 +26,9 @@ export interface TrackingDetailType {
   effects: {
     fetchData: Effect;
     fetchError: Effect;
+
+    updateError: Effect;
+    updateErrorUndefined: Effect;
   };
   reducers: {
     isLoading: Reducer;
@@ -26,57 +42,64 @@ const TrackingDetailModel: TrackingDetailType = {
   state: {
     data: [],
     isLoading: false,
-    listError: []
+    listError: [],
   },
   effects: {
     *fetchData({ payload }, { put, call }) {
-        yield put({
-            type: 'isLoading',
-          });
-        const response = yield call(fetchTrackingDetail, payload);
-        yield put({
-          type: 'loadData',
-          payload: response,
-        });
-      },
-      
-      *fetchError({ payload }, { put, call }) {
-        // yield put({
-        //     type: 'isLoading',
-        //   });
-        const response = yield call(fetchError, payload);
-        yield put({
-          type: 'loadError',
-          payload: response,
-        });
-      },
-    
+      yield put({
+        type: 'isLoading',
+      });
+      const response = yield call(fetchTrackingDetail, payload);
+      yield put({
+        type: 'loadData',
+        payload: response,
+      });
+    },
+
+    *fetchError({ payload }, { put, call }) {
+      const response = yield call(fetchError, payload);
+      const response2 = yield call(fetchUndifileError, payload);
+      var tmp = _.concat(response, response2);
+
+      yield put({
+        type: 'loadError',
+        payload: tmp,
+      });
+    },
+
+    *updateError({ payload }, { put, call }) {
+      yield call(updateError, payload);
+    },
+    *updateErrorUndefined({ payload }, { put, call }) {
+      yield call(updateUndefined, payload);
+    },
+
   },
   reducers: {
-    isLoading(state, { }) {
-        return {
-          ...state,
-          isLoading: true,
-        };
+    isLoading(state, {}) {
+      return {
+        ...state,
+        isLoading: true,
+      };
     },
     loadData(state, { payload }) {
-        payload.forEach((record: any) => {
-            record.key = record.id
-        });
-        return {
-            ...state,
-            isLoading: false,
-            data: payload
-        };
+      payload.forEach((record: any) => {
+        record.key = record.id;
+      });
+      return {
+        ...state,
+        isLoading: false,
+        data: payload,
+      };
     },
     loadError(state, { payload }) {
-        payload.forEach((error: any) => {
-            error.key = error.id
-        });
-        return {
-            ...state,
-            listError: payload
-        };
+      payload.forEach((error: any) => {
+        error.key = error.id;
+      });
+      return {
+        ...state,
+        listError: payload,
+      };
     },
   },
 };

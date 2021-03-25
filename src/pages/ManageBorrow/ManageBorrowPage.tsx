@@ -296,13 +296,11 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                           placeholder="Select drawer"
                           style={{ width: 150 }}
                           onChange={(bookId: any) => {
-                            console.log(item.data);
+                   
                             item.data.choiceBook = bookId;
                           }}
                         >
                           {item.data.drawer.map((value: any) => {
-                            console.log('VALUE: >>>', value);
-
                             return (
                               <Select.Option
                                 key={`${value.id}_${value.bookShelfName}`}
@@ -421,13 +419,12 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
         .then((value) => {
           connection.on('ReceiveMessage', (value) => {
             if (value.staffId !== this.props.user.currentUser.id) {
-              // console.log(value);
+      
               this.fetchWishList(value.wishlist, 1);
             }
           });
           connection.on('ReceiveMessageToReturn', (value) => {
             if (value.staffId !== this.props.user.currentUser.id) {
-              console.log(value);
 
               this.props.dispatch({
                 type: 'manageborrow/fetchBorrowDetail',
@@ -462,7 +459,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     Promise.all(promiese)
       .then((value1: any) => {
         Promise.all(promiese2).then((value2) => {
-          console.log(value1, value2);
+
           for (let i = 0; i < value1.length; i++) {
             value1[i].data.drawer = value2[i];
           }
@@ -491,7 +488,6 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
 
     var tmp: any = [];
     manageborrow.wishlist.forEach((bookGroup: any) => {
-      console.log(bookGroup);
 
       tmp.push({
         bookId: bookGroup.data.choiceBook,

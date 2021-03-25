@@ -1,15 +1,12 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Button, Col, Drawer, Row, Space } from 'antd';
+import { Col, Drawer, Row } from 'antd';
 import React from 'react';
-import styles from './CustomerPage.less';
-import Search from 'antd/lib/input/Search';
-import { PlusOutlined } from '@ant-design/icons';
 
 import { connect, Dispatch } from 'umi';
 import ViewForm from './components/ViewForm';
 import { FormInstance } from 'antd/lib/form';
-import { library } from '@fortawesome/fontawesome-svg-core';
 import CustomerTable from './components/CustomerTable';
+import TableHeader from '@/components/CustomDesign/TableHeader';
 
 interface CustomerPageProps {
   dispatch: Dispatch;
@@ -34,10 +31,11 @@ class CustomerPage extends React.Component<CustomerPageProps, CustomerPageState>
     return (
       <>
         <PageHeaderWrapper></PageHeaderWrapper>
-        <Row>
+        <Row style={{marginTop: 15, backgroundColor: 'white', padding: '20px 25px', borderRadius: '15px' }}>
           <Col span={24}>
             <Row>
               <Col span={24}>
+               
                 <CustomerTable />
               </Col>
             </Row>
@@ -55,7 +53,6 @@ class CustomerPage extends React.Component<CustomerPageProps, CustomerPageState>
       </>
     );
   }
-
 
   hideViewCustomer() {
     this.props.dispatch({

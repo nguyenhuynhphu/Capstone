@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { connect, Dispatch } from 'umi';
-import { Comment, Avatar, Typography, List, Rate, Divider, Skeleton, Button } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { List, Skeleton, Button } from 'antd';
 
 interface ListBookProps {
   dispatch: Dispatch;
@@ -39,38 +38,11 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
           }
           dataSource={listbooks.data}
           renderItem={(item: any) => (
-            <li>
-              <Comment
-                actions={[
-                  <span key="comment-list-reply-to-0">
-                    <DeleteOutlined style={{ marginRight: 5 }} />
-                    Remove
-                  </span>,
-                ]}
-                avatar={
-                  <Avatar
-                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-                    alt="Han Solo"
-                  />
-                }
-                content={
-                  <div>
-                    <Divider style={{ margin: 0 }} orientation="left" plain>
-                      {item.customerId}
-                    </Divider>
-
-                    <Rate
-                      allowHalf
-                      allowClear={false}
-                      style={{ fontSize: 14 }}
-                      value={item.rating != undefined ? item.rating : 0}
-                      disabled
-                    />
-                    <p>{item.reviewContent}</p>
-                  </div>
-                }
-              />
-            </li>
+            <div>
+              <p>#{item.barCode}</p>
+              <p>{item.id}</p>
+              <p>{item.isAvailable}</p>
+            </div>
           )}
         />
       </Skeleton>

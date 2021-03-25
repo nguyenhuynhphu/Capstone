@@ -55,8 +55,10 @@ const UserModel: UserModelType = {
 
       if (jwtToken.length !== 0) {
         var user: any = decodeToken(jwtToken);
-  
-        user.name = user.userName;
+        console.log("USER >>>", user);
+        
+        // user.name = user.userName;
+        // user.userName = 
         user.avatar = user.image;
         yield put({
           type: 'saveCurrentUser',

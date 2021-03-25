@@ -4,6 +4,9 @@ import { useIntl, ConnectProps, connect } from 'umi';
 import React from 'react';
 import { ConnectState } from '@/models/connect';
 import '../main.css';
+import { Col, Row } from 'antd';
+import styles from './UserLayout.less';
+
 export interface UserLayoutProps extends Partial<ConnectProps> {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
@@ -37,10 +40,29 @@ const UserLayout: React.FC<UserLayoutProps> = (props) => {
         <title>{title}</title>
         <meta name="description" content={title} />
       </Helmet>
-
-      <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center' }}>
-        
-        {children}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+          backgroundColor: 'rgba(0 ,0, 0, .1)',
+        }}
+      >
+        <Row
+          style={{
+            backgroundColor: 'white',
+            borderRadius: '15px',
+            overflow: 'hidden',
+            height: 500,
+            width: 800,
+          }}
+        >
+          <Col span={12} className={`${styles.col} ${styles.decoration}`}></Col>
+          <Col span={12} className={`${styles.col} ${styles.loginForm}`}>
+            {children}
+          </Col>
+        </Row>
       </div>
     </HelmetProvider>
   );

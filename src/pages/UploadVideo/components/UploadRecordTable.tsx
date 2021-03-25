@@ -17,20 +17,30 @@ const columns = [
   {
     title: '#',
     dataIndex: 'id',
+    key: 'id',
     align: 'center',
     render: (text) => <p>{text}</p>,
   },
   {
     title: 'Book Shelf',
     dataIndex: 'bookShelfName',
+    key: 'bookShelfName',
     align: 'left',
-    width: 200
+    width: 200,
   },
   {
-    title: 'Staff Upload',
+    title: 'Staff Uploaded',
     dataIndex: 'staffName',
-    align: 'center',
-  }
+    key: 'staffName',
+    align: 'left',
+  },
+  {
+    title: 'Date Uploaded',
+    dataIndex: 'time',
+    key: 'time',
+    align: 'right',
+    render: (text: string) => <p>{text.split('T')[0]}</p>,
+  },
 ];
 
 class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRecordTableState> {

@@ -56,8 +56,6 @@ const UploadVideoModel: UploadVideoType = {
 
     *insertRecord({ payload }, { put, call }) {
       const response = yield call(insertRecord, payload);
-      console.log("Response >>>>>>>>>", response);
-      
     },
     
   },
