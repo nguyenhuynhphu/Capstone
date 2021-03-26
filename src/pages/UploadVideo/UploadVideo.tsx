@@ -81,11 +81,11 @@ const responseDetect = [
         drawer: 'KS200099',
       },
       {
-        books: ["H071210","A001102","KS201099","Z999936","A001506","K678930","A130913"],
+        books: ['H071210', 'A001102', 'KS201099', 'Z999936', 'A001506', 'K678930', 'A130913'],
         drawer: 'KS201099',
       },
       {
-        books: ["A000202","KS203099","J620311","D050308"],
+        books: ['A000202', 'KS203099', 'J620311', 'D050308'],
         drawer: 'KS203099',
       },
     ],
@@ -337,7 +337,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
     const formData = new FormData();
 
     formData.append('files', fileList[0].originFileObj);
-   // this.uploadSuccess2(responseDetect[0]);
+    // this.uploadSuccess2(responseDetect[0]);
     axios
       .post('http://127.0.0.1:5000/upload', formData, {
         headers: {
@@ -346,7 +346,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
       })
       .then((response) => {
         console.log(response);
-        
+
         this.uploadSuccess2(response.data[0]);
       })
       .catch(function (error) {
@@ -451,44 +451,46 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
             promises.push(getRealPosition(book.id));
           });
         }
-        var detectLocation = await Promise.all(promises);
-        detectLocation.forEach((book: any, index: number) => {
-          if (book.data.isAvailable == true) {
-            // chưa được mượn
-            if (book.data.customerId == undefined) {
-              // chưa từng đưọcw mượn
-              errorMsg.push({
-                errorMessage: `Sách mất, cuốn này chưa từng được ai mượn !`,
-                bookId: book.data.id,
-                typeError: 3,
-              });
+        Promise.all(promises).then((detectLocation: any) => {
+          detectLocation.forEach((book: any, index: number) => {
+            if (book.data.isAvailable == true) {
+              // chưa được mượn
+              if (book.data.customerId == undefined) {
+                // chưa từng đưọcw mượn
+                errorMsg.push({
+                  errorMessage: `Sách mất, cuốn này chưa từng được ai mượn !`,
+                  bookId: book.data.id,
+                  typeError: 3,
+                });
+              } else {
+                // lần cuối mượn và trả rồi
+                errorMsg.push({
+                  errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${book.data.customerName}`,
+                  bookId: book.data.id,
+                  typeError: 4,
+                });
+              }
             } else {
-              // lần cuối mượn và trả rồi
+              //được mượn
               errorMsg.push({
-                errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${book.data.customerName}`,
+                errorMessage: `Sách mất. Sách chưa được trả bởi ${book.data.customerName}`,
                 bookId: book.data.id,
-                typeError: 4,
+                isError: 5,
               });
             }
-          } else {
-            //được mượn
-            errorMsg.push({
-              errorMessage: `Sách mất. Sách chưa được trả bởi ${book.data.customerName}`,
-              bookId: book.data.id,
-              isError: 5,
-            });
+          });
+
+          drawerDetection.push({
+            drawerId: drawer.id,
+            detectionError: errorMsg,
+            undefinedError: undefinedError,
+          });
+          if (index == array.length - 1) {
+            console.log('RESOLVE');
+
+            resolve();
           }
         });
-
-        drawerDetection.push({
-          drawerId: drawer.id,
-          detectionError: errorMsg,
-          undefinedError: undefinedError,
-        });
-
-        if (index == array.length - 1) {
-          resolve();
-        }
       });
     });
     checkWrong.finally(() => {

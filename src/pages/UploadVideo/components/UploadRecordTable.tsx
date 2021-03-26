@@ -55,14 +55,21 @@ class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRe
   }
 
   render() {
-    const { uploadrecordtable } = this.props;
+    const { uploadrecordtable, dispatch } = this.props;
     return (
       <>
         <Table
           columns={columns}
           dataSource={uploadrecordtable.data}
+          pagination={uploadrecordtable.pagination}
           loading={uploadrecordtable.isLoading}
           bordered
+          onChange={(pagination) => {
+            dispatch({
+              type: 'uploadrecordtable/fetchData',
+              payload: { filterName: uploadrecordtable.filterName, pagination: pagination.current },
+            });
+          }}
           onRow={(record) => {
             return {
               onDoubleClick: () => this.props.trackingDetail(record), // double click row,

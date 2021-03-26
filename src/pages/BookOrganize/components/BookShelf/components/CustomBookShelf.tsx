@@ -1,4 +1,4 @@
-import { Badge, Spin } from 'antd';
+import { Badge, Space, Spin } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import styles from '../BookShelfTable.less';
@@ -28,7 +28,6 @@ class CustomBookShelf extends React.Component<CustomBookShelfProps, CustomBookSh
 
     var tmp: any = [];
     drawergrid.data.forEach((drawer: any, index: number) => {
-
       tmp.push(
         <Badge.Ribbon text={'15'}>
           <div
@@ -66,9 +65,10 @@ class CustomBookShelf extends React.Component<CustomBookShelfProps, CustomBookSh
                 });
             }}
           >
-            <Title level={1} style={{ margin: 0, fontSize: 34 }}>
-              {drawer.id}
-            </Title>
+            <Space direction='vertical'>
+              <p style={{ margin: 0, fontSize: 20, color: '#1890FF' }}>ID: {drawer.id}</p>
+              <p style={{ margin: 0, fontSize: 20, color: '#1890FF' }}>#{drawer.barcode}</p>
+            </Space>
           </div>
         </Badge.Ribbon>,
       );

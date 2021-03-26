@@ -1,10 +1,11 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Table, Typography, Row, Col, Button, Badge, Drawer, Modal } from 'antd';
+import TableHeader from '@/components/CustomDesign/TableHeader';
+import { BlockOutlined, PlusOutlined } from '@ant-design/icons';
+import { Table, Typography, Row, Col, Button, Badge, Drawer, Modal, Space } from 'antd';
 import Search from 'antd/lib/input/Search';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
-import styles from './LocationTable.less';
+import styles from '@/pages/BookOrganize/BookOrganizePage.less';
 
 const { Column, ColumnGroup } = Table;
 
@@ -51,13 +52,15 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
     return (
       <>
         <div style={{ marginBottom: 10, marginTop: 12 }}>
-          <Title level={3} style={{ marginBottom: 5 }}>
-            Location
-          </Title>
-          <Row style={{ marginBottom: 1 }}>
-            <Col span={12}>
+          <Space direction="horizontal" style={{ width: '100%', justifyContent: 'space-between' }}>
+            <TableHeader title="Location" description="List locations" />
+            <Space direction="horizontal">
               <Search
-                placeholder="Search Location"
+                placeholder="Search by name"
+                enterButton="Search"
+                size="middle"
+                style={{ width: 230 }}
+                suffix={<BlockOutlined style={{ color: '#40A9FF' }} />}
                 onSearch={(value) =>
                   this.props.dispatch({
                     type: 'locationtable/fetchData',
@@ -67,12 +70,8 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
                     },
                   })
                 }
-                enterButton
-                size={'small'}
               />
-            </Col>
-            {this.props.user.currentUser.roleId == 1 ? (
-              <Col span={8} offset={4} style={{ textAlign: 'right' }}>
+              {this.props.user.currentUser.roleId == 1 ? (
                 <Button
                   type="primary"
                   onClick={() =>
@@ -81,21 +80,22 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
                       payload: {},
                     })
                   }
-                  size={'small'}
                 >
-                  <PlusOutlined /> New Location
+                  <PlusOutlined /> Add New
                 </Button>
-              </Col>
-            ) : (
-              <></>
-            )}
-          </Row>
+              ) : (
+                <></>
+              )}
+            </Space>
+          </Space>
         </div>
         <Table
+          className={styles.locationTable}
           dataSource={locationtable.data}
           loading={locationtable.isLoading}
           pagination={locationtable.pagination}
           rowSelection={rowSelection}
+          scroll={{ y: 480 }}
           size={'middle'}
           onChange={(pagination) => {
             this.props.dispatch({
@@ -103,29 +103,42 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
               payload: { filterName: locationtable.filterName, pagination: pagination.current },
             });
           }}
-          onRow={(record, rowIndex) => {
-            return {
-              onDoubleClick: (event) => {
-                this.props.dispatch({
-                  type: 'organizebook/onSelectLocation',
-                  payload: { ...record },
-                });
-              },
-            };
-          }}
         >
-          <Column title="Name" dataIndex="name" key="name" />
-
           <Column
-            dataIndex="color"
-            key="color"
-            className={styles.handelBookMark}
-            render={(color) => (
-              <Badge.Ribbon key={'color'} color={color}>
-                <div></div>
-              </Badge.Ribbon>
+            title="No"
+            key="name"
+            width={40}
+            render={(name: string, record: any, index: number) => <div>#{index + 1}</div>}
+          />
+          <Column
+            title="Name"
+            dataIndex="name"
+            key="name"
+            render={(name: string, record: any) => (
+              <div>
+                <Badge key={'color'} color={record.color} /> {name}
+              </div>
             )}
-          ></Column>
+          />
+          <Column
+            //title="Manage Book"
+            align={'center'}
+            width={100}
+            render={(text, record: any) => (
+              <Space size="middle">
+                <a
+                  onClick={() =>
+                    this.props.dispatch({
+                      type: 'organizebook/onSelectLocation',
+                      payload: { ...record },
+                    })
+                  }
+                >
+                  Detail
+                </a>
+              </Space>
+            )}
+          />
         </Table>
       </>
     );

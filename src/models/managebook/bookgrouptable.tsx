@@ -17,9 +17,9 @@ export interface BookGroupTableType {
     onSelect: Effect;
   };
   reducers: {
-    isLoading: Reducer<BookGroupTableState>;
-    loadData: Reducer<BookGroupTableState>;
-    selected: Reducer<BookGroupTableState>;
+    isLoading: Reducer;
+    loadData: Reducer;
+    selected: Reducer;
   };
 }
 
@@ -33,11 +33,10 @@ const BookGroupTableModel: BookGroupTableType = {
     },
     filterName: '',
     isLoading: false,
-    selectedRowKeys: []
+    selectedRowKeys: [],
   },
   effects: {
     *fetchData({ payload }, { call, put }) {
-      yield call(() => {}, payload);
       yield put({
         type: 'isLoading',
         payload: {},
@@ -51,8 +50,6 @@ const BookGroupTableModel: BookGroupTableType = {
     },
 
     *onSelect({ payload }, { call, put }) {
-
-      yield call(() => {});
       yield put({
         type: 'loadData',
         payload: { payload },
@@ -60,7 +57,7 @@ const BookGroupTableModel: BookGroupTableType = {
     },
   },
   reducers: {
-    isLoading(state, { }) {
+    isLoading(state, {}) {
       return {
         ...state,
         isLoading: true,
@@ -68,9 +65,9 @@ const BookGroupTableModel: BookGroupTableType = {
     },
     loadData(state, { payload }) {
       const { response, filter } = payload;
-      
+
       if (filter != undefined) {
-        response.data.forEach((bookGroup: any)=> {
+        response.data.forEach((bookGroup: any) => {
           bookGroup.key = bookGroup.id;
         });
         return {

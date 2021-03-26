@@ -1,11 +1,12 @@
-import { PlusOutlined } from '@ant-design/icons';
+import TableHeader from '@/components/CustomDesign/TableHeader';
+import { BlockOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Col, Popconfirm, Row, Space, Table } from 'antd';
 import Tag from 'antd/es/tag';
 import Search from 'antd/lib/input/Search';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
-
+import styles from '@/pages/BookOrganize/BookOrganizePage.less';
 const { Column } = Table;
 
 interface BookShelfTableProps {
@@ -45,29 +46,27 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
     bookshelftable.data.forEach((bookshelf: any) => {
       this.state.colors.set(bookshelf.locationName, bookshelf.locationColor);
     });
-  
+
     return (
       <>
         <div style={{ marginBottom: 10, marginTop: 12 }}>
-          <Title level={3} style={{ marginBottom: 5 }}>
-            Book Shelf
-          </Title>
-          <Row style={{ marginBottom: 1 }}>
-            <Col span={8}>
+          <Space direction="horizontal" style={{ width: '100%', justifyContent: 'space-between' }}>
+            <TableHeader title="Book Shelf" description="List all bookshelves in system" />
+            <Space direction="horizontal">
               <Search
-                placeholder="input search text"
+                placeholder="Search by name"
+                enterButton="Search"
+                size="middle"
+                style={{ width: 300 }}
+                suffix={<BlockOutlined style={{ color: '#40A9FF' }} />}
                 onSearch={(value) =>
                   this.props.dispatch({
                     type: 'bookshelftable/fetchData',
                     payload: { filterName: value, pagination: bookshelftable.pagination.current },
                   })
                 }
-                enterButton
-                size={'small'}
               />
-            </Col>
-            {this.props.user.currentUser.roleId == 1 ? (
-              <Col span={6} offset={10} style={{ textAlign: 'right' }}>
+              {this.props.user.currentUser.roleId == 1 ? (
                 <Button
                   type="primary"
                   onClick={() =>
@@ -76,21 +75,22 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
                       payload: {},
                     })
                   }
-                  size={'small'}
                 >
-                  <PlusOutlined /> New Book Shelf
+                  <PlusOutlined /> Add New
                 </Button>
-              </Col>
-            ) : (
-              <></>
-            )}
-          </Row>
+              ) : (
+                <></>
+              )}
+            </Space>
+          </Space>
         </div>
         <Table
+          className={styles.bookShelfTable}
           dataSource={bookshelftable.data}
           pagination={bookshelftable.pagination}
           loading={bookshelftable.isLoading}
           size={'middle'}
+          scroll={{ y: 400 }}
           onRow={(record) => {
             return {
               onDoubleClick: () => {}, // double click row,
@@ -104,23 +104,23 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
           }}
         >
           <Column title="Name" dataIndex="name" key="name" />
-
-          <Column title="Total Row" dataIndex="row" key="row" align={'center'} />
-          <Column title="Total Column" dataIndex="col" key="col" align={'center'} />
-
+          <Column title="Rows" dataIndex="row" key="row" align={'center'} width={80} />
+          <Column title="Columns" dataIndex="col" key="col" align={'center'} width={80} />
           <Column
             title="Location"
             dataIndex="locationName"
             key="locationId"
+            align="center"
             render={(data) => <Tag color={this.state.colors.get(data)}>{data}</Tag>}
           />
 
           <Column
             //title="Manage Book"
             align={'center'}
+            width={80}
             render={(text, record) => (
               <Space size="middle">
-                <a onClick={() => this.onEdit(record)}>Edit</a>
+                <a onClick={() => this.onEdit(record)}>Detail</a>
               </Space>
             )}
           />
@@ -129,6 +129,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
               //title="Manage Book"
               align={'center'}
               dataIndex={'id'}
+              width={80}
               render={(id) => (
                 <>
                   <Popconfirm

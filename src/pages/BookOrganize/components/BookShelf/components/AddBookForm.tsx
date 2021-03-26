@@ -1,15 +1,10 @@
-import { Button, Col, Divider, Row, Select } from 'antd';
+import { Button, Col, Descriptions, Divider, Row, Select } from 'antd';
 import Text from 'antd/lib/typography/Text';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
 import styles from '../BookShelfTable.less';
 const { Option } = Select;
-const DescriptionItem = ({ title, content }: any) => (
-  <div className="site-description-item-profile-wrapper">
-    <p className="site-description-item-profile-p-label">{title}:</p>
-    {content}
-  </div>
-);
+
 interface AddBookFormProps {
   dispatch: Dispatch;
 
@@ -84,26 +79,13 @@ class AddBookForm extends React.Component<AddBookFormProps, AddBookFormState> {
           <Col span={24}>
             <Row>
               <Col span={24}>
-                <DescriptionItem
-                  title="Book Shelf Name"
-                  content={organizebook.choiceBookShelf.name.trim()}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <DescriptionItem title="Row" content={organizebook.choiceBookShelf.row} />
-              </Col>
-              <Col span={12}>
-                <DescriptionItem title="Column" content={organizebook.choiceBookShelf.col} />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                <DescriptionItem
-                  title="Location"
-                  content={organizebook.choiceBookShelf.locationName}
-                />
+                <Descriptions column={2}>
+                  <Descriptions.Item label="Book Shelf Name" span={2}>{organizebook.choiceBookShelf.name.trim()}</Descriptions.Item>
+                  <Descriptions.Item label="Row">{organizebook.choiceBookShelf.row}</Descriptions.Item>
+                  <Descriptions.Item label="Column">{organizebook.choiceBookShelf.col}</Descriptions.Item>
+                  <Descriptions.Item label="Location">{organizebook.choiceBookShelf.locationName}</Descriptions.Item>
+                </Descriptions>
+                
               </Col>
             </Row>
             <Divider orientation={'left'}>Filter</Divider>

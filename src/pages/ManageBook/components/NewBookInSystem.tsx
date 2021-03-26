@@ -4,6 +4,9 @@ import { Avatar, List, Space, Typography, Image, Popover, Row, Col, Descriptions
 import 'antd/dist/antd.css';
 import { TagOutlined, WarningOutlined } from '@ant-design/icons';
 import styles from '../ManageBookPage.less';
+
+const { Paragraph, Text } = Typography;
+
 interface NewBookInSystemProps {
   dispatch: Dispatch;
   newbooklist?: any;
@@ -25,17 +28,22 @@ class NewBookInSystem extends React.Component<NewBookInSystemProps> {
         dataSource={newbooklist.data}
         renderItem={(item: any) => (
           <Popover
-           
             content={
               <>
                 <Space direction="horizontal">
                   <Image
                     width={140}
                     height={215}
+                    style={{ borderRadius: 10 }}
                     src={item.image.length != 0 ? item.image[0].url : null}
                   />
 
-                  <Descriptions  className={styles.hoverDescription} style={{ width: 250 }} size="small" column={1}>
+                  <Descriptions
+                    className={styles.hoverDescription}
+                    style={{ width: 250 }}
+                    size="small"
+                    column={1}
+                  >
                     <Descriptions.Item label="Name">{item.name}</Descriptions.Item>
                     <Descriptions.Item label="Author">{item.author}</Descriptions.Item>
                     <Space style={{ cursor: 'pointer' }}>
@@ -54,8 +62,32 @@ class NewBookInSystem extends React.Component<NewBookInSystemProps> {
             placement={'right'}
           >
             <List.Item>
-              <Space>
-                <p>{item.name}</p>
+              <Space
+                direction="horizontal"
+                style={{ width: '100%', justifyContent: 'space-between' }}
+              >
+                <Space direction="vertical" size="small">
+                  <p style={{ marginBottom: 0 }}>
+                    <Text style={{ maxWidth: 350 }} ellipsis={true}>
+                      {item.name}
+                    </Text>
+                    <span style={{ color: 'rgba(0, 0, 0, .4)', fontStyle: 'italic' }}>
+                      {' '}
+                      - {item.author}
+                    </span>
+                  </p>
+                  <Space direction="horizontal" size="small">
+                    <p style={{ marginBottom: 0, color: 'rgba(0, 0, 0, .6)', fontStyle: 'italic' }}>
+                      Date Upload:{' '}
+                      {item.createdDate?.split('T')[0]}
+                   
+                    </p>
+                    <p style={{ marginBottom: 0 }}>
+                      <span style={{ color: 'rgba(0, 0, 0, .4)', fontStyle: 'italic' }}>By:</span>{' '}
+                      {item.staffName}
+                    </p>
+                  </Space>
+                </Space>
               </Space>
             </List.Item>
           </Popover>

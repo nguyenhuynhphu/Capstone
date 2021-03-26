@@ -17,6 +17,11 @@ export async function fetchNewestBookGroup(): Promise<any> {
 export async function fetchCategories(): Promise<any> {
   return request(`/api/Category`);
 }
+
+export async function fetchBookByCategory(cateId: number): Promise<any> {
+  return request(`/api/BookGroup?CategoryId=${cateId}`);
+}
+
 export async function insertCategory(values: any) {
   return request(`/api/Category`, {
     method: 'POST',

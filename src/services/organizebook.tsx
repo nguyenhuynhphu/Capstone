@@ -87,9 +87,11 @@ export async function addBookToDrawer(values: any): Promise<any> {
 }
 
 export async function removeBooksFromDrawer(values: any): Promise<any> {
+  console.log(values);
+  
   return request(`/api/Book`, {
     method: 'POST',
-    body: JSON.stringify([{isDeleted: 1, drawerId: null, id: values[0]}]),
+    body: JSON.stringify([{isDeleted: 1, barCode: values[0].barCode, isAvailable: values[0].isAvailable, drawerId: 1666, id: values[0]}]),
   });
 }
 ///api/BookDrawer?id=1&id=2

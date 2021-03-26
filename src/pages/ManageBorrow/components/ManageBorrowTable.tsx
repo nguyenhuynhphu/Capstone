@@ -51,8 +51,8 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
         title: 'End Time',
         dataIndex: 'endTime',
         key: 'endTime',
-width: 150,
-   
+        width: 150,
+
         render: (text: any, record: any) =>
           isLate(record.endTime) ? (
             <Popover
@@ -107,14 +107,14 @@ width: 150,
         dataIndex: 'quantity',
         key: 'quantity',
         align: 'center',
-        width: 100
+        width: 100,
       },
       {
         title: 'Total Fee',
         dataIndex: 'total',
         key: 'total',
         align: 'center',
-        width: 100
+        width: 100,
       },
     ];
 

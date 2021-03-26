@@ -8,7 +8,7 @@ class Test extends React.Component<{}> {
     return (
       <Space
         direction="vertical"
-        style={{ justifyContent: 'center', alignItems: 'center', width: '100vw', height: '100vh' }}
+        style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}
       >
      
         <Spin spinning style={{ fontSize: 80 }} />

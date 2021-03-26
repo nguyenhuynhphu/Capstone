@@ -56,6 +56,8 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@googlemaps/js-api-loader": "^1.11.1",
     "@microsoft/signalr": "^5.0.2",
+    "@nivo/bar": "^0.67.0",
+    "@nivo/core": "^0.67.0",
     "@umijs/route-utils": "^1.0.33",
     "antd": "^4.8.6",
     "axios": "^0.21.1",

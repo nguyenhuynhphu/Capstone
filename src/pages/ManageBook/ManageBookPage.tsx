@@ -1,6 +1,6 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-import { Row, Col, Button, Drawer, Modal, Space } from 'antd';
+import { Row, Col, Button, Drawer, Modal, Space, Spin } from 'antd';
 import React from 'react';
 
 import styles from './ManageBookPage.less';
@@ -16,6 +16,8 @@ import moment from 'moment';
 import TableHeader from '@/components/CustomDesign/TableHeader';
 import NewBookInSystem from './components/NewBookInSystem';
 import { RedoOutlined } from '@ant-design/icons';
+import { ResponsiveBar } from '@nivo/bar';
+import CategoriesChart from './components/CategoriesChart';
 
 interface ManageBookPageProps {
   dispatch: Dispatch;
@@ -23,6 +25,7 @@ interface ManageBookPageProps {
   managebook?: any;
   bookgrouptable?: any;
   user?: any;
+  categorieschart?: any;
 }
 
 interface ManageBookPageState {
@@ -80,10 +83,13 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
       type: 'managebook/fetchCategories',
       payload: {},
     });
+    this.props.dispatch({
+      type: 'categorieschart/fetchData',
+    });
   }
 
   render() {
-    const { managebook } = this.props;
+    const { managebook, categorieschart } = this.props;
     return (
       <>
         <PageHeaderWrapper style={{ marginBottom: '20px' }}></PageHeaderWrapper>
@@ -92,11 +98,32 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
             style={{
               backgroundColor: 'white',
               borderRadius: '15px',
+              padding: '20px 25px',
               width: 'calc(100% - 45% - 10px)',
+              height: 480,
             }}
           >
-         
+            <TableHeader title={'Book by Category'} description={''} />
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              {categorieschart.isLoading ? (
+                <Space direction="vertical" style={{alignItems: 'center'}}>
+                  <p style={{ marginBottom: 4 }}>Loading Chart</p>
+                  <Spin spinning />
+                </Space>
+              ) : (
+                <CategoriesChart />
+              )}
+            </div>
           </Col>
+
           <Col
             style={{
               width: '45%',
@@ -288,7 +315,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
   async handelSubmit(bookGroup: any) {
     const { dispatch, bookgrouptable, managebook } = this.props;
     console.log(managebook, bookGroup);
-    
+
     if (managebook.choiceBook.id != undefined) {
       //update
       bookGroup.quantity = managebook.choiceBook.quantity;

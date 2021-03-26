@@ -22,7 +22,9 @@ class Minimap extends React.Component<MinimapProps, MinimapState> {
 
   renderGrid() {
     var { selectedPart, organizebook } = this.props;
-    let width = 384 / organizebook.choiceBookShelf.col - 4;
+    let width = 250 / organizebook.choiceBookShelf.col - 4;
+    let height = 30;
+    let minWidth = 50;
     var tmp: any = [];
     var array2Dimesion: any = [];
     for (let i = 1; i < organizebook.choiceBookShelf.row + 1; i++) {
@@ -38,14 +40,24 @@ class Minimap extends React.Component<MinimapProps, MinimapState> {
           tmp.push(
             <div
               className={`items ${styles.minimapItem}`}
-              style={{ backgroundColor: 'rgba(255, 0, 0, .8)', width: width }}
-            ></div>
+              style={{ backgroundColor: 'rgba(255, 0, 0, .7)', width: width, height: height, minWidth: minWidth }}
+            ></div>,
           );
         } else {
-          tmp.push(<div className={`items ${styles.minimapItem}`} style={{ width: width }}></div>);
+          tmp.push(
+            <div
+              className={`items ${styles.minimapItem}`}
+              style={{ width: width, height: height, minWidth: minWidth }}
+            ></div>,
+          );
         }
       } else {
-        tmp.push(<div className={`items ${styles.minimapItem}`} style={{ width: width }}></div>);
+        tmp.push(
+          <div
+            className={`items ${styles.minimapItem}`}
+            style={{ width: width, height: height, minWidth: minWidth }}
+          ></div>,
+        );
       }
     }
 

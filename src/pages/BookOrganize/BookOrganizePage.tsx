@@ -12,9 +12,8 @@ import {
   Select,
   Badge,
   Divider,
-  Switch,
   Spin,
-  Skeleton,
+  Space,
 } from 'antd';
 import styles from './BookOrganizePage.less';
 import React from 'react';
@@ -23,7 +22,7 @@ import BookShelfTable from './components/BookShelf/BookShelfTable';
 import LocationTable from './components/Location/LocationTable';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import InputForm from './components/BookShelf/components/InputForm';
-import ViewForm from './components/BookShelf/components/ViewForm';
+
 import CustomBookShelf from './components/BookShelf/components/CustomBookShelf';
 import Minimap from './components/BookShelf/components/Minimap';
 import AddBookForm from './components/BookShelf/components/AddBookForm';
@@ -49,13 +48,6 @@ interface BookOrganizePageState {
   organizeBookVisible: boolean;
   selectedPart: any;
 }
-const DescriptionItem = ({ title, content }: any) => (
-  <div className="site-description-item-profile-wrapper">
-    <p className="site-description-item-profile-p-label">{title}:</p>
-    {content}
-  </div>
-);
-
 class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrganizePageState> {
   constructor(props: any) {
     super(props);
@@ -114,14 +106,14 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
       <>
         <PageHeaderWrapper style={{ marginBottom: '20px' }}></PageHeaderWrapper>
         <Row gutter={25}>
-          <Col span={16}>
+          <Col span={14}>
             <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
               <Col span={24}>
                 <BookShelfTable />
               </Col>
             </Row>
           </Col>
-          <Col span={8}>
+          <Col span={10}>
             <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
               <Col span={24}>
                 <LocationTable />
@@ -152,15 +144,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
         >
           <InputForm bookShelf={{}} />
         </Drawer>
-        <Drawer
-          title="Book shelf detail"
-          width={400}
-          closable={true}
-          onClose={this.hideViewBookShelf}
-          visible={this.state.viewBookShelfVisible}
-        >
-          <ViewForm bookShelf={null} />
-        </Drawer>
+        
         <Drawer
           title="Create book shelf"
           width={400}
@@ -333,12 +317,21 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
         >
           {!this.state.isEditLocation ? (
             <>
-              <Row>
-                <Col span={24}>
-                  <DescriptionItem title="Location" content={organizebook.choiceLocation.name} />
-                </Col>
-              </Row>
-              <Row>
+              <Space direction="vertical">
+                <Space direction="horizontal">
+                  <p>Location: </p>
+                  <p>{organizebook.choiceLocation.name}</p>
+                </Space>
+                <Space direction="horizontal">
+                  <p style={{marginBottom: 0}}>Color: </p>
+                  <Badge
+                    color={organizebook.choiceLocation.color}
+                    text={organizebook.choiceLocation.color}
+                  />
+                </Space>
+              </Space>
+
+              {/* <Row>
                 <Col span={24}>
                   <DescriptionItem
                     title="Color"
@@ -350,7 +343,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                     }
                   />
                 </Col>
-              </Row>
+              </Row> */}
             </>
           ) : (
             <>

@@ -1,15 +1,4 @@
-.bookShelfTable {
-  background-color: white;
-  padding: 15px 20px;
-}
-.bookShelfTable {
-  :global {
-    .ant-table-title {
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-    }
-  }
-}
+
 .buttonCustom {
   margin-left: 5px;
 }
@@ -32,7 +21,7 @@
       z-index: 999 !important;
       transition: none;
     }
-    .ant-table-body{
+    .ant-table-body {
       height: 500px !important;
       max-height: none !important;
     }
@@ -43,8 +32,31 @@
     .ant-table-body::-webkit-scrollbar-thumb {
       background: #888;
     }
-    .ant-table-placeholder{
+    .ant-table-placeholder {
       height: 500px;
+    }
+  }
+}
+.bookShelfTable {
+  :global {
+    .ant-table-thead > tr > th {
+      // height: 60px !important;
+      background-color: rgba(64, 169, 255, 0.2);
+    }
+    .ant-table-body{
+      height: 400px;
+    }
+  }
+}
+
+.locationTable {
+  :global {
+    .ant-table-thead > tr > th {
+      // height: 60px !important;
+      background-color: rgba(64, 169, 255, 0.2);
+    }
+    .ant-table-body{
+      height: 400px;
     }
   }
 }
