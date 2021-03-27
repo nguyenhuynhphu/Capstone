@@ -59,10 +59,6 @@ export async function insertBookGroup(values: any) {
 }
 
 export async function editBookGroup(values: any) {
-  console.log(values);
-
-  console.log(JSON.stringify(values));
-
   return request(`/api/BookGroup?id=${values.id}`, {
     method: 'PUT',
     body: JSON.stringify(values),

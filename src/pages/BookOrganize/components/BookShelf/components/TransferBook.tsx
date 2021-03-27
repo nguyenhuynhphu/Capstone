@@ -1,19 +1,31 @@
-import { Transfer, Button, Space, Spin, Table, Row, Col, Result } from 'antd';
+import TableHeader from '@/components/CustomDesign/TableHeader';
+import { AppstoreAddOutlined, CloseOutlined, CloseSquareOutlined } from '@ant-design/icons';
+import { Transfer, Button, Space, Spin, Table, Row, Col, Result, Tooltip, Typography } from 'antd';
 import Search from 'antd/lib/input/Search';
-import Title from 'antd/lib/typography/Title';
+
 import React from 'react';
 import { connect, Dispatch } from 'umi';
 import styles from '../BookShelfTable.less';
 const columns = [
   {
-    title: 'Book Name',
-    dataIndex: 'bookName',
-    width: 150,
+    title: '#ID',
+    dataIndex: 'id',
+    width: 40,
   },
   {
-    title: 'Book Id',
-    dataIndex: 'id',
-    width: 150,
+    title: 'Book Name',
+    dataIndex: 'bookName',
+    width: 200,
+    render: (text: any) => (
+      <Typography.Text ellipsis={true} style={{ width: 200 }}>
+        {text}
+      </Typography.Text>
+    ),
+  },
+  {
+    title: 'Barcode',
+    dataIndex: 'barCode',
+    width: 70,
   },
 ];
 
@@ -59,32 +71,28 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
           }}
         >
           <Spin spinning={transferbook.isLoading}>
-            <Title level={3} className={styles.titleTransfer}>
-              Books In System
-            </Title>
-            <Row>
-              <Col span={10}>
-                <Search
-                  size="small"
-                  placeholder="Input Book Name"
-                  style={{ width: 180, marginBottom: 5 }}
-                  onSearch={(value) => {
-                    dispatch({
-                      type: 'transferbook/fetchData',
-                      payload: {
-                        bookGroupId: '',
-                        drawerId: '',
-                        isInDrawer: false,
-                        pageNumber: transferbook.paginationBook.current,
-                        filterName: value, // ddoanj nay roi lam, cai State cua no trong kia khac nhung param truyeen ve server la filter Name
-                        pagination: transferbook.paginationBook.current,
-                      },
-                    });
-                  }}
-                  enterButton
-                />
-              </Col>
-            </Row>
+            <Space style={{ width: '100%', justifyContent: 'space-between', margin: '10px 0' }}>
+              <TableHeader title="Books In System" description="All books in system" />
+              <Search
+                placeholder="Input Book Name"
+                style={{ width: 180, marginBottom: 5 }}
+                onSearch={(value) => {
+                  dispatch({
+                    type: 'transferbook/fetchData',
+                    payload: {
+                      bookGroupId: '',
+                      drawerId: '',
+                      isInDrawer: false,
+                      pageNumber: transferbook.paginationBook.current,
+                      filterName: value, // ddoanj nay roi lam, cai State cua no trong kia khac nhung param truyeen ve server la filter Name
+                      pagination: transferbook.paginationBook.current,
+                    },
+                  });
+                }}
+                enterButton
+              />
+            </Space>
+
             <Table
               size={'small'}
               columns={columns}
@@ -106,12 +114,12 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
               }}
               rowSelection={rowBooksSelection}
               scroll={{ y: 240 }}
-              className={styles.tableCustome}
+              className={styles.decoTable}
             />
             <Button
               style={{
                 position: 'absolute',
-                bottom: 22,
+                bottom: 7,
                 right: 10,
                 transition: 'all 0.2s',
                 opacity: transferbook.selectedBooks.length != 0 ? 1 : 0,
@@ -133,17 +141,16 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
         >
           {drawergrid.selectDrawer != undefined ? (
             <>
-
               <Spin spinning={transferbook.isLoadingDrawer}>
-                <Title level={3} className={styles.titleTransfer}>
-                  Selected Drawer: {drawergrid.selectDrawer.id}
-                </Title>
-                <Row>
-                  <Col span={12}>
+                <Space style={{ width: '100%', justifyContent: 'space-between', margin: '10px 0' }}>
+                  <TableHeader
+                    title={`Drawer: #${drawergrid.selectDrawer.id}`}
+                    description="Books in Drawer"
+                  />
+                  <Space direction="horizontal">
                     <Search
-                      size="small"
                       placeholder="Input Book Name"
-                      style={{ width: 180, marginBottom: 5 }}
+                      style={{ width: 180 }}
                       onSearch={(value) => {
                         dispatch({
                           type: 'transferbook/fetchBooksInDrawer',
@@ -159,17 +166,23 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
                       }}
                       enterButton
                     />
-                  </Col>
-                  {this.props.user.currentUser.roleId != 1 ? (
-                    <Col span={12} style={{ textAlign: 'right' }}>
-                      <Button size="small" type={'primary'} onClick={this.displayBookDrawer}>
-                        {transferbook.allBooksVisible == '0px' ? 'Add Books' : 'Hide Books'}
+                    {this.props.user.currentUser.roleId != 1 ? (
+                      <Button type={'primary'} onClick={this.displayBookDrawer}>
+                        {transferbook.allBooksVisible == '0px' ? (
+                          <Tooltip placement="bottomLeft" title={'Add books'}>
+                            <AppstoreAddOutlined style={{ fontSize: 18 }} />
+                          </Tooltip>
+                        ) : (
+                          <Tooltip placement="bottomLeft" title={'Cancel'}>
+                            <CloseOutlined style={{ fontSize: 18 }} />
+                          </Tooltip>
+                        )}
                       </Button>
-                    </Col>
-                  ) : (
-                    <></>
-                  )}
-                </Row>
+                    ) : (
+                      <></>
+                    )}
+                  </Space>
+                </Space>
                 <Table
                   size={'small'}
                   columns={columns}
@@ -191,12 +204,12 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
                     });
                   }}
                   scroll={{ y: 240 }}
-                  className={styles.tableCustome}
+                  className={styles.decoTable}
                 />
                 <Button
                   style={{
                     position: 'absolute',
-                    bottom: 25,
+                    bottom: 7,
                     right: 10,
                     transition: 'all 0.2s',
                     opacity: transferbook.selectedBooksDrawer.length != 0 ? 1 : 0,
@@ -231,7 +244,7 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
     promises.push(
       dispatch({
         type: 'transferbook/removeBookToDrawer',
-        payload: transferbook.selectedBooksDrawer,
+        payload: { data: transferbook.selectedBooksDrawer, drawerId: drawergrid.selectDrawer.id },
       }),
       promises.push(
         dispatch({

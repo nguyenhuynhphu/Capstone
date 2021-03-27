@@ -68,7 +68,6 @@ export const isAntDesignProOrDev = (): boolean => {
 export const isLate = (orgTime: any) => {
   var momentOrgTime = moment(orgTime);
   if(moment().diff(momentOrgTime, 'days') < 0){
-    console.log(moment().diff(momentOrgTime, 'days'))
     return false;
   }
   return true;

@@ -194,8 +194,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
   initForm() {
     const { managebook } = this.props;
     if (managebook.choiceBook != undefined) {
-      console.log("CURRENT >>>>", managebook.choiceBook);
-      
+
       this.props.formRef.current?.setFieldsValue({
         name: managebook.choiceBook.name,
         author: managebook.choiceBook.author,

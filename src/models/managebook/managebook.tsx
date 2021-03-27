@@ -243,8 +243,6 @@ const ManageBookModel: ManageBookType = {
     //#region Forms
     displayViewBook(state, { payload }) {
       if (payload.visible == true) {
-        console.log('PASSING PAYLOAD == ', payload);
-
         return {
           ...state,
           viewBookVisible: payload.visible,

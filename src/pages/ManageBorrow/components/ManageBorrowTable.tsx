@@ -44,14 +44,14 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
         title: 'Start Time',
         dataIndex: 'startTime',
         key: 'startTime',
-
+        width: 130,
         render: (text: any) => <p style={{ marginBottom: 0 }}>{text.split('T')[0]}</p>,
       },
       {
         title: 'End Time',
         dataIndex: 'endTime',
         key: 'endTime',
-        width: 150,
+        width: 130,
 
         render: (text: any, record: any) =>
           isLate(record.endTime) ? (
@@ -107,14 +107,14 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
         dataIndex: 'quantity',
         key: 'quantity',
         align: 'center',
-        width: 100,
+        width: 90
       },
       {
-        title: 'Total Fee',
+        title: 'Total',
         dataIndex: 'total',
         key: 'total',
         align: 'center',
-        width: 100,
+        width: 80
       },
     ];
 

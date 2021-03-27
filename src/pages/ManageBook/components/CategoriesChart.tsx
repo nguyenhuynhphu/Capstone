@@ -10,38 +10,6 @@ interface CategoriesChartProps {
   categorieschart?: any;
 }
 
-const data: any = [
-  {
-    category: 'AL',
-    'hot dog': 8,
-    'hot dogColor': 'hsl(243, 70%, 50%)',
-    burger: 17,
-    burgerColor: 'hsl(249, 70%, 50%)',
-    sandwich: 94,
-    sandwichColor: 'hsl(112, 70%, 50%)',
-    kebab: 17,
-    kebabColor: 'hsl(107, 70%, 50%)',
-    fries: 162,
-    friesColor: 'hsl(112, 70%, 50%)',
-    donut: 94,
-    donutColor: 'hsl(232, 70%, 50%)',
-  },
-  {
-    category: 'AM',
-    'hot dog': 11,
-    'hot dogColor': 'hsl(215, 70%, 50%)',
-    burger: 83,
-    burgerColor: 'hsl(153, 70%, 50%)',
-    sandwich: 81,
-    sandwichColor: 'hsl(312, 70%, 50%)',
-    kebab: 76,
-    kebabColor: 'hsl(147, 70%, 50%)',
-    fries: 150,
-    friesColor: 'hsl(122, 70%, 50%)',
-    donut: 133,
-    donutColor: 'hsl(26, 70%, 50%)',
-  },
-];
 class CategoriesChart extends React.Component<CategoriesChartProps, {}> {
 
   render() {

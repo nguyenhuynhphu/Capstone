@@ -1,9 +1,10 @@
-import { Badge, Space, Spin } from 'antd';
+import { Badge, Card, Space, Spin } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import styles from '../BookShelfTable.less';
 import ScrollContainer from 'react-indiana-drag-scroll';
 import { connect, Dispatch } from 'umi';
+import DrawerItem from './DrawerItem';
 
 interface CustomBookShelfProps {
   dispatch: Dispatch;
@@ -28,23 +29,18 @@ class CustomBookShelf extends React.Component<CustomBookShelfProps, CustomBookSh
 
     var tmp: any = [];
     drawergrid.data.forEach((drawer: any, index: number) => {
+      
       tmp.push(
-        <Badge.Ribbon text={'15'}>
+        <Card.Grid
+          style={{
+            width: 'calc(33.33333% - 10px)',
+            padding: '5px 15px',
+            cursor: 'pointer',
+            margin: '5px'
+          }}
+        >
           <div
-            key={drawer.key}
-            className={`${styles.item} buttonActive`}
-            onClick={(event) => {
-              var buttons = document.getElementsByClassName('buttonActive');
-              for (let i = 0; i < buttons.length; i++) {
-                const element = buttons[i];
-                element.classList.remove('active');
-              }
-              if (event.target.tagName.toLowerCase() === 'div') {
-                event.target.classList.add('active');
-              } else {
-                event.target.parentNode.classList.add('active');
-              }
-
+            onClick={() => {
               this.props
                 .dispatch({
                   type: 'drawergrid/onSelectDrawer',
@@ -65,41 +61,17 @@ class CustomBookShelf extends React.Component<CustomBookShelfProps, CustomBookSh
                 });
             }}
           >
-            <Space direction='vertical'>
-              <p style={{ margin: 0, fontSize: 20, color: '#1890FF' }}>ID: {drawer.id}</p>
-              <p style={{ margin: 0, fontSize: 20, color: '#1890FF' }}>#{drawer.barcode}</p>
-            </Space>
+            <DrawerItem drawer={drawer} />
           </div>
-        </Badge.Ribbon>,
+        </Card.Grid>,
       );
     });
     return tmp;
   }
 
   render() {
-    var { organizebook } = this.props;
-    var auto = '';
-    for (
-      let index = 0;
-      index < organizebook.bookshelfLocate.colEnd - organizebook.bookshelfLocate.colStart + 1;
-      index++
-    ) {
-      auto += 'auto ';
-    }
-
     return (
-      <>
-        <ScrollContainer
-          className={styles.bookShelfSection}
-          vertical={true}
-          horizontal={true}
-          hideScrollbars={false}
-        >
-          <div className={styles.grid} style={{ gridTemplateColumns: auto }}>
-            {this.renderGrid()}
-          </div>
-        </ScrollContainer>
-      </>
+      <Card style={{ border: 'none'}}>{this.renderGrid()}</Card>
     );
   }
 }

@@ -18,7 +18,7 @@ export async function deleteBookShelf(bookshelfs: any) {
   bookshelfs.forEach((id: any) => {
     tmp += `id=${id}&`;
   });
-  console.log("TMP: " + tmp);
+
   return request(`/api/BookShelf?` + tmp, {
     method: 'DELETE',
   });

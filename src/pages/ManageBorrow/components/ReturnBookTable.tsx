@@ -31,7 +31,7 @@ class ReturnBookTable extends React.Component<ReturnBookTableProps> {
         title: 'Name',
         dataIndex: 'customerId',
         key: 'customerId',
-width: 200,
+        width: 200,
         render: (text: string, record: any) => (
           <Space>
             <Avatar size={50} src={record.image} />
@@ -39,17 +39,20 @@ width: 200,
           </Space>
         ),
       },
-     
+
       {
         title: 'Return Time',
         dataIndex: 'returnTime',
         key: 'returnTime',
+        width: 90,
         render: (text: any) => <p style={{ marginBottom: 0 }}>{text.split('T')[0]}</p>,
       },
       {
         title: 'Total',
-        dataIndex: 'total',
-        key: 'total',
+        dataIndex: 'fee',
+        key: 'fee',
+        align: 'center',
+        width: 80,
       },
     ];
 
@@ -64,10 +67,10 @@ width: 200,
           }}
         >
           <TableHeader title="List Return" description="List return detail" />
-          {/* <Search
+          <Search
             placeholder="Type customer name"
             enterButton="Search"
-            style={{ width: 350 }}
+            style={{ width: 250 }}
             suffix={<UserOutlined style={{ color: '#40A9FF' }} />}
             onSearch={(value) =>
               this.props.dispatch({
@@ -78,10 +81,9 @@ width: 200,
                 },
               })
             }
-          /> */}
+          />
         </Space>
         <Table
-
           columns={column}
           dataSource={returnbooktable.data}
           loading={returnbooktable.isLoading}

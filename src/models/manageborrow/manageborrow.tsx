@@ -1,4 +1,5 @@
 import { confirmBorrow, fetchBorrowDetail, fetchCustomer } from '@/services/manageborrow';
+import _ from 'lodash';
 import { Effect, ManageBookState, Reducer } from 'umi';
 
 export interface ManageBorrowState {
@@ -10,6 +11,7 @@ export interface ManageBorrowState {
 
   processStep: number;
 
+  scanId: any;
   wishlist: any;
   customer: any;
   borrowDetail: any;
@@ -26,7 +28,6 @@ export interface ManageBorrowType {
     loadWishlist: Effect;
 
     fetchBorrowDetail: Effect;
-      
 
     confirmBorrow: Effect;
   };
@@ -40,7 +41,9 @@ export interface ManageBorrowType {
     renderReturnScreen: Reducer;
     loading: Reducer;
 
-    loadBorrowDetail: Reducer;  
+    addToScanId: Effect;
+
+    loadBorrowDetail: Reducer;
     anotherBorrowRequest: Reducer;
   };
 }
@@ -55,7 +58,8 @@ const ManageBorrowModel: ManageBorrowType = {
     processStep: 0,
     wishlist: {},
     customer: {},
-    borrowDetail: []
+    borrowDetail: [],
+    scanId: [],
   },
   effects: {
     *changeScreen({ payload }, { call, put }) {
@@ -88,13 +92,12 @@ const ManageBorrowModel: ManageBorrowType = {
     },
     *fetchBorrowDetail({ payload }, { call, put }) {
       const response = yield call(fetchBorrowDetail, payload);
-    
+
       yield put({
         type: 'loadBorrowDetail',
         payload: response.data,
       });
     },
-    
   },
   reducers: {
     resetState(state) {
@@ -119,6 +122,24 @@ const ManageBorrowModel: ManageBorrowType = {
         ...state,
         processStep: payload,
       };
+    },
+
+    addToScanId(state, { payload }) {
+      console.log('>>>>>>>>>>>>', state.scanId);
+      var tmp;
+      payload.forEach((book: any) => {
+        tmp = state.scanId.find((x: any) => x.bookGroupId == book.bookGroupId);
+      });
+      if (tmp == undefined) {
+        return {
+          ...state,
+          scanId: _.concat(state.scanId, payload),
+        };
+      } else {
+        return {
+          ...state,
+        };
+      }
     },
 
     renderWishList(state, { payload }) {
@@ -161,7 +182,6 @@ const ManageBorrowModel: ManageBorrowType = {
     },
 
     loadBorrowDetail(state, { payload }) {
-
       return {
         ...state,
         borrowDetail: payload,

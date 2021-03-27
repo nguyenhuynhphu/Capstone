@@ -24,7 +24,7 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import InputForm from './components/BookShelf/components/InputForm';
 
 import CustomBookShelf from './components/BookShelf/components/CustomBookShelf';
-import Minimap from './components/BookShelf/components/Minimap';
+
 import AddBookForm from './components/BookShelf/components/AddBookForm';
 import TransferBook from './components/BookShelf/components/TransferBook';
 
@@ -178,21 +178,13 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
           placement={'bottom'}
           bodyStyle={{ padding: 0 }}
         >
-          <Row style={{ height: '100%' }} className={'organizeRow'}>
-            <Col span={6} style={{ height: '100%', borderRight: '1px solid rgba(0, 0, 0, 0.2)' }}>
+          <Row style={{ height: 670 }} className={'organizeRow'}>
+            <Col span={7} style={{ height: '100%', borderRight: '1px solid rgba(0, 0, 0, 0.2)' }}>
               <AddBookForm onPassingFilter={this.onPassingFilter} />
-              <Divider orientation="left" style={{ marginBottom: 4 }}>
-                Minimap
-              </Divider>
-              <Row>
-                <Col className={'calcCol'} span={24} style={{ textAlign: 'center' }}>
-                  <Minimap selectedPart={organizebook.bookshelfLocate} />
-                </Col>
-              </Row>
             </Col>
             <Col
-              span={12}
-              style={{ height: 675, transition: 'all 0.5s' }}
+              span={10}
+              style={{ height: 670, transition: 'all 0.5s', overflow: 'auto' }}
               className={styles.spinningCustom}
             >
               <Spin
@@ -204,7 +196,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
               </Spin>
             </Col>
             <Col
-              span={6}
+              span={7}
               className={styles.spinningCustom}
               style={{
                 position: 'relative',

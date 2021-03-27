@@ -144,6 +144,7 @@ const TransferModel: TransferBookType = {
     *insertBookToDrawer({ payload }, { call }) {
       let arrayLength = payload.data;
       let tmp: any = [];
+
       arrayLength.forEach((ele: any) => {
         tmp.push({
           id: ele,
@@ -155,7 +156,18 @@ const TransferModel: TransferBookType = {
     },
 
     *removeBookToDrawer({ payload }, { call }) {
-      yield call(removeBooksFromDrawer, payload);
+      let arrayLength = payload.data;
+      let tmp: any = [];
+      console.log(payload);
+      
+      arrayLength.forEach((ele: any) => {
+        tmp.push({
+          id: ele,
+          drawerId: null,
+        })
+      });
+
+      yield call(removeBooksFromDrawer, tmp);
     },
 
     *showAllBooks({ payload }, { call, put }) {

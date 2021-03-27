@@ -36,7 +36,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
   }
 
   render() {
-    console.log(this.state.fileList);
+
     return (
       <Form
         ref={this.props.formRef}
@@ -156,7 +156,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         name: 'Current avatar',
         url: libarianpage.choiceLibarian.image,
       };
-      console.log('TMP >>>>', tmp);
+
 
       this.setState({ fileList: [tmp] });
     }

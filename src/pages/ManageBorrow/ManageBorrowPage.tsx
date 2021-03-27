@@ -16,6 +16,7 @@ import {
   Input,
   Table,
   Select,
+  Descriptions,
 } from 'antd';
 import React from 'react';
 
@@ -26,13 +27,18 @@ import ViewForm from './components/ViewForm';
 import Form, { FormInstance } from 'antd/lib/form';
 import ManageBorrowTable from './components/ManageBorrowTable';
 import { getWishlist } from '@/utils/Signalr';
-import { fecthDrawer, fetchBooks } from '@/services/manageborrow';
+import { fecthDrawer, fetchBookByBarcode, fetchBooks } from '@/services/manageborrow';
 import Title from 'antd/lib/typography/Title';
 import styles from './ManageBorrowPage.less';
 import moment from 'moment';
 import Column from 'antd/lib/table/Column';
 import { fetchDrawer } from '@/services/organizebook';
 import ReturnBookTable from './components/ReturnBookTable';
+import ReturnFeeChart from './components/ReturnFeeChart';
+import TableHeader from '@/components/CustomDesign/TableHeader';
+import ManageBorrowStatistic from './components/ManageBorrowStatistic';
+import { LoadingOutlined } from '@ant-design/icons';
+import _ from 'lodash';
 
 // import moment from 'moment';
 const { Step } = Steps;
@@ -43,6 +49,8 @@ interface ManageBorrowPageProps {
   manageborrowtable?: any;
   manageborrow?: any;
   user?: any;
+  returnfeechart?: any;
+  manageborrowstatistic?: any;
 }
 interface ManageBorrowPageState {
   form: any;
@@ -59,7 +67,10 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
 
     this.hideViewBorrow = this.hideViewBorrow.bind(this);
   }
-
+  componentDidMount() {
+    this.props.dispatch({ type: 'returnfeechart/fetchData' });
+    this.props.dispatch({ type: 'manageborrowstatistic/fetchData' });
+  }
   render() {
     const { manageborrow, dispatch } = this.props;
 
@@ -133,29 +144,28 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     if (manageborrow.isMakingTransaction) {
       return (
         <Spin spinning={manageborrow.screenLoading}>
-          <Row style={{ backgroundColor: 'white', padding: '25px 20px', minHeight: 500 }}>
-            <Col
-              span={6}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'auto',
-                alignItems: 'center',
-                paddingLeft: 20,
-                borderRight: '0.5px solid rgba(0, 0, 0, .1)',
-              }}
-            >
-              <Steps
-                direction="vertical"
-                current={this.props.manageborrow.processStep}
-                style={{ height: '100%', transform: 'translateY(50px)' }}
-              >
-                <Step title="Getting Wishlist" />
+          <Row style={{ backgroundColor: 'white', padding: '30px 70px', marginBottom: 2 }}>
+            <Col span={24}>
+              <Steps direction="horizontal" current={this.props.manageborrow.processStep}>
+                <Step
+                  title="Scanning"
+                  description={
+                    this.props.manageborrow.isConnect ? (
+                      <LoadingOutlined style={{ marginLeft: 20 }} />
+                    ) : (
+                      ''
+                    )
+                  }
+                />
                 <Step title="Checking Wishlist" />
                 <Step title="Complete !" />
               </Steps>
             </Col>
+          </Row>
+
+          <Row style={{ backgroundColor: 'white', padding: '25px 20px', minHeight: 500 }}>
             <Col
-              span={18}
+              span={24}
               style={{ height: '100% !important', display: 'grid', alignItems: 'center' }}
             >
               {this.handelStep(this.props.manageborrow.processStep)}
@@ -193,27 +203,76 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     } else {
       return (
         <Spin spinning={manageborrow.screenLoading}>
-          <Row gutter={15} style={{marginBottom: 15}}>
-            <Col span={10}>
-              <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
-                
+          <Row gutter={15} style={{ marginBottom: 15 }}>
+            <Col span={10} style={{ height: 500 }}>
+              <Row
+                style={{
+                  height: '100%',
+                  backgroundColor: 'white',
+                  borderRadius: '15px',
+                  padding: '20px 25px',
+                }}
+              >
+                <TableHeader title="Overview" description="" />
+                {this.props.manageborrowstatistic.isLoading ? (
+                  <Space
+                    direction="vertical"
+                    style={{
+                      alignItems: 'center',
+                      width: '100%',
+                      height: '100%',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <p style={{ marginBottom: 4 }}>Loading</p>
+                    <Spin spinning />
+                  </Space>
+                ) : (
+                  <ManageBorrowStatistic />
+                )}
               </Row>
             </Col>
-            <Col span={14}>
-              <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
-                
+            <Col span={14} style={{ height: 500 }}>
+              <Row
+                style={{
+                  height: '100%',
+                  backgroundColor: 'white',
+                  borderRadius: '15px',
+                  padding: '20px 25px',
+                }}
+              >
+                <div>
+                  <TableHeader title="Return Fee" description="Total fee rerturn earn by month" />
+                </div>
+
+                {this.props.returnfeechart.isLoading ? (
+                  <Space
+                    direction="vertical"
+                    style={{
+                      alignItems: 'center',
+                      width: '100%',
+                      height: '100%',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <p style={{ marginBottom: 4 }}>Loading Chart</p>
+                    <Spin spinning />
+                  </Space>
+                ) : (
+                  <ReturnFeeChart />
+                )}
               </Row>
             </Col>
           </Row>
           <Row gutter={15}>
-            <Col span={9}>
+            <Col span={10}>
               <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
                 <Col span={24}>
                   <ReturnBookTable />
                 </Col>
               </Row>
             </Col>
-            <Col span={15}>
+            <Col span={14}>
               <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
                 <Col span={24}>
                   <ManageBorrowTable />
@@ -296,7 +355,6 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                           placeholder="Select drawer"
                           style={{ width: 150 }}
                           onChange={(bookId: any) => {
-                   
                             item.data.choiceBook = bookId;
                           }}
                         >
@@ -409,7 +467,8 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
   }
 
   openConnection() {
-    this.props.dispatch({
+    const { dispatch } = this.props;
+    dispatch({
       type: 'manageborrow/renderButton',
       payload: true,
     });
@@ -417,15 +476,47 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
       connection
         .start()
         .then((value) => {
-          connection.on('ReceiveMessage', (value) => {
-            if (value.staffId !== this.props.user.currentUser.id) {
-      
-              this.fetchWishList(value.wishlist, 1);
-            }
-          });
-          connection.on('ReceiveMessageToReturn', (value) => {
+          connection.on('ReceiveMessageToBorrow', async (value) => {
+            //tunwgf cuoons
             if (value.staffId !== this.props.user.currentUser.id) {
 
+              var book: any = await fetchBookByBarcode(value.barcode);
+
+              if (book.data[0] != undefined) {
+                dispatch({
+                  type: 'manageborrow/addToScanId',
+                  payload: [book.data[0]],
+                });
+                this.fetchWishList(undefined);
+              }
+            }
+          });
+          connection.on('ReceiveMessage', async (value) => {
+            //wishlist
+
+            if (value.staffId !== this.props.user.currentUser.id) {
+              var promiese: any = [];
+              if (value.wishlist != undefined) {
+                value.wishlist.forEach((id: any) => {
+                  promiese.push(fetchBooks(id));
+                });
+                var tmp = await Promise.all(promiese);
+                var bookgroupList: any = [];
+                tmp.forEach((notConvertData: any) => {
+                  bookgroupList.push(notConvertData.data);
+                });
+
+                dispatch({
+                  type: 'manageborrow/addToScanId',
+                  payload: bookgroupList,
+                });
+                this.fetchWishList(value.customerId);
+              }
+            }
+          });
+
+          connection.on('ReceiveMessageToReturn', (value) => {
+            if (value.staffId !== this.props.user.currentUser.id) {
               this.props.dispatch({
                 type: 'manageborrow/fetchBorrowDetail',
                 payload: value.borrowId,
@@ -447,32 +538,41 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     }
   }
 
-  fetchWishList(listId: any, customerId: any) {
-    var total = 0;
+  fetchWishList(customerId: any) {
+    const { dispatch, manageborrow } = this.props;
+
     var promiese: any = [];
-    var promiese2: any = [];
-    listId.forEach((id: any) => {
-      promiese.push(fetchBooks(id));
-      promiese2.push(fecthDrawer(id));
+    var bookgroupArr: any = [];
+
+    manageborrow.scanId.forEach((book: any) => {
+      if (book.drawerId == undefined) {
+        bookgroupArr.push(book);
+        promiese.push(fecthDrawer(book.id));
+      }
     });
-
+    console.log("manageborrow.scanId", manageborrow.scanId);
+    console.log("bookgroupArr", bookgroupArr);
+    
+    _.pullAll(manageborrow.scanId, bookgroupArr);
     Promise.all(promiese)
-      .then((value1: any) => {
-        Promise.all(promiese2).then((value2) => {
-
-          for (let i = 0; i < value1.length; i++) {
-            value1[i].data.drawer = value2[i];
-          }
-          this.props.dispatch({ type: 'manageborrow/fetchCustomer', payload: customerId });
-          this.props.dispatch({ type: 'manageborrow/renderWishList', payload: value1 });
-          this.props.dispatch({ type: 'manageborrow/changeProcess', payload: 1 });
-        });
+      .then((value: any) => {
+        for (let i = 0; i < bookgroupArr.length; i++) {
+          bookgroupArr[i].drawer = value[i];
+        }
+        _.merge(manageborrow.scanId, bookgroupArr);
+        console.log("FINAL >>>", manageborrow.scanId);
+        
+        // if (customerId != undefined) {
+        //   dispatch({ type: 'manageborrow/fetchCustomer', payload: customerId });
+        // }
+        // dispatch({ type: 'manageborrow/renderWishList', payload: value1 });
+        // dispatch({ type: 'manageborrow/changeProcess', payload: 1 });
       })
       .then(() => {
-        this.setState({ totalFee: total });
-        if (connection) {
-          connection.stop();
-        }
+        // this.setState({ totalFee: total });
+        // if (connection) {
+        //   connection.stop();
+        // }
       });
   }
 
@@ -488,7 +588,6 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
 
     var tmp: any = [];
     manageborrow.wishlist.forEach((bookGroup: any) => {
-
       tmp.push({
         bookId: bookGroup.data.choiceBook,
       });

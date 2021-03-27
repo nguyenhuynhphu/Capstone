@@ -51,6 +51,7 @@ class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRe
   componentDidMount() {
     this.props.dispatch({
       type: 'uploadrecordtable/fetchData',
+      payload: {filterName: '', pagination: 1}
     });
   }
 

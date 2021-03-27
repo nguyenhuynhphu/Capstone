@@ -36,8 +36,10 @@ const UploadRecordTableModel: UploadRecordTableType = {
       yield put({
         type: 'isLoading',
       });
+      console.log(payload);
+      
+      if(payload.filterName == undefined) payload.filterName = '';
       const response = yield call(fetchRecord, payload);
-     
       yield put({
         type: 'loadData',
         payload: { response: response, filter: payload },
@@ -53,29 +55,20 @@ const UploadRecordTableModel: UploadRecordTableType = {
     },
     loadData(state, { payload }) {
       const { response, filter } = payload;
-      response.data.forEach((record: any) => {
-        record.key = record.id;
+
+      response.data.forEach((bookGroup: any) => {
+        bookGroup.key = bookGroup.id;
       });
-      
-      if (filter != undefined) {
-        response.data.forEach((bookGroup: any) => {
-          bookGroup.key = bookGroup.id;
-        });
-        return {
-          ...state,
-          filterName: filter.filterName,
-          data: response.data,
-          pagination: {
-            current: filter.pagination,
-            total: response.meta.totalCount,
-          },
-          isLoading: false,
-        };
-      } else {
-        return {
-          ...state,
-        };
-      }
+      return {
+        ...state,
+        filterName: filter.filterName,
+        data: response.data,
+        pagination: {
+          current: filter.pagination,
+          total: response.meta.totalCount,
+        },
+        isLoading: false,
+      };
     },
   },
 };

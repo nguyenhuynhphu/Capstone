@@ -1,14 +1,15 @@
 import { fetchAllBookGroup, fetchBookByCategory, fetchCategories } from '@/services/bookgroup';
+import { fetchEarnByMonth } from '@/services/manageborrow';
 import { Effect, Reducer } from 'umi';
 
-export interface CategoriesChartState {
+export interface ReturnfeechartState {
   data: any;
   isLoading: boolean;
 }
 
-export interface CategoriesChartType {
+export interface ReturnfeechartType {
   namespace: string;
-  state: CategoriesChartState;
+  state: ReturnfeechartState;
   effects: {
     fetchData: Effect;
   };
@@ -18,8 +19,8 @@ export interface CategoriesChartType {
   };
 }
 
-const CategoriesChartModel: CategoriesChartType = {
-  namespace: 'categorieschart',
+const ReturnfeechartModel: ReturnfeechartType = {
+  namespace: 'returnfeechart',
   state: {
     data: [],
     isLoading: false,
@@ -30,21 +31,16 @@ const CategoriesChartModel: CategoriesChartType = {
         type: 'isLoading',
         payload: {},
       });
-      const listCategories = yield call(fetchCategories, payload);
-      var tmp: any = [];
-      for (let i = 0; i < listCategories.data.length; i++) {
-        const cate = listCategories.data[i];
-        var response = yield call(fetchBookByCategory, cate.id);
-        tmp.push({
-          category: listCategories.data[i].name,
-          total: response.meta.totalCount,
-        });
-      }
+
+      const listValue = yield call(fetchEarnByMonth, payload);
+      listValue.data.forEach((data: any) => {
+        data.returnTime = `${data.returnTime.split('-')[1]}/${data.returnTime.split('-')[0]}`
+      });
 
       //   const response = yield call(fetchAllBookGroup, payload);
       yield put({
         type: 'loadData',
-        payload: tmp,
+        payload: listValue.data,
       });
     },
   },
@@ -65,4 +61,4 @@ const CategoriesChartModel: CategoriesChartType = {
   },
 };
 
-export default CategoriesChartModel;
+export default ReturnfeechartModel;

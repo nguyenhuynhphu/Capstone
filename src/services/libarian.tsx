@@ -4,8 +4,7 @@ export async function fetchLibarians({filterName, pagination}: any): Promise<any
   return request(`/api/Staff?Name=${filterName}&PageNumber=${pagination}`);
 }
 export async function insertLibarian(values: any) {
-  console.log("values >>", values);
-  console.log("values >>", JSON.stringify(values));
+
   return request('/api/Staff', {
     method: 'POST',
     body: JSON.stringify(values),
@@ -25,7 +24,7 @@ export async function deleteLibarian(bookshelfs: any) {
   bookshelfs.forEach((id: any) => {
     tmp += `id=${id}&`;
   });
-  console.log("TMP: " + tmp);
+
   return request(`/api/Staff?` + tmp, {
     method: 'DELETE',
   });

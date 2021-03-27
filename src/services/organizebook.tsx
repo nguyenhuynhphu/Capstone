@@ -33,12 +33,11 @@ export async function fetchLocation(params: LocationParamsType): Promise<any> {
 }
 
 export async function insertLocation(values: any): Promise<any> {
-  console.log("PAYLOAD ========= ", JSON.stringify(values));
-  
-  // return request('/api/Location', {
-  //   method: 'POST',
-  //   body: JSON.stringify(values),
-  // });
+
+  return request('/api/Location', {
+    method: 'POST',
+    body: JSON.stringify(values),
+  });
 }
 
 export async function editLocation(values: any): Promise<any> {
@@ -63,7 +62,7 @@ export async function fetchBookShelf(params: BookShelfParamsType): Promise<any> 
 }
 
 export async function insertBookShelf(values: any): Promise<any> {
-  console.log("PAYLOAD ========= ", JSON.stringify(values));
+
   return request('/api/BookShelf', {
     method: 'POST',
     body: JSON.stringify(values),
@@ -80,6 +79,8 @@ export async function fetchBookInSystem(params: TransferBookParamsType): Promise
 }
 
 export async function addBookToDrawer(values: any): Promise<any> {
+  console.log(JSON.stringify(values));
+  
   return request(`/api/Book`, {
     method: 'POST',
     body: JSON.stringify(values),
@@ -87,11 +88,11 @@ export async function addBookToDrawer(values: any): Promise<any> {
 }
 
 export async function removeBooksFromDrawer(values: any): Promise<any> {
-  console.log(values);
+  console.log(JSON.stringify(values),);
   
   return request(`/api/Book`, {
     method: 'POST',
-    body: JSON.stringify([{isDeleted: 1, barCode: values[0].barCode, isAvailable: values[0].isAvailable, drawerId: 1666, id: values[0]}]),
+    body: JSON.stringify(values),
   });
 }
 ///api/BookDrawer?id=1&id=2

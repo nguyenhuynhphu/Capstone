@@ -100,7 +100,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
               borderRadius: '15px',
               padding: '20px 25px',
               width: 'calc(100% - 45% - 10px)',
-              height: 480,
+              height: 491,
             }}
           >
             <TableHeader title={'Book by Category'} description={''} />
@@ -314,7 +314,6 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   async handelSubmit(bookGroup: any) {
     const { dispatch, bookgrouptable, managebook } = this.props;
-    console.log(managebook, bookGroup);
 
     if (managebook.choiceBook.id != undefined) {
       //update

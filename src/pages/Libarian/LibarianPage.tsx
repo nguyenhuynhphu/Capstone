@@ -155,15 +155,13 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
 
   handelSubmit(libarian: any) {
     const { dispatch, libarianpage, libariantable } = this.props;
-    console.log('>>>>>>', libarian);
 
     if (libarianpage.choiceLibarian.id != undefined) {
       //update
       libarian.id = libarianpage.choiceLibarian.id;
       libarian.password = libarianpage.choiceLibarian.password;
       libarian.roleId = libarianpage.choiceLibarian.roleId;
-      console.log("libarian.image", libarian.image);
-      
+
       if (libarian.image.url == undefined) {
         // co up hinh moi
         const task = storage

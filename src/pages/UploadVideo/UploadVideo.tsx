@@ -37,6 +37,7 @@ import moment from 'moment';
 import UploadRecordTable from './components/UploadRecordTable';
 import { greenBright } from 'chalk';
 import TableHeader from '@/components/CustomDesign/TableHeader';
+import ReactPlayer from 'react-player';
 const { Step } = Steps;
 const { Option } = Select;
 interface UploadVideoProps {
@@ -44,6 +45,7 @@ interface UploadVideoProps {
   uploadvideo?: any;
   user?: any;
   trackingdetail?: any;
+  uploadrecordtable?: any;
 }
 interface UploadVideoState {
   uploadStep: number;
@@ -153,7 +155,9 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
                     Upload Video
                   </Button>
                 </Space>
-
+               
+  
+            
                 <UploadRecordTable trackingDetail={this.trackingDetail} />
               </Col>
             </Row>
@@ -345,8 +349,6 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
         },
       })
       .then((response) => {
-        console.log(response);
-
         this.uploadSuccess2(response.data[0]);
       })
       .catch(function (error) {
@@ -355,6 +357,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
   };
 
   async uploadSuccess2(data: any) {
+    const { dispatch, uploadrecordtable } = this.props;
     var msgToServer: any = {
       staffId: this.props.user.currentUser.id,
       url: data.link,
@@ -378,154 +381,188 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
         }
       });
     });
+    console.log('FOUND >>>>', found);
 
-    var promises: any = [];
-    found.forEach((drawer: any) => {
-      promises.push(fetchBookInDrawer(drawer.id));
-    });
-
-    var bookInDrawer: any = await Promise.all(promises);
-
-    for (let i = 0; i < found.length; i++) {
-      var drawer = found[i];
-      drawer.books = bookInDrawer[i].data;
-    }
-
-    found.forEach((drawer: any) => {
-      // xác định vị trí cho những cuốn sai
-      data.list_code.forEach((scanDrawer: any) => {
-        //matching pair
-        let tmp: any = [];
-        let removeBarcode: any = [];
-        if (drawer.barcode != undefined) {
-          if (drawer.barcode.trim() == scanDrawer.drawer.trim()) {
-            drawer.books.map((orgBook: any) => {
-              scanDrawer.books.map((barcode: any) => {
-                if (orgBook.barCode != undefined && orgBook.barCode.trim() == barcode.trim()) {
-                  tmp.push(orgBook);
-                  removeBarcode.push(barcode);
-                }
-              });
-            });
-            _.pullAll(drawer.books, tmp);
-            _.pullAll(scanDrawer.books, removeBarcode);
-            drawer.wrongPosition = scanDrawer.books;
-          }
-        }
+    if (found.length != 0) {
+      var promises: any = [];
+      found.forEach((drawer: any) => {
+        promises.push(fetchBookInDrawer(drawer.id));
       });
-    });
 
-    //xu ly sach sai vi tri
-    var drawerDetection: any = [];
-    var checkWrong = new Promise<void>((resolve, reject) => {
-      found.forEach(async (drawer: any, index: number, array: any) => {
-        var errorMsg: any = [];
-        var undefinedError: any = [];
-        promises = [];
-        if (drawer.wrongPosition != undefined) {
-          drawer.wrongPosition.forEach((book: any) => {
-            promises.push(checkingPosition(book));
-          });
-        }
-        var realPositions = await Promise.all(promises); // xu ly sach nam sai truoc
+      var bookInDrawer: any = await Promise.all(promises);
 
-        realPositions.forEach((position: any, index: number) => {
-          if (position.data.length != 0) {
-            errorMsg.push({
-              errorMessage: `Sách nằm sai vị trí, bị trí thực sự ở: Bookshelf: ${position.data[0].bookShelfName} Drawer: ${position.data[0].drawerId} !`,
-              bookId: position.data[0].id,
-              typeError: 2,
-            });
-          } else {
-            undefinedError.push({
-              errorMessage: `Phát hiện barcode lạ: "${drawer.wrongPosition[index]}"`,
-              typeError: 1,
-            });
+      for (let i = 0; i < found.length; i++) {
+        var drawer = found[i];
+        drawer.books = bookInDrawer[i].data;
+      }
+
+      found.forEach((drawer: any) => {
+        // xác định vị trí cho những cuốn sai
+        data.list_code.forEach((scanDrawer: any) => {
+          //matching pair
+          let tmp: any = [];
+          let removeBarcode: any = [];
+          if (drawer.barcode != undefined) {
+            if (drawer.barcode.trim() == scanDrawer.drawer.trim()) {
+              drawer.books.map((orgBook: any) => {
+                scanDrawer.books.map((barcode: any) => {
+                  if (orgBook.barCode != undefined && orgBook.barCode.trim() == barcode.trim()) {
+                    tmp.push(orgBook);
+                    removeBarcode.push(barcode);
+                  }
+                });
+              });
+              _.pullAll(drawer.books, tmp);
+              _.pullAll(scanDrawer.books, removeBarcode);
+              drawer.wrongPosition = scanDrawer.books;
+            }
           }
         });
+      });
 
-        //xu ly sach mat
-        promises = [];
-        if (drawer.books.length != 0) {
-          drawer.books.forEach((book: any) => {
-            promises.push(getRealPosition(book.id));
-          });
-        }
-        Promise.all(promises).then((detectLocation: any) => {
-          detectLocation.forEach((book: any, index: number) => {
-            if (book.data.isAvailable == true) {
-              // chưa được mượn
-              if (book.data.customerId == undefined) {
-                // chưa từng đưọcw mượn
-                errorMsg.push({
-                  errorMessage: `Sách mất, cuốn này chưa từng được ai mượn !`,
-                  bookId: book.data.id,
-                  typeError: 3,
-                });
-              } else {
-                // lần cuối mượn và trả rồi
-                errorMsg.push({
-                  errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${book.data.customerName}`,
-                  bookId: book.data.id,
-                  typeError: 4,
-                });
-              }
-            } else {
-              //được mượn
+      //xu ly sach sai vi tri
+      var drawerDetection: any = [];
+      var checkWrong = new Promise<void>((resolve, reject) => {
+        found.forEach(async (drawer: any, index: number, array: any) => {
+          var errorMsg: any = [];
+          var undefinedError: any = [];
+          promises = [];
+          if (drawer.wrongPosition != undefined) {
+            drawer.wrongPosition.forEach((book: any) => {
+              promises.push(checkingPosition(book));
+            });
+          }
+          var realPositions = await Promise.all(promises); // xu ly sach nam sai truoc
+
+          realPositions.forEach((position: any, index: number) => {
+            if (position.data.length != 0) {
               errorMsg.push({
-                errorMessage: `Sách mất. Sách chưa được trả bởi ${book.data.customerName}`,
-                bookId: book.data.id,
-                isError: 5,
+                errorMessage: `Sách nằm sai vị trí, bị trí thực sự ở: Bookshelf: ${position.data[0].bookShelfName} Drawer: ${position.data[0].drawerId} !`,
+                bookId: position.data[0].id,
+                typeError: 2,
+              });
+            } else {
+              undefinedError.push({
+                errorMessage: `Phát hiện barcode lạ: "${drawer.wrongPosition[index]}"`,
+                typeError: 1,
               });
             }
           });
 
-          drawerDetection.push({
-            drawerId: drawer.id,
-            detectionError: errorMsg,
-            undefinedError: undefinedError,
-          });
-          if (index == array.length - 1) {
-            console.log('RESOLVE');
-
-            resolve();
+          //xu ly sach mat
+          promises = [];
+          if (drawer.books.length != 0) {
+            drawer.books.forEach((book: any) => {
+              promises.push(getRealPosition(book.id));
+            });
           }
+          Promise.all(promises).then((detectLocation: any) => {
+            detectLocation.forEach((book: any, index: number) => {
+              if (book.data.isAvailable == true) {
+                // chưa được mượn
+                if (book.data.customerId == undefined) {
+                  // chưa từng đưọcw mượn
+                  errorMsg.push({
+                    errorMessage: `Sách mất, cuốn này chưa từng được ai mượn !`,
+                    bookId: book.data.id,
+                    typeError: 3,
+                  });
+                } else {
+                  // lần cuối mượn và trả rồi
+                  errorMsg.push({
+                    errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${book.data.customerName}`,
+                    bookId: book.data.id,
+                    typeError: 4,
+                  });
+                }
+              } else {
+                //được mượn
+                errorMsg.push({
+                  errorMessage: `Sách mất. Sách chưa được trả bởi ${book.data.customerName}`,
+                  bookId: book.data.id,
+                  isError: 5,
+                });
+              }
+            });
+
+            drawerDetection.push({
+              drawerId: drawer.id,
+              detectionError: errorMsg,
+              undefinedError: undefinedError,
+            });
+            if (index == array.length - 1) {
+              resolve();
+            }
+          });
         });
       });
-    });
-    checkWrong.finally(() => {
-      Object.assign(msgToServer, {
-        drawerDetection: drawerDetection ? drawerDetection : [],
-      });
+      checkWrong.finally(() => {
+        Object.assign(msgToServer, {
+          drawerDetection: drawerDetection ? drawerDetection : [],
+        });
 
-      this.props
-        .dispatch({
+        dispatch({
           type: 'uploadvideo/insertRecord',
           payload: msgToServer,
-        })
-        .finally(() => {
+        }).finally(() => {
           this.setState({ isUpload: false });
           if (!this.props.uploadvideo.uploadModalVisible) {
             this.changeNotification();
           }
           setTimeout(() => {
-            this.props.dispatch({
+            dispatch({
               type: 'uploadvideo/renderModel',
               payload: false,
             });
-            this.props.dispatch({
+            dispatch({
               type: 'uploadrecordtable/fetchData',
-            });
-            this.setState({
-              uploadStep: 0,
-              fileList: [],
-              modalWidth: 600,
-              selectedBookShelf: -1,
-              selectedRecord: {},
-            });
+              payload: {
+                filterName: uploadrecordtable.filterName,
+                pagination: uploadrecordtable.pagination.current,
+              },
+            }),
+              this.setState({
+                uploadStep: 0,
+                fileList: [],
+                modalWidth: 600,
+                selectedBookShelf: -1,
+                selectedRecord: {},
+              });
           }, 2000);
         });
-    });
+      });
+    } else {
+      dispatch({
+        type: 'uploadvideo/insertRecord',
+        payload: msgToServer,
+      }).finally(() => {
+        this.setState({ isUpload: false });
+        if (!this.props.uploadvideo.uploadModalVisible) {
+          this.changeNotification();
+        }
+        setTimeout(() => {
+          dispatch({
+            type: 'uploadvideo/renderModel',
+            payload: false,
+          });
+          dispatch({
+            type: 'uploadrecordtable/fetchData',
+            payload: {
+              filterName: uploadrecordtable.filterName,
+              pagination: uploadrecordtable.pagination.current,
+            },
+          });
+
+          this.setState({
+            uploadStep: 0,
+            fileList: [],
+            modalWidth: 600,
+            selectedBookShelf: -1,
+            selectedRecord: {},
+          });
+        }, 2000);
+      });
+    }
   }
 
   trackingDetail(record: any) {

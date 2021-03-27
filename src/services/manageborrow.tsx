@@ -31,3 +31,29 @@ export async function fetchBorrowDetail(borrowId: number): Promise<any> {
 export async function fetchReturnBook({ filterName, pagination }: any): Promise<any> {
   return request(`/api/ReturnBook?CustomerName=${filterName}&PageNumber=${pagination}`);
 }
+
+
+export async function fetchEarnByMonth(): Promise<any> {
+  return request(`/api/ReturnBook?ByMonth=true`);
+}
+
+
+export async function fetchBookAvailable(isAvailable: boolean): Promise<any> {
+  return request(`/api/Book?IsAvailable=${isAvailable}`);
+}
+///api/ReturnBook?PageSize=1
+export async function fetchTotalReturn(): Promise<any> {
+  return request(`/api/ReturnBook?PageSize=1`);
+}
+
+export async function fetchTotalBorrow(): Promise<any> {
+  return request(`/api/BorrowBook?PageSize=1`);
+}
+//
+export async function fetchLateReturn(): Promise<any> {
+  return request(`/api/ReturnDetail?IsLate=true&PageSize=1`);
+}
+///api/Book?Barcode=a
+export async function fetchBookByBarcode(barcode: string): Promise<any> {
+  return request(`/api/Book?Barcode=${barcode}`);
+}

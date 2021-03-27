@@ -61,11 +61,17 @@ class NewBookInSystem extends React.Component<NewBookInSystemProps> {
             trigger="hover"
             placement={'right'}
           >
-            <List.Item>
+            <List.Item style={{ cursor: 'pointer' }}>
               <Space
                 direction="horizontal"
-                style={{ width: '100%', justifyContent: 'space-between' }}
+                style={{ width: '100%', justifyContent: 'start' }}
               >
+                <Image
+                  width={45}
+                  height={55}
+                  style={{ borderRadius: 10 }}
+                  src={item.image.length != 0 ? item.image[0].url : null}
+                />
                 <Space direction="vertical" size="small">
                   <p style={{ marginBottom: 0 }}>
                     <Text style={{ maxWidth: 350 }} ellipsis={true}>
@@ -78,9 +84,7 @@ class NewBookInSystem extends React.Component<NewBookInSystemProps> {
                   </p>
                   <Space direction="horizontal" size="small">
                     <p style={{ marginBottom: 0, color: 'rgba(0, 0, 0, .6)', fontStyle: 'italic' }}>
-                      Date Upload:{' '}
-                      {item.createdDate?.split('T')[0]}
-                   
+                      Date Upload: {item.createdDate?.split('T')[0]}
                     </p>
                     <p style={{ marginBottom: 0 }}>
                       <span style={{ color: 'rgba(0, 0, 0, .4)', fontStyle: 'italic' }}>By:</span>{' '}

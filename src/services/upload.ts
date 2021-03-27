@@ -21,8 +21,6 @@ export async function getRealPosition(bookId: number): Promise<any> {
 }
 
 export async function insertRecord(record: any): Promise<any> {
-  console.log(record);
-  console.log(JSON.stringify(record));
 
   return request(`/api/Detection`, {
     method: 'POST',
@@ -30,8 +28,8 @@ export async function insertRecord(record: any): Promise<any> {
   });
 }
 
-export async function fetchRecord(): Promise<any> {
-  return request(`/api/Detection`);
+export async function fetchRecord(payload: any): Promise<any> {
+  return request(`/api/Detection?BookShelfName=${payload.filterName}&PageNumber=${payload.pagination}`);
 }
 export async function fetchTrackingDetail(detectionId: number): Promise<any> {
   return request(`/api/DrawerDetection?DetectionId=${detectionId}`);

@@ -74,7 +74,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                   onRow={(record) => {
                     return {
                       onDoubleClick: () => {
-                        console.log(record);
+                 
                         this.onSelectRow(record);
                         this.props.dispatch({
                           type: 'trackingdetail/fetchError',
