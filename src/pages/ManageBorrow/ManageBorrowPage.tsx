@@ -17,6 +17,10 @@ import {
   Table,
   Select,
   Descriptions,
+  Popover,
+  Popconfirm,
+  Skeleton,
+  ConfigProvider,
 } from 'antd';
 import React from 'react';
 
@@ -27,7 +31,16 @@ import ViewForm from './components/ViewForm';
 import Form, { FormInstance } from 'antd/lib/form';
 import ManageBorrowTable from './components/ManageBorrowTable';
 import { getWishlist } from '@/utils/Signalr';
-import { fecthDrawer, fetchBookByBarcode, fetchBooks } from '@/services/manageborrow';
+import {
+  fecthDrawer,
+  fetchBookByBarcode,
+  fetchBooks,
+  fetchBorrowBook,
+  fetchBorrowDetail,
+  fetchBorrowDetailByBarcode,
+  fetchCustomer,
+  fetchCustomerByName,
+} from '@/services/manageborrow';
 import Title from 'antd/lib/typography/Title';
 import styles from './ManageBorrowPage.less';
 import moment from 'moment';
@@ -37,8 +50,17 @@ import ReturnBookTable from './components/ReturnBookTable';
 import ReturnFeeChart from './components/ReturnFeeChart';
 import TableHeader from '@/components/CustomDesign/TableHeader';
 import ManageBorrowStatistic from './components/ManageBorrowStatistic';
-import { LoadingOutlined } from '@ant-design/icons';
+import {
+  CloseOutlined,
+  LoadingOutlined,
+  RedoOutlined,
+  SmileOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import _ from 'lodash';
+import BorrowItem from './components/BorrowItem';
+import Search from 'antd/lib/input/Search';
+import BorrowBookSection from './components/BorrowBookSection';
 
 // import moment from 'moment';
 const { Step } = Steps;
@@ -55,6 +77,9 @@ interface ManageBorrowPageProps {
 interface ManageBorrowPageState {
   form: any;
   totalFee: number;
+  customerName: any;
+  loadingList: boolean;
+  isGetReturnCustomer: boolean;
 }
 const connection = getWishlist();
 class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorrowPageState> {
@@ -63,9 +88,13 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     this.state = {
       form: React.createRef<FormInstance>(),
       totalFee: 0,
+      customerName: [],
+      loadingList: false,
+      isGetReturnCustomer: false,
     };
 
     this.hideViewBorrow = this.hideViewBorrow.bind(this);
+    this.searchCustomer = this.searchCustomer.bind(this);
   }
   componentDidMount() {
     this.props.dispatch({ type: 'returnfeechart/fetchData' });
@@ -81,7 +110,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
             !manageborrow.isMakingTransaction && !manageborrow.isMakingReturn
               ? [
                   <Button
-                    key="1"
+                    key="Return Request"
                     type="primary"
                     onClick={() => {
                       dispatch({
@@ -99,7 +128,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                     Return Request
                   </Button>,
                   <Button
-                    key="1"
+                    key="Borrow Request"
                     type="primary"
                     onClick={() => {
                       dispatch({
@@ -119,13 +148,14 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                 ]
               : [
                   <Button
-                    key="1"
+                    key="Cancel Request"
                     type="primary"
                     onClick={() => {
                       dispatch({
                         type: 'manageborrow/resetState',
                         payload: {},
                       });
+                      this.closeConnection();
                     }}
                   >
                     Cancel Request
@@ -176,28 +206,56 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     } else if (manageborrow.isMakingReturn) {
       return (
         <>
-          <Result
-            title="Connect to server to scan order"
-            extra={[
-              <Button type="primary" key="console" onClick={() => this.openConnection()}>
-                Connect
-              </Button>,
-            ]}
-          />
-          <Table
-            dataSource={manageborrow.borrowDetail}
-            size={'middle'}
-            onRow={(record) => {
-              return {
-                onDoubleClick: () => {}, // double click row,
-              };
+          <div
+            style={{
+              marginBottom: 10,
+              overflow: 'hidden',
+              width: '100%',
+              display: 'flex',
+              height: 350,
             }}
-            onChange={(pagination) => {}}
           >
-            <Column title="Name" dataIndex="bookName" key="name" />
-            <Column title="Total Row" dataIndex="fee" key="row" align={'center'} />
-            <Column title="Total Column" dataIndex="startTime" key="col" align={'center'} />
-          </Table>
+            <div
+              style={{
+                backgroundColor: 'white',
+                borderRadius: '15px',
+                padding: '20px 25px',
+                transition: 'all 0.2s',
+                width: '100%',
+                marginRight: 10,
+              }}
+            >
+              <Result
+                title="Connect to server to scan order"
+                extra={[
+                  !this.props.manageborrow.isConnect
+                    ? [
+                        <Button type="primary" key="console" onClick={() => this.openConnection()}>
+                          Start Scanning
+                        </Button>,
+                      ]
+                    : [
+                        <Spin
+                          spinning={this.props.manageborrow.isConnect}
+                          style={{ display: 'block', marginBottom: 15 }}
+                        ></Spin>,
+                        <Button type="primary" key="console" onClick={() => this.closeConnection()}>
+                          Cancel
+                        </Button>,
+                      ],
+                ]}
+              />
+            </div>
+          </div>
+          {this.props.manageborrow.returnList ? (
+            <Space style={{ width: '100%' }} direction={'vertical'}>
+              {this.props.manageborrow.returnList?.map((borrowBook: any) => (
+                <BorrowBookSection borrowBook={borrowBook} />
+              ))}
+            </Space>
+          ) : (
+            <> </>
+          )}
         </>
       );
     } else {
@@ -327,106 +385,168 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
             <Col span={15} className={styles.wishlistCol}>
               <List
                 itemLayout="horizontal"
-                dataSource={this.props.manageborrow.wishlist}
+                dataSource={this.props.manageborrow.scanId}
                 style={{ padding: '0px 20px' }}
-                renderItem={(item: any) =>
-                  item.data ? (
-                    <List.Item>
-                      <Space direction={'horizontal'} style={{ width: 380 }}>
-                        <Image
-                          width={80}
-                          height={120}
-                          src={item.data.image.length != 0 ? item.data.image[0].url : null}
-                        />
-                        <div>
-                          <p style={{ fontWeight: 'bold', marginBottom: 0 }}>{item.data.name}</p>
-                          <p style={{ marginBottom: 0 }}>{item.data.author}</p>
-                          <p>Fee: {item.data.fee}$</p>
-                          <Paragraph
-                            ellipsis={true ? { rows: 2, expandable: true, symbol: 'more' } : false}
-                          >
-                            {item.data.description}
-                          </Paragraph>
-                        </div>
-                      </Space>
-                      <div>
-                        <p>Select at:</p>
-                        <Select
-                          placeholder="Select drawer"
-                          style={{ width: 150 }}
-                          onChange={(bookId: any) => {
-                            item.data.choiceBook = bookId;
-                          }}
-                        >
-                          {item.data.drawer.map((value: any) => {
-                            return (
-                              <Select.Option
-                                key={`${value.id}_${value.bookShelfName}`}
-                                value={value.bookId}
-                              >
-                                {value.bookId}
-                              </Select.Option>
-                            );
-                          })}
-                        </Select>
-                      </div>
-                    </List.Item>
-                  ) : null
-                }
+                renderItem={(item: any) => (
+                  <List.Item style={{ position: 'relative' }}>
+                    <Popconfirm
+                      title="Title"
+                      trigger="click"
+                      onConfirm={() => {
+                        this.props.dispatch({
+                          type: 'manageborrow/removeFromScanId',
+                          payload: item,
+                        });
+                      }}
+                    >
+                      <CloseOutlined
+                        style={{
+                          position: 'absolute',
+                          right: 5,
+                          top: 10,
+                          cursor: 'pointer',
+                          color: 'rgba(0, 0, 0, .6)',
+                        }}
+                      />
+                    </Popconfirm>
+
+                    <BorrowItem borrowItem={item} />
+                  </List.Item>
+                )}
               />
             </Col>
             <Col span={9} className={styles.confirmForm}>
-              <Title level={5} style={{ marginBottom: 20 }}>
-                Customer Informaton
-              </Title>
-              <Row>
-                <Col span={8}>Name:</Col>
-                <Col span={16}>{this.props.manageborrow?.customer.name}</Col>
-              </Row>
-              <Row>
-                <Col span={8}>Email:</Col>
-                <Col span={16}>{this.props.manageborrow?.customer.email}</Col>
-              </Row>
-              <Row>
-                <Col span={8}>Address:</Col>
-                <Col span={16}>{this.props.manageborrow?.customer.address}</Col>
-              </Row>
-              <Row>
-                <Col span={8}>Phone:</Col>
-                <Col span={16}>{this.props.manageborrow?.customer.phone}</Col>
-              </Row>
-              <Row>
-                <Col span={8}>Total Fee:</Col>
-                <Col span={16}>{this.state.totalFee}$</Col>
-              </Row>
-              <Form onFinish={(value) => this.onConfirm(value)}>
-                <Form.Item
-                  name="date"
-                  label="Borrow Day: "
-                  required
-                  initialValue={moment()}
-                  style={{ marginBottom: 25 }}
-                >
-                  <DatePicker onChange={() => {}} style={{ marginLeft: 28 }} disabled />
-                </Form.Item>
-                <Form.Item
-                  name="returnDate"
-                  label="Return Day: "
-                  required
-                  initialValue={moment()}
-                  style={{ marginBottom: 25 }}
-                >
-                  <DatePicker onChange={() => {}} style={{ marginLeft: 30 }} />
-                </Form.Item>
-
-                <Row justify={'end'}>
-                  <Space align={'end'}>
-                    <Button type="primary" htmlType={'submit'}>
-                      Confirm
-                    </Button>
+              {this.props.manageborrow.customer.id != undefined ? (
+                <>
+                  <Space
+                    style={{ marginBottom: 20, width: '100%', justifyContent: 'space-between' }}
+                  >
+                    <Title level={5} style={{ marginBottom: 0 }}>
+                      Customer Informaton
+                    </Title>
+                    <Popconfirm
+                      title="Are you sure to re-choice user?"
+                      onConfirm={() =>
+                        this.props.dispatch({
+                          type: 'manageborrow/loadCustomer',
+                          payload: {},
+                        })
+                      }
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <Button type={'text'} style={{ color: 'red' }}>
+                        <RedoOutlined /> Rechoice User
+                      </Button>
+                    </Popconfirm>
                   </Space>
-                </Row>
-              </Form>
+
+                  <Row>
+                    <Col span={8}>Name:</Col>
+                    <Col span={16}>{this.props.manageborrow?.customer.name}</Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>Email:</Col>
+                    <Col span={16}>{this.props.manageborrow?.customer.email}</Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>Address:</Col>
+                    <Col span={16}>{this.props.manageborrow?.customer.address}</Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>Phone:</Col>
+                    <Col span={16}>{this.props.manageborrow?.customer.phone}</Col>
+                  </Row>
+                  <Row>
+                    <Col span={8}>Total Fee:</Col>
+                    <Col span={16}>{this.state.totalFee}$</Col>
+                  </Row>
+                  <Form onFinish={(value) => this.onConfirm(value)}>
+                    <Form.Item
+                      name="date"
+                      label="Borrow Day: "
+                      required
+                      initialValue={moment()}
+                      style={{ marginBottom: 25 }}
+                    >
+                      <DatePicker onChange={() => {}} style={{ marginLeft: 28 }} disabled />
+                    </Form.Item>
+                    <Form.Item
+                      name="returnDate"
+                      label="Return Day: "
+                      required
+                      initialValue={moment()}
+                      style={{ marginBottom: 25 }}
+                    >
+                      <DatePicker onChange={() => {}} style={{ marginLeft: 30 }} />
+                    </Form.Item>
+
+                    <Row justify={'end'}>
+                      <Space align={'end'}>
+                        <Button type="primary" htmlType={'submit'}>
+                          Confirm
+                        </Button>
+                      </Space>
+                    </Row>
+                  </Form>
+                </>
+              ) : (
+                <Space direction="vertical" style={{ width: '100%', justifyContent: 'center' }}>
+                  <p style={{ marginBottom: 0 }}>Select Customer</p>
+                  <Search
+                    placeholder="input search text"
+                    enterButton="Search"
+                    size="middle"
+                    suffix={<UserOutlined style={{ color: '#40A9FF' }} />}
+                    onSearch={(customerName: string) => this.searchCustomer(customerName)}
+                  />
+                  <ConfigProvider
+                    renderEmpty={() => (
+                      <div style={{ textAlign: 'center' }}>
+                        <SmileOutlined style={{ fontSize: 20 }} />
+                        <p>No data yet</p>
+                      </div>
+                    )}
+                  >
+                    <List
+                      className="demo-loadmore-list"
+                      loading={this.state.loadingList}
+                      itemLayout="horizontal"
+                      dataSource={this.state.customerName}
+                      renderItem={(item: any) => (
+                        <List.Item
+                          actions={[
+                            <Popconfirm
+                              title="Are you sure to select this user?"
+                              onConfirm={() => {
+                                this.props.dispatch({
+                                  type: 'manageborrow/fetchCustomer',
+                                  payload: item.id,
+                                });
+                              }}
+                              okText="Yes"
+                              cancelText="No"
+                            >
+                              <Button type={'text'} key="list-loadmore-edit">
+                                Select
+                              </Button>
+                              ,
+                            </Popconfirm>,
+                          ]}
+                        >
+                          <Skeleton avatar title={false} loading={item.loading} active>
+                            <List.Item.Meta
+                              avatar={<Avatar src={item.image} />}
+                              title={item.name}
+                              description={`User ID: #${item.id}`}
+                            />
+                          </Skeleton>
+                        </List.Item>
+                      )}
+                    />
+                  </ConfigProvider>
+                </Space>
+              )}
             </Col>
           </Row>
         );
@@ -467,7 +587,8 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
   }
 
   openConnection() {
-    const { dispatch } = this.props;
+    const { dispatch, manageborrow } = this.props;
+    this.setState({ isGetReturnCustomer: true });
     dispatch({
       type: 'manageborrow/renderButton',
       payload: true,
@@ -478,14 +599,16 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
         .then((value) => {
           connection.on('ReceiveMessageToBorrow', async (value) => {
             //tunwgf cuoons
+            console.log("ReceiveMessageToBorrow", value);
             if (value.staffId !== this.props.user.currentUser.id) {
-
               var book: any = await fetchBookByBarcode(value.barcode);
-
               if (book.data[0] != undefined) {
+                var bookGroup = await fetchBooks(book.data[0].bookGroupId);
+                bookGroup.data.selectedBook = book.data[0];
+
                 dispatch({
                   type: 'manageborrow/addToScanId',
-                  payload: [book.data[0]],
+                  payload: [bookGroup.data],
                 });
                 this.fetchWishList(undefined);
               }
@@ -493,6 +616,8 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
           });
           connection.on('ReceiveMessage', async (value) => {
             //wishlist
+            console.log("ReceiveMessage", value);
+            
 
             if (value.staffId !== this.props.user.currentUser.id) {
               var promiese: any = [];
@@ -505,22 +630,62 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                 tmp.forEach((notConvertData: any) => {
                   bookgroupList.push(notConvertData.data);
                 });
+                if (bookgroupList != undefined) {
+                  dispatch({
+                    type: 'manageborrow/addToScanId',
+                    payload: bookgroupList,
+                  });
+                } else {
+                  dispatch({
+                    type: 'manageborrow/addToScanId',
+                    payload: [],
+                  });
+                }
 
-                dispatch({
-                  type: 'manageborrow/addToScanId',
-                  payload: bookgroupList,
-                });
                 this.fetchWishList(value.customerId);
               }
             }
           });
 
-          connection.on('ReceiveMessageToReturn', (value) => {
+          connection.on('ReceiveMessageToReturnBook', async (value) => {
+            console.log('ReceiveMessageToReturnBook', value);
+
             if (value.staffId !== this.props.user.currentUser.id) {
-              this.props.dispatch({
-                type: 'manageborrow/fetchBorrowDetail',
-                payload: value.borrowId,
-              });
+              var listBorrow = await fetchBorrowDetailByBarcode(value.barcode);
+
+              if (listBorrow.data != undefined) {
+                if (listBorrow.data.length != 0) {
+                  var tmp: any = manageborrow.returnList.find(
+                    (record: any) => record.borrowBookId == listBorrow.data[0].borrowId,
+                  );
+                  if (tmp == undefined) {
+                    // chua ton tai
+                    var fetchBorrowDetail = await fetchBorrowBook(listBorrow.data[0].borrowId);
+
+                    var customer = await fetchCustomer(fetchBorrowDetail.data.customerId);
+                    var firstScan = listBorrow.data.find(
+                      (borrowDetail: any) => borrowDetail.barcode == value.barcode,
+                    );
+                    firstScan.isReturn = true;
+                    tmp = {
+                      customer: customer.data,
+                      borrowBookId: listBorrow.data[0].borrowId,
+                      borrowDetails: listBorrow.data.map((borrowDetail: any) => borrowDetail),
+                    };
+                    dispatch({
+                      type: 'manageborrow/addToReturnList',
+                      payload: tmp,
+                    });
+                  } else {
+                    // ton tai
+                    var scanItem = tmp.borrowDetails.find(
+                      (borrowDetail: any) => borrowDetail.barcode == value.barcode,
+                    );
+                    scanItem.isReturn = true;
+                  }
+                  console.log('manageborrow.returnList', manageborrow.returnList);
+                }
+              }
             }
           });
         })
@@ -529,6 +694,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
   }
 
   closeConnection() {
+    this.setState({ isGetReturnCustomer: false });
     this.props.dispatch({
       type: 'manageborrow/renderButton',
       payload: false,
@@ -538,42 +704,25 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     }
   }
 
-  fetchWishList(customerId: any) {
+  async fetchWishList(customerId: any) {
     const { dispatch, manageborrow } = this.props;
 
-    var promiese: any = [];
-    var bookgroupArr: any = [];
-
-    manageborrow.scanId.forEach((book: any) => {
-      if (book.drawerId == undefined) {
-        bookgroupArr.push(book);
-        promiese.push(fecthDrawer(book.id));
+    for (let i = 0; i < manageborrow.scanId.length; i++) {
+      const book = manageborrow.scanId[i];
+      book.drawer = undefined;
+      var drawer = await fecthDrawer(book.id);
+      if (drawer.length == 0) {
+        book.drawer = undefined;
+      } else {
+        book.drawer = drawer;
       }
-    });
-    console.log("manageborrow.scanId", manageborrow.scanId);
-    console.log("bookgroupArr", bookgroupArr);
-    
-    _.pullAll(manageborrow.scanId, bookgroupArr);
-    Promise.all(promiese)
-      .then((value: any) => {
-        for (let i = 0; i < bookgroupArr.length; i++) {
-          bookgroupArr[i].drawer = value[i];
-        }
-        _.merge(manageborrow.scanId, bookgroupArr);
-        console.log("FINAL >>>", manageborrow.scanId);
-        
-        // if (customerId != undefined) {
-        //   dispatch({ type: 'manageborrow/fetchCustomer', payload: customerId });
-        // }
-        // dispatch({ type: 'manageborrow/renderWishList', payload: value1 });
-        // dispatch({ type: 'manageborrow/changeProcess', payload: 1 });
-      })
-      .then(() => {
-        // this.setState({ totalFee: total });
-        // if (connection) {
-        //   connection.stop();
-        // }
-      });
+    }
+
+    if (customerId != undefined) {
+      dispatch({ type: 'manageborrow/fetchCustomer', payload: customerId });
+    }
+    dispatch({ type: 'manageborrow/renderWishList', payload: manageborrow.scanId });
+    dispatch({ type: 'manageborrow/changeProcess', payload: 1 });
   }
 
   hideViewBorrow() {
@@ -583,13 +732,22 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     });
   }
 
+  async searchCustomer(customerName: string) {
+    this.setState({ loadingList: true });
+    var tmp = await fetchCustomerByName(customerName);
+    this.setState({ customerName: tmp.data, loadingList: false });
+  }
+
   onConfirm(dateValue: any) {
     const { manageborrow, user, dispatch } = this.props;
 
     var tmp: any = [];
-    manageborrow.wishlist.forEach((bookGroup: any) => {
+    console.log(manageborrow.scanId);
+    manageborrow.scanId.forEach((book: any) => {
+      console.log(book);
+
       tmp.push({
-        bookId: bookGroup.data.choiceBook,
+        bookId: book.selectedBook.id,
       });
     });
 
@@ -598,7 +756,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
       customerName: manageborrow.customer.name,
       startTime: dateValue.date,
       endTime: dateValue.returnDate,
-      quantity: manageborrow.wishlist.length,
+      quantity: manageborrow.scanId.length,
       staffId: user.currentUser.id,
       borrowDetail: tmp,
     };

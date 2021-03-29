@@ -31,9 +31,14 @@ const ReturnfeechartModel: ReturnfeechartType = {
         type: 'isLoading',
         payload: {},
       });
+      var arrID = ['month1', 'month2'];
 
       const listValue = yield call(fetchEarnByMonth, payload);
-      listValue.data.forEach((data: any) => {
+      listValue.data.forEach((data: any, index: number) => {
+        var color = arrID[index];
+        if(color != undefined){
+          data.id = color;
+        }
         data.returnTime = `${data.returnTime.split('-')[1]}/${data.returnTime.split('-')[0]}`
       });
 

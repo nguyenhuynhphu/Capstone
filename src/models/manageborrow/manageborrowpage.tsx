@@ -19,7 +19,7 @@ export interface ManageBorrowPageType {
     displayScrollBar: Reducer;
     displayViewBorrow: Reducer;
 
-    loadBorrowDetail: Reducer;
+
   };
 }
 

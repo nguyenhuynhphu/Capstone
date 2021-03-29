@@ -288,7 +288,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                 <Form.Item label="Represent Color" name="color">
                   <Select placeholder="Select color" style={{ width: 120 }}>
                     {global.colors.map((color: any) => (
-                      <Select.Option value={color}>
+                      <Select.Option key={color} value={color}>
                         <Badge color={color} text={color} />
                       </Select.Option>
                     ))}

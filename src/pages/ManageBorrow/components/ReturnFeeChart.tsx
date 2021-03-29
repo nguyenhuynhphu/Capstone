@@ -20,7 +20,7 @@ class ReturnFeeChart extends React.Component<ReturnFeeChartProps> {
         valueScale={{ type: 'linear' }}
         indexScale={{ type: 'band', round: true }}
         colors={{ scheme: 'nivo' }}
-        colorBy="index"
+        colorBy={"index"}
         defs={[
           {
             id: 'dots',
@@ -44,13 +44,13 @@ class ReturnFeeChart extends React.Component<ReturnFeeChartProps> {
         fill={[
           {
             match: {
-              id: 'fries',
+              id: 'month1',
             },
             id: 'dots',
           },
           {
             match: {
-              id: 'sandwich',
+              id: 'month2',
             },
             id: 'lines',
           },

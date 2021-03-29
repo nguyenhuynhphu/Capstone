@@ -118,6 +118,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
             //title="Manage Book"
             align={'center'}
             width={80}
+            key={'##'}
             render={(text, record) => (
               <Space size="middle">
                 <a onClick={() => this.onEdit(record)}>Detail</a>
@@ -129,6 +130,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
               //title="Manage Book"
               align={'center'}
               dataIndex={'id'}
+              key={'###'}
               width={80}
               render={(id) => (
                 <>

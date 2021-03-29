@@ -90,9 +90,16 @@ class ReturnBookTable extends React.Component<ReturnBookTableProps> {
           pagination={returnbooktable.pagination}
           scroll={{ y: 800 }}
           className={styles.returnTable}
+          onChange={(pagination: any) => {
+            this.props.dispatch({
+              type: 'returnbooktable/fetchData',
+              payload: { filterName: returnbooktable.filterName, pagination: pagination.current },
+            });
+          }}
           onRow={(record, rowIndex) => {
             return {
               onDoubleClick: (event) => {
+                alert("CLICK")
                 this.props.dispatch({
                   type: 'returnbooktable/showViewBorrow',
                   payload: { ...record },

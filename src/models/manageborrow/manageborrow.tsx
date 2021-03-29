@@ -15,6 +15,8 @@ export interface ManageBorrowState {
   wishlist: any;
   customer: any;
   borrowDetail: any;
+
+  returnList: any;
 }
 
 export interface ManageBorrowType {
@@ -41,7 +43,11 @@ export interface ManageBorrowType {
     renderReturnScreen: Reducer;
     loading: Reducer;
 
-    addToScanId: Effect;
+    addToScanId: Reducer;
+    removeFromScanId: Reducer;
+
+    addToReturnList: Reducer;
+    //removeFromScanId: Reducer;
 
     loadBorrowDetail: Reducer;
     anotherBorrowRequest: Reducer;
@@ -60,6 +66,7 @@ const ManageBorrowModel: ManageBorrowType = {
     customer: {},
     borrowDetail: [],
     scanId: [],
+    returnList: [],
   },
   effects: {
     *changeScreen({ payload }, { call, put }) {
@@ -125,21 +132,42 @@ const ManageBorrowModel: ManageBorrowType = {
     },
 
     addToScanId(state, { payload }) {
-      console.log('>>>>>>>>>>>>', state.scanId);
       var tmp;
+      var payloadRemoveList: any = [];
+      var scanIdRemoveList: any = [];
       payload.forEach((book: any) => {
-        tmp = state.scanId.find((x: any) => x.bookGroupId == book.bookGroupId);
+        tmp = state.scanId?.find((x: any) => x.id == book.id);
+        if (tmp != undefined) {
+          if (tmp.selectedBook != undefined) {
+            payloadRemoveList.push(book);
+          } else {
+            scanIdRemoveList.push(tmp);
+          }
+        }
       });
-      if (tmp == undefined) {
-        return {
-          ...state,
-          scanId: _.concat(state.scanId, payload),
-        };
-      } else {
-        return {
-          ...state,
-        };
-      }
+      _.pullAll(payload, payloadRemoveList);
+      _.pullAll(state.scanId, scanIdRemoveList);
+
+      return {
+        ...state,
+        scanId: _.concat(state.scanId, payload),
+      };
+    },
+
+    addToReturnList(state, { payload }) {
+      // state.returnList.find(x => state.returnList)
+      state.returnList.push(payload)
+      return {
+        ...state,
+      
+      };
+    },
+    removeFromScanId(state, { payload }) {
+      _.pull(state.scanId, payload);
+
+      return {
+        ...state,
+      };
     },
 
     renderWishList(state, { payload }) {

@@ -3,13 +3,12 @@ import React from 'react';
 import { connect, Dispatch, Prompt } from 'umi';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-import { Space, Row, Col, Table, Button, Modal, Steps, Spin, notification } from 'antd';
+import { Space, Row, Col, Button, Modal, Steps, Spin, notification } from 'antd';
 import {
   ArrowsAltOutlined,
   BarcodeOutlined,
   CheckCircleOutlined,
   CloseOutlined,
-  DiffOutlined,
   DoubleLeftOutlined,
   DoubleRightOutlined,
   InboxOutlined,
@@ -17,27 +16,22 @@ import {
   RedoOutlined,
   SettingOutlined,
   ShrinkOutlined,
-  SmileOutlined,
 } from '@ant-design/icons';
 import styles from './UploadVideo.less';
 import Select from 'antd/es/select';
 import Dragger from 'antd/lib/upload/Dragger';
 import axios from 'axios';
 import TrackingDetail from './components/TrackingDetail';
-import { lowerFirst } from 'lodash';
 import {
   checkingPosition,
   fetchBookInDrawer,
   fetchDrawer,
   getRealPosition,
 } from '@/services/upload';
-import useSelection from 'antd/lib/table/hooks/useSelection';
 import _ from 'lodash';
 import moment from 'moment';
 import UploadRecordTable from './components/UploadRecordTable';
-import { greenBright } from 'chalk';
 import TableHeader from '@/components/CustomDesign/TableHeader';
-import ReactPlayer from 'react-player';
 const { Step } = Steps;
 const { Option } = Select;
 interface UploadVideoProps {
@@ -155,9 +149,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
                     Upload Video
                   </Button>
                 </Space>
-               
-  
-            
+
                 <UploadRecordTable trackingDetail={this.trackingDetail} />
               </Col>
             </Row>
@@ -187,6 +179,11 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
               type: 'uploadvideo/renderModel',
               payload: false,
             });
+            this.props.dispatch({
+              type: 'uploadvideo/resetState',
+              payload: false,
+            });
+            this.resetTracking()
           }}
         >
           {this.state.uploadStep != 3 ? (
@@ -515,6 +512,11 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
               payload: false,
             });
             dispatch({
+              type: 'uploadvideo/resetState',
+              payload: false,
+            });
+            this.resetTracking()
+            dispatch({
               type: 'uploadrecordtable/fetchData',
               payload: {
                 filterName: uploadrecordtable.filterName,
@@ -545,6 +547,12 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
             type: 'uploadvideo/renderModel',
             payload: false,
           });
+          dispatch({
+            type: 'uploadvideo/resetState',
+            payload: false,
+            
+          });
+          this.resetTracking()
           dispatch({
             type: 'uploadrecordtable/fetchData',
             payload: {
@@ -609,12 +617,14 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
       duration: 2,
       closeIcon: <ArrowsAltOutlined style={{ fontSize: 20 }} />,
       onClose: () => {
-        // dispatch({
-        //   type: 'uploadvideo/renderModel',
-        //   payload: true,
-        // });
+       
       },
     });
+  }
+  resetTracking(){
+    this.props.dispatch({
+      type: 'trackingdetail/resetState'
+    })
   }
 }
 export default connect((state) => ({ ...state }))(UploadVideo);

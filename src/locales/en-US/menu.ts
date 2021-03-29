@@ -49,7 +49,8 @@ export default {
   'menu.editor.flow': 'Flow Editor',
   'menu.editor.mind': 'Mind Editor',
   'menu.editor.koni': 'Koni Editor',
-  
+  "menu.Detect": "Detect",
+  'menu.Dashboard': 'Dashboard',
   'menu.Book': 'Book',
   "menu.Book.Manage Book": "Manage Book",
   "menu.Book.Manage Borrow": "Manage Borrow",
@@ -57,6 +58,6 @@ export default {
   "menu.User.Manage Libarian": "Manage Libarian",
   "menu.User.Manage Customer": "Manage Customer",
   "menu.Organize Books": "Organize Books",
-  "menu.Detect": "Detect"
+  
 
 };

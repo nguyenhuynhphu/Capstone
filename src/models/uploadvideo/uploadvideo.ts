@@ -3,11 +3,8 @@ import { Effect, Reducer } from 'umi';
 
 export interface UploadVideoState {
   uploadModalVisible: boolean;
-  
 
   responseData: any;
-
-
   bookshelfData: any;
   drawerInBookShelf: any;
 }
@@ -21,6 +18,7 @@ export interface UploadVideoType {
     insertRecord: Effect;
   };
   reducers: {
+    resetState: Reducer;
     renderModel: Reducer;
 
     renderBookShelf: Reducer;
@@ -55,11 +53,20 @@ const UploadVideoModel: UploadVideoType = {
     },
 
     *insertRecord({ payload }, { put, call }) {
-      const response = yield call(insertRecord, payload);
+      yield call(insertRecord, payload);
     },
     
   },
   reducers: {
+    resetState(state, { }) {
+      return {
+        ...state,
+        uploadModalVisible: false,
+        bookshelfData: [],
+        responseData: [],
+        drawerInBookShelf: [],
+      };
+    },
     renderModel(state, { payload }) {
       return {
         ...state,

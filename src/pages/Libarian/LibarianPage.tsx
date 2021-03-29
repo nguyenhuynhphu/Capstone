@@ -82,7 +82,12 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
                     size="middle"
                     style={{ width: 300 }}
                     suffix={<UserOutlined style={{ color: '#40A9FF' }} />}
-                    //onSearch={onSearch}
+                    onSearch={(value: string) => {
+                      this.props.dispatch({
+                        type: 'libariantable/fetchData',
+                        payload: { filterName: value, pagination: this.props.libariantable.pagination.current },
+                      })
+                    }}
                   />
                 </Space>
               </Col>

@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, Drawer, List, Row, Space, Table, Tabs } from 'antd';
+import { Avatar, Button, Col, Drawer, List, Result, Row, Space, Spin, Table, Tabs } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import ReactPlayer from 'react-player';
@@ -54,7 +54,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
               height={'fit-content'}
               url={this.props.record.url}
             />
-            <Title style={{ textAlign: 'left', fontFamily: 'roboto', margin: '20px 0' }} level={2}>
+            <Title style={{ textAlign: 'left', fontFamily: 'roboto', margin: '20px 0' }} level={4}>
               Tracking Detail
             </Title>
             <Space style={{ width: '100%' }} direction={'vertical'}>
@@ -66,28 +66,48 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
           <Col span={16} style={{ borderLeft: '1px solid rgba(0, 0, 0, .1)' }}>
             <Row style={{ textAlign: 'left', height: '100%' }}>
               <Col span={24} style={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
-                <Table
-                  columns={columns}
-                  loading={this.props.model.isLoading}
-                  dataSource={this.props.model.data}
-                  bordered
-                  onRow={(record) => {
-                    return {
-                      onDoubleClick: () => {
-                 
-                        this.onSelectRow(record);
-                        this.props.dispatch({
-                          type: 'trackingdetail/fetchError',
-                          payload: record.id,
-                        });
-                      }, // double click row,
-                    };
-                  }}
-                  className={styles.tablelDrawer}
-                  scroll={{ x: 0, y: 485 }}
-                  pagination={false}
-                  style={{ height: '100%', marginLeft: 5, borderLeft: 'none' }}
-                />
+                {this.props.model.isLoading ? (
+                  <Spin spinning />
+                ) : (
+                  <>
+                    {this.props.model.data.length != 0 ? (
+                      <Table
+                        columns={columns}
+                        loading={this.props.model.isLoading}
+                        dataSource={this.props.model.data}
+                        bordered
+                        onRow={(record) => {
+                          return {
+                            onDoubleClick: () => {
+                              this.onSelectRow(record);
+                              this.props.dispatch({
+                                type: 'trackingdetail/fetchError',
+                                payload: record.id,
+                              });
+                            }, // double click row,
+                          };
+                        }}
+                        className={styles.tablelDrawer}
+                        scroll={{ x: 0, y: 485 }}
+                        pagination={false}
+                        style={{ height: '100%', marginLeft: 5, borderLeft: 'none' }}
+                      />
+                    ) : (
+                      <Result
+                        style={{
+                          height: '100%',
+                          justifyContent: 'center',
+                          flexDirection: 'column',
+                          display: 'flex',
+                        }}
+                        status="success"
+                        title="No Error Was Found !"
+                        subTitle="No error been detected in this scanning"
+                      />
+                    )}
+                  </>
+                )}
+
                 <Drawer
                   placement="right"
                   closable={false}
@@ -122,7 +142,11 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                       key="1"
                     >
                       {this.props.model.listError.map((record: any) =>
-                        (!record.isConfirm && !record.isReject) ? <BookTrackingItem record={record} /> : <></>,
+                        !record.isConfirm && !record.isReject ? (
+                          <BookTrackingItem record={record} />
+                        ) : (
+                          <></>
+                        ),
                       )}
                     </Tabs.TabPane>
                     <Tabs.TabPane

@@ -31,6 +31,12 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
         size={'small'}
         loading={libariantable.isLoading}
         pagination={libariantable.pagination}
+        onChange={(pagination: any) => {
+          this.props.dispatch({
+            type: 'libariantable/fetchData',
+            payload: { filterName: libariantable.filterName, pagination: pagination.current },
+          });
+        }}
         onRow={(record, rowIndex) => {
           return {
             onDoubleClick: (event) => {

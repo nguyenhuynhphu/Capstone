@@ -151,6 +151,12 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
           dataSource={manageborrowtable.data}
           loading={manageborrowtable.isLoading}
           pagination={manageborrowtable.pagination}
+          onChange={(pagination: any) => {
+            this.props.dispatch({
+              type: 'manageborrowtable/fetchData',
+              payload: { filterName: manageborrowtable.filterName, pagination: pagination.current },
+            });
+          }}
           className={styles.borrowTable}
           onRow={(record, rowIndex) => {
             return {

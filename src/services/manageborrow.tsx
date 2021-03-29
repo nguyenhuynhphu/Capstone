@@ -16,7 +16,13 @@ export async function fetchCustomer(customerId: number): Promise<any> {
   return request(`/api/Customer/${customerId}`);
 }
 
+export async function fetchCustomerByName(customerName: string): Promise<any> {
+  return request(`/api/Customer?Name=${customerName}`);
+}
+
 export async function confirmBorrow(value: any): Promise<any> {
+  console.log(JSON.stringify(value));
+  
   return request('/api/BorrowBook', {
     method: 'POST',
     body: JSON.stringify(value),
@@ -56,4 +62,11 @@ export async function fetchLateReturn(): Promise<any> {
 ///api/Book?Barcode=a
 export async function fetchBookByBarcode(barcode: string): Promise<any> {
   return request(`/api/Book?Barcode=${barcode}`);
+}
+
+export async function fetchBorrowDetailByBarcode(barcode: string): Promise<any> {
+  return request(`/api/BorrowDetail?Barcode=${barcode}`);
+}
+export async function fetchBorrowBook(borrowBookId: string): Promise<any> {
+  return request(`/api/BorrowBook/${borrowBookId}`);
 }

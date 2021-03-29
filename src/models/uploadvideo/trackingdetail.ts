@@ -31,6 +31,7 @@ export interface TrackingDetailType {
     updateErrorUndefined: Effect;
   };
   reducers: {
+    resetState: Reducer;
     isLoading: Reducer;
     loadData: Reducer;
     loadError: Reducer;
@@ -76,6 +77,14 @@ const TrackingDetailModel: TrackingDetailType = {
 
   },
   reducers: {
+    resetState(state, {}) {
+      return {
+        ...state,
+        data: [],
+        isLoading: false,
+        listError: [],
+      };
+    },
     isLoading(state, {}) {
       return {
         ...state,
