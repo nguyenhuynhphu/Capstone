@@ -2,6 +2,6 @@
 import request from '@/utils/request';
 
 export async function fetchAllBook(bookGroupId: number, count: number): Promise<any> {
-  return request(`/api/Book?BookGroupId=${bookGroupId}&PageNumber=${count}`);
+  return request(`/api/Book?BookGroupId=${bookGroupId}&PageSize=1000`);
 }
 

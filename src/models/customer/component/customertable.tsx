@@ -19,9 +19,9 @@ export interface CustomerTableType {
     onSelect: Effect;
   };
   reducers: {
-    isLoading: Reducer<CustomerTableState>;
-    loadData: Reducer<CustomerTableState>;
-    selected: Reducer<CustomerTableState>;
+    isLoading: Reducer;
+    loadData: Reducer;
+    selected: Reducer;
   };
 }
 

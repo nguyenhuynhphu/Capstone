@@ -72,6 +72,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
           title={'Name'}
           dataIndex={'name'}
           key={'name'}
+          width={230}
           render={(text: any, record: any) => (
             <>
               <Space>
@@ -81,13 +82,15 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
             </>
           )}
         />
-        <Column title="Gender" dataIndex="gender" key="gender" align="center" />
-        <Column title="Username" dataIndex="username" key="username" align="center" />
+        <Column title="Gender" dataIndex="gender" key="gender" align="left" width={80} />
+        <Column title="Username" dataIndex="username" key="username" align="left" width={150} />
         <Column title="Email" dataIndex="email" key="email" align="left" />
         <Column
-          title="Created Time"
+          title="Created"
           dataIndex="createdTime"
           key="createdTime"
+          width={130}
+          align="left"
           render={(text: any, record: any) => (
             <>
               <p style={{ marginBottom: '0px' }}>{text?.split('T')[0]}</p>
@@ -96,64 +99,35 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
         />
         <Column title="Address" dataIndex="address" key="address" />
         <Column
-          title="Action"
           key="action"
           align="center"
+          width={80}
           render={(text: any, record: any) => (
-            <Popover
-              content={
-                <Space direction="vertical">
-                  <Space
-                    direction="horizontal"
-                    align={'center'}
-                    style={{ marginBottom: 8, cursor: 'pointer' }}
-                  >
-                    <EditOutlined style={{ color: '#40A9FF', fontSize: 20 }} />
-                    <p
-                      style={{ marginBottom: '0px' }}
-                      onClick={() =>
-                        this.props.dispatch({
-                          type: 'libarianpage/showViewLibarian',
-                          payload: { ...record },
-                        })
-                      }
-                    >
-                      Edit
-                    </p>
-                  </Space>
-                  <Popconfirm
-                    title="Are you sure？"
-                    okText="Yes"
-                    cancelText="No"
-                    onConfirm={() => {
-                      this.props
-                        .dispatch({
-                          type: 'libarianpage/deleteLibarian',
-                          payload: [record.id],
-                        })
-                        .then(() => {
-                          this.props.dispatch({
-                            type: 'libariantable/fetchData',
-                            payload: {
-                              filterName: libariantable.filterName,
-                              pagination: libariantable.pagination.current,
-                            },
-                          });
-                        });
-                    }}
-                  >
-                    <Space direction="horizontal" align={'center'} style={{ cursor: 'pointer' }}>
-                      <DeleteOutlined style={{ color: 'red', fontSize: 20 }} />
-                      <p style={{ marginBottom: '0px' }}>Delete</p>
-                    </Space>
-                  </Popconfirm>
-                </Space>
-              }
-              title="Actions"
-              trigger="hover"
+            <Popconfirm
+              title="Are you sure？"
+              okText="Yes"
+              cancelText="No"
+              onConfirm={() => {
+                this.props
+                  .dispatch({
+                    type: 'libarianpage/deleteLibarian',
+                    payload: [record.id],
+                  })
+                  .then(() => {
+                    this.props.dispatch({
+                      type: 'libariantable/fetchData',
+                      payload: {
+                        filterName: libariantable.filterName,
+                        pagination: libariantable.pagination.current,
+                      },
+                    });
+                  });
+              }}
             >
-              <MoreOutlined style={{ fontSize: 20 }} />
-            </Popover>
+              <Space direction="horizontal" align={'center'} style={{ cursor: 'pointer' }}>
+                <DeleteOutlined style={{ color: 'red', fontSize: 20 }} />
+              </Space>
+            </Popconfirm>
           )}
         />
       </Table>

@@ -1,6 +1,6 @@
 import TableHeader from '@/components/CustomDesign/TableHeader';
 import { UserOutlined } from '@ant-design/icons';
-import { Button, Col, Popconfirm, Row, Space, Table } from 'antd';
+import { Avatar, Button, Col, Popconfirm, Row, Space, Table } from 'antd';
 import Search from 'antd/lib/input/Search';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
@@ -29,7 +29,15 @@ class CustomerTable extends React.Component<CustomerPageProps, CustomerPageState
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        render: (text: any) => <a>{text}</a>,
+        width: 250,
+        render: (text: any, record: any) => (
+          <>
+            <Space>
+              <Avatar size={50} src={record.image} />
+              <p style={{ marginBottom: '0px' }}>{text}</p>
+            </Space>
+          </>
+        ),
       },
       {
         title: 'Address',
@@ -40,6 +48,11 @@ class CustomerTable extends React.Component<CustomerPageProps, CustomerPageState
         title: 'Created Time',
         dataIndex: 'createdTime',
         key: 'createdTime',
+        render: (text: any, record: any) => (
+          <>
+            <p style={{ marginBottom: '0px' }}>{text.split('T')[0]}</p>
+          </>
+        ),
       },
       {
         title: 'Email',
@@ -80,6 +93,7 @@ class CustomerTable extends React.Component<CustomerPageProps, CustomerPageState
           />
         </Space>
         <Table
+        className={styles.customerTable}
           columns={column}
           dataSource={customertable.data}
           loading={customertable.isLoading}

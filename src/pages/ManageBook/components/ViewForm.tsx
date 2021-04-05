@@ -233,7 +233,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
           onClose={this.onFeedbackDrawerClose}
           visible={this.state.viewBookFeedbacks}
         >
-          <ListComment />
+          <ListComment bookGroup={bookGroup} />
         </Drawer>
       </>
     );

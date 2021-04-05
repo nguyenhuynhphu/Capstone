@@ -15,7 +15,7 @@ export async function fetchNewestBookGroup(): Promise<any> {
 }
 
 export async function fetchCategories(): Promise<any> {
-  return request(`/api/Category`);
+  return request(`/api/Category?PageSize=5`);
 }
 
 export async function fetchBookByCategory(cateId: number): Promise<any> {
@@ -35,9 +35,14 @@ export async function deleteCategory(ids: any) {
 }
 
 export async function fetchComments({ id, page }: any): Promise<any> {
-  return request(`/api/Feedback?BookGroupId=${id}&PageSize=10&PageNumber=${page}`);
+  return request(`/api/Feedback?BookGroupId=${id}&PageSize=1000`);
 }
-
+///api/Feedback?id=1
+export async function removeComment(id: number): Promise<any> {
+  return request(`/api/Feedback?id=${id}`, {
+    method: 'DELETE',
+  });
+}
 export async function fetchBooks(bookGroupId: number): Promise<any> {
   return request(`/api/Book?BookGroupId=${bookGroupId}`);
 }

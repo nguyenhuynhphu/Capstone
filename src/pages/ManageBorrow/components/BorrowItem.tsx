@@ -1,9 +1,8 @@
-import { TagsOutlined } from '@ant-design/icons';
 import { Space, Image, Select, Typography, Descriptions, Alert } from 'antd';
 
 import React from 'react';
 
-import { connect, Dispatch } from 'umi';
+import { connect } from 'umi';
 
 const { Paragraph, Text } = Typography;
 

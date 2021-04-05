@@ -17,6 +17,7 @@ import { connect, Dispatch } from 'umi';
 import { Typography, Image } from 'antd';
 import styles from '../ManageBookPage.less';
 import 'antd/dist/antd.css';
+import LoadingDrone from '@/components/CustomDesign/LoadingDrone';
 const { Text } = Typography;
 
 const columns = [
@@ -143,7 +144,6 @@ const columns = [
     align: 'center',
     render: (date: any) => <Text>{formatDate(date)}</Text>,
   },
-  
 ];
 interface BookGroupTableProps {
   dispatch: Dispatch;
@@ -191,12 +191,10 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
             <Search
               placeholder="Type book name"
               enterButton="Search"
-   
               style={{ width: 350 }}
-              suffix={<BookOutlined style={{color: '#40A9FF'}}/>}
+              suffix={<BookOutlined style={{ color: '#40A9FF' }} />}
               onSearch={(value) => this.handleFilter(value)}
             />
-            
           </Col>
           {this.props.user.currentUser.roleId != 1 ? (
             <Col span={8} offset={6} style={{ textAlign: 'right' }}>
@@ -232,9 +230,9 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
         <Table
           rowSelection={rowSelection}
           columns={columns}
+          loading={bookgrouptable.isLoading}
           className={styles.bookTable}
           scroll={{ y: 500 }}
-          loading={bookgrouptable.isLoading}
           pagination={{ ...bookgrouptable.pagination, showSizeChanger: false }}
           dataSource={bookgrouptable.data}
           size={'small'}

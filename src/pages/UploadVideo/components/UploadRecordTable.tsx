@@ -19,6 +19,7 @@ const columns = [
     dataIndex: 'id',
     key: 'id',
     align: 'center',
+    width: 55,
     render: (text) => <p>{text}</p>,
   },
   {
@@ -51,7 +52,7 @@ class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRe
   componentDidMount() {
     this.props.dispatch({
       type: 'uploadrecordtable/fetchData',
-      payload: {filterName: '', pagination: 1}
+      payload: {filterRecord: ['', ''], pagination: 1}
     });
   }
 
@@ -68,9 +69,10 @@ class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRe
           onChange={(pagination) => {
             dispatch({
               type: 'uploadrecordtable/fetchData',
-              payload: { filterName: uploadrecordtable.filterName, pagination: pagination.current },
+              payload: { filterRecord: uploadrecordtable.filterRecord, pagination: pagination.current },
             });
           }}
+          scroll={{y: 500}}
           onRow={(record) => {
             return {
               onDoubleClick: () => this.props.trackingDetail(record), // double click row,

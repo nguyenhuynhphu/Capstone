@@ -1,11 +1,9 @@
-import { fetchAllBookGroup, fetchComments } from '@/services/bookgroup';
+import { fetchAllBookGroup, fetchComments, removeComment } from '@/services/bookgroup';
 import { Effect, Reducer } from 'umi';
 
 export interface ListCommentsState {
   data: any;
   isLoading: boolean;
-  hasNextPage: boolean;
-  current: number;
 }
 
 export interface ListCommentsType {
@@ -13,11 +11,12 @@ export interface ListCommentsType {
   state: ListCommentsState;
   effects: {
     fetchData: Effect;
+    removeFeedback: Effect;
   };
   reducers: {
-    isLoading: Reducer<ListCommentsState>;
-    loadData: Reducer<ListCommentsState>;
-    resetData: Reducer<ListCommentsState>;
+    isLoading: Reducer;
+    loadData: Reducer;
+    resetData: Reducer;
   };
 }
 
@@ -26,12 +25,9 @@ const ListCommentsModel: ListCommentsType = {
   state: {
     data: [],
     isLoading: false,
-    hasNextPage: true,
-    current: 1,
   },
   effects: {
     *fetchData({ payload }, { call, put }) {
-      yield call(() => {}, payload);
       yield put({
         type: 'isLoading',
         payload: {},
@@ -42,6 +38,10 @@ const ListCommentsModel: ListCommentsType = {
         type: 'loadData',
         payload: response,
       });
+    },
+    *removeFeedback({ payload }, { call, put }) {
+      const response = yield call(removeComment, payload);
+      
     },
   },
   reducers: {
@@ -66,10 +66,9 @@ const ListCommentsModel: ListCommentsType = {
 
       return {
         ...state,
-        data: state?.data.concat(payload.data),
+        data: payload.data,
         isLoading: false,
-        hasNextPage: payload.meta.hasNextPage,
-        current: payload.meta.currentPage,
+        
       };
     },
   },

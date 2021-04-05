@@ -28,25 +28,24 @@
                 name: 'Dashboard',
                 icon: 'dashboard',
 
-                component: './Welcome',
+                component: './Welcome/Welcome',
                 authority: ['admin', 'user'],
               },
               {
                 path: '/manage-user',
                 name: 'User',
                 icon: 'user',
+                authority: ['admin'],
                 routes: [
                   {
                     path: '/manage-user/libarian',
                     name: 'Manage Libarian',
                     component: './Libarian/LibarianPage',
-                    authority: ['admin', 'user'],
                   },
                   {
                     path: '/manage-user/customer',
                     name: 'Manage Customer',
                     component: './Customer/CustomerPage',
-                    authority: ['admin'],
                   },
                 ],
               },

@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export async function findBookShelf(name: string): Promise<any> {
-  return request(`/api/BookShelf?Name=${name}`);
+  return request(`/api/BookShelf?Name=${name}&PageSize=99`);
 }
 
 export async function fetchDrawer(bookShelfId: number): Promise<any> {
@@ -21,6 +21,8 @@ export async function getRealPosition(bookId: number): Promise<any> {
 }
 
 export async function insertRecord(record: any): Promise<any> {
+  console.log(record);
+  console.log(JSON.stringify(record));
 
   return request(`/api/Detection`, {
     method: 'POST',
@@ -29,7 +31,16 @@ export async function insertRecord(record: any): Promise<any> {
 }
 
 export async function fetchRecord(payload: any): Promise<any> {
-  return request(`/api/Detection?BookShelfName=${payload.filterName}&PageNumber=${payload.pagination}`);
+  if(payload.filterRecord[0] != ''){
+    return request(
+      `/api/Detection?StartTime=${payload.filterRecord[0].format("YYYY-MM-DD")}&EndTime=${payload.filterRecord[1].format("YYYY-MM-DD")}&PageNumber=${payload.pagination}`,
+    );
+  }else{
+    return request(
+      `/api/Detection?StartTime=&EndTime=&PageNumber=${payload.pagination}`,
+    );
+  }
+  
 }
 export async function fetchTrackingDetail(detectionId: number): Promise<any> {
   return request(`/api/DrawerDetection?DetectionId=${detectionId}`);
@@ -39,6 +50,9 @@ export async function fetchError(detectionDrawerId: number): Promise<any> {
 }
 export async function fetchUndifileError(detectionDrawerId: number): Promise<any> {
   return request(`/api/UndefinedError?DrawerDetectionId=${detectionDrawerId}`);
+}
+export async function fetchAllDectection(): Promise<any> {
+  return request(`/api/Detection?PageSize=10000`);
 }
 
 export async function updateError(detectionError: any): Promise<any> {
@@ -53,4 +67,3 @@ export async function updateUndefined(undefinedError: any): Promise<any> {
     body: JSON.stringify(undefinedError),
   });
 }
-

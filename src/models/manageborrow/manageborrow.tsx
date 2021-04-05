@@ -1,4 +1,4 @@
-import { confirmBorrow, fetchBorrowDetail, fetchCustomer } from '@/services/manageborrow';
+import { confirmBorrow, fetchBorrowBook, fetchCustomer } from '@/services/manageborrow';
 import _ from 'lodash';
 import { Effect, ManageBookState, Reducer } from 'umi';
 
@@ -46,7 +46,7 @@ export interface ManageBorrowType {
     addToScanId: Reducer;
     removeFromScanId: Reducer;
 
-    addToReturnList: Reducer;
+    addToReturnBorrow: Reducer;
     //removeFromScanId: Reducer;
 
     loadBorrowDetail: Reducer;
@@ -64,9 +64,9 @@ const ManageBorrowModel: ManageBorrowType = {
     processStep: 0,
     wishlist: {},
     customer: {},
-    borrowDetail: [],
+    borrowDetail: {},
     scanId: [],
-    returnList: [],
+    returnList: {},
   },
   effects: {
     *changeScreen({ payload }, { call, put }) {
@@ -98,8 +98,10 @@ const ManageBorrowModel: ManageBorrowType = {
       yield call(confirmBorrow, payload);
     },
     *fetchBorrowDetail({ payload }, { call, put }) {
-      const response = yield call(fetchBorrowDetail, payload);
-
+      const response = yield call(fetchBorrowBook, payload.data[0].borrowId);
+      const customer = yield call(fetchCustomer, response.data.customerId);
+      response.data.customer = customer.data;
+      response.data.borrowDetail = payload.data;
       yield put({
         type: 'loadBorrowDetail',
         payload: response.data,
@@ -109,6 +111,7 @@ const ManageBorrowModel: ManageBorrowType = {
   reducers: {
     resetState(state) {
       return {
+        ...state,
         isMakingTransaction: false,
         isMakingReturn: false,
         isConnect: false,
@@ -116,6 +119,8 @@ const ManageBorrowModel: ManageBorrowType = {
         processStep: 0,
         wishlist: {},
         customer: {},
+        scanId: [],
+        returnList: [],
       };
     },
     loading(state) {
@@ -130,7 +135,6 @@ const ManageBorrowModel: ManageBorrowType = {
         processStep: payload,
       };
     },
-
     addToScanId(state, { payload }) {
       var tmp;
       var payloadRemoveList: any = [];
@@ -153,13 +157,12 @@ const ManageBorrowModel: ManageBorrowType = {
         scanId: _.concat(state.scanId, payload),
       };
     },
-
-    addToReturnList(state, { payload }) {
-      // state.returnList.find(x => state.returnList)
-      state.returnList.push(payload)
+    addToReturnBorrow(state, { payload }) {
+      var tmp = state.borrowDetail.borrowDetail.find((x: any) => x.barcode == payload);
+      tmp.isReturn = true
       return {
         ...state,
-      
+        borrowDetail: state.borrowDetail
       };
     },
     removeFromScanId(state, { payload }) {
@@ -169,14 +172,12 @@ const ManageBorrowModel: ManageBorrowType = {
         ...state,
       };
     },
-
     renderWishList(state, { payload }) {
       return {
         ...state,
         wishlist: payload,
       };
     },
-
     renderScreen(state, { payload }) {
       return {
         ...state,
@@ -185,7 +186,6 @@ const ManageBorrowModel: ManageBorrowType = {
         screenLoading: false,
       };
     },
-
     renderReturnScreen(state, { payload }) {
       return {
         ...state,
@@ -194,25 +194,22 @@ const ManageBorrowModel: ManageBorrowType = {
         screenLoading: false,
       };
     },
-
     renderButton(state, { payload }) {
       return {
         ...state,
         isConnect: payload,
       };
     },
-
     loadCustomer(state, { payload }) {
       return {
         ...state,
         customer: payload,
       };
     },
-
     loadBorrowDetail(state, { payload }) {
       return {
         ...state,
-        borrowDetail: payload,
+        borrowDetail: payload
       };
     },
 

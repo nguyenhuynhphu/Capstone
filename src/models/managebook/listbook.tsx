@@ -4,7 +4,6 @@ import { Effect, Reducer } from 'umi';
 export interface ListBooksState {
   data: any;
   isLoading: boolean;
-  hasNextPage: boolean;
 }
 
 export interface ListBooksType {
@@ -14,9 +13,9 @@ export interface ListBooksType {
     fetchData: Effect;
   };
   reducers: {
-    isLoading: Reducer<ListBooksState>;
-    loadData: Reducer<ListBooksState>;
-    resetData: Reducer<ListBooksState>;
+    isLoading: Reducer;
+    loadData: Reducer;
+    resetData: Reducer;
   };
 }
 
@@ -25,7 +24,6 @@ const ListBooksModel: ListBooksType = {
   state: {
     data: [],
     isLoading: false,
-    hasNextPage: true,
   },
   effects: {
     *fetchData({ payload }, { call, put }) {
@@ -62,9 +60,8 @@ const ListBooksModel: ListBooksType = {
 
       return {
         ...state,
-        data: state?.data.concat(payload.data),
+        data: payload.data,
         isLoading: false,
-        hasNextPage: payload.meta.hasNextPage
       };
     },
   },

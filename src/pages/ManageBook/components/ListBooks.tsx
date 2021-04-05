@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { connect, Dispatch } from 'umi';
-import { List, Skeleton, Button } from 'antd';
+import { List, Skeleton, Button, Descriptions, Divider } from 'antd';
 
 interface ListBookProps {
   dispatch: Dispatch;
@@ -22,27 +22,18 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
         <List
           className="comment-list"
           itemLayout="horizontal"
-          loadMore={
-            <>
-              <div
-                style={{
-                  textAlign: 'center',
-                  marginTop: 12,
-                  height: 32,
-                  lineHeight: '32px',
-                }}
-              >
-                <Button onClick={() => {}}>loading more</Button>
-              </div>
-            </>
-          }
           dataSource={listbooks.data}
           renderItem={(item: any) => (
-            <div>
-              <p>#{item.barCode}</p>
-              <p>{item.id}</p>
-              <p>{item.isAvailable}</p>
-            </div>
+            <>
+              <Descriptions column={2}>
+                <Descriptions.Item label="Barcode">#{item.barCode}</Descriptions.Item>
+                <Descriptions.Item label="ID">{item.id}</Descriptions.Item>
+                <Descriptions.Item label="Status">
+                  {item.isAvailable ? 'Available' : 'Not Available'}
+                </Descriptions.Item>
+              </Descriptions>
+              <Divider />
+            </>
           )}
         />
       </Skeleton>

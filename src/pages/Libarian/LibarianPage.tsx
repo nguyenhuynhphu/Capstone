@@ -15,9 +15,7 @@ import { connect, Dispatch } from 'umi';
 import InputForm from './components/InputForm';
 import ViewForm from './components/ViewForm';
 import { FormInstance } from 'antd/lib/form';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import Title from 'antd/lib/typography/Title';
-import Text from 'antd/lib/typography/Text';
+
 import TableHeader from '@/components/CustomDesign/TableHeader';
 import { storage } from '@/firebase/Firebase';
 
@@ -37,7 +35,6 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
     };
 
     this.handelSubmit = this.handelSubmit.bind(this);
-    this.hideEditLibarian = this.hideEditLibarian.bind(this);
     this.hideViewLibarian = this.hideViewLibarian.bind(this);
   }
 
@@ -67,12 +64,16 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
                   <Button
                     type="primary"
                     size="middle"
-                    onClick={() =>
+                    onClick={() => {
                       this.props.dispatch({
-                        type: 'libarianpage/showCreateLibarian',
-                        payload: {},
-                      })
-                    }
+                        type: 'libarianpage/displayInputForm',
+                        payload: true,
+                      });
+                      this.props.dispatch({
+                        type: 'libarianpage/displayScrollBar',
+                        payload: false,
+                      });
+                    }}
                   >
                     <UserAddOutlined style={{ fontSize: 18 }} /> New Libarian
                   </Button>
@@ -85,8 +86,11 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
                     onSearch={(value: string) => {
                       this.props.dispatch({
                         type: 'libariantable/fetchData',
-                        payload: { filterName: value, pagination: this.props.libariantable.pagination.current },
-                      })
+                        payload: {
+                          filterName: value,
+                          pagination: this.props.libariantable.pagination.current,
+                        },
+                      });
                     }}
                   />
                 </Space>
@@ -109,10 +113,19 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
           <ViewForm />
         </Drawer>
         <Drawer
-          title="Create Libarian"
+          title={libarianpage.choiceLibarian.id ? 'Update Librarian' : 'Create Libarian'}
           width={550}
-          onClose={() => this.hideCreateLibarianDrawer()}
-          visible={libarianpage.createLibarianVisible}
+          onClose={() => {
+            this.props.dispatch({
+              type: 'libarianpage/displayInputForm',
+              payload: false,
+            });
+            this.props.dispatch({
+              type: 'libarianpage/displayScrollBar',
+              payload: true,
+            });
+          }}
+          visible={libarianpage.inputLibarianVisible}
           bodyStyle={{ paddingBottom: 80 }}
           footer={
             <div
@@ -120,7 +133,19 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
                 textAlign: 'right',
               }}
             >
-              <Button onClick={() => this.hideCreateLibarianDrawer()} style={{ marginRight: 8 }}>
+              <Button
+                onClick={() => {
+                  this.props.dispatch({
+                    type: 'libarianpage/displayInputForm',
+                    payload: false,
+                  });
+                  this.props.dispatch({
+                    type: 'libarianpage/displayScrollBar',
+                    payload: true,
+                  });
+                }}
+                style={{ marginRight: 8 }}
+              >
                 Cancel
               </Button>
               <Button form={'inputLibarian'} key="submit" htmlType="submit" type="primary">
@@ -129,30 +154,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
             </div>
           }
         >
-          <InputForm formRef={this.state.form} handelSubmit={this.handelSubmit} />
-        </Drawer>
-        <Drawer
-          title="Edit Libarian"
-          width={550}
-          closable={true}
-          onClose={this.hideEditLibarian}
-          visible={libarianpage.editLibarianVisible}
-          footer={
-            <div
-              style={{
-                textAlign: 'right',
-              }}
-            >
-              <Button onClick={this.hideEditLibarian} style={{ marginRight: 8 }}>
-                Cancel
-              </Button>
-              <Button form={'inputLibarian'} key="submit" htmlType="submit" type="primary">
-                Submit
-              </Button>
-            </div>
-          }
-        >
-          <InputForm formRef={this.state.form} handelSubmit={this.handelSubmit} />
+          <InputForm handelSubmit={this.handelSubmit} />
         </Drawer>
       </>
     );
@@ -160,7 +162,6 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
 
   handelSubmit(libarian: any) {
     const { dispatch, libarianpage, libariantable } = this.props;
-
     if (libarianpage.choiceLibarian.id != undefined) {
       //update
       libarian.id = libarianpage.choiceLibarian.id;
@@ -172,7 +173,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
         const task = storage
           .ref()
           .child(`${libarian.name}/${libarian.image.uid}_${libarian.image.name}`)
-          .put(libarian.image.originFileObj, { contentType: libarian.image.type });
+          .put(libarian.image, { contentType: libarian.image.type });
 
         task.on(
           'state_changed',
@@ -216,7 +217,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
       const task = storage
         .ref()
         .child(`${libarian.name}/${libarian.image.uid}_${libarian.image.name}`)
-        .put(libarian.image.originFileObj, { contentType: libarian.image.type });
+        .put(libarian.image, { contentType: libarian.image.type });
 
       task.on(
         'state_changed',
@@ -242,22 +243,9 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
     }
   }
 
-  hideCreateLibarianDrawer() {
-    this.props.dispatch({
-      type: 'libarianpage/hideCreateLibarian',
-      payload: {},
-    });
-  }
-
   hideViewLibarian() {
     this.props.dispatch({
       type: 'libarianpage/hideViewLibarian',
-      payload: {},
-    });
-  }
-  hideEditLibarian() {
-    this.props.dispatch({
-      type: 'libarianpage/hideEditLibarian',
       payload: {},
     });
   }

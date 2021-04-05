@@ -16,6 +16,10 @@ export interface CurrentUser {
   }[];
   id?: string;
   unreadCount?: number;
+  role?: string;
+  phone?: string;
+  address?: string;
+  email?: string;
 }
 
 export interface UserModelState {
@@ -55,10 +59,12 @@ const UserModel: UserModelType = {
 
       if (jwtToken.length !== 0) {
         var user: any = decodeToken(jwtToken);
-
+        console.log(">>>>>>", user);
+        
         // user.name = user.userName;
-        // user.userName = 
+      
         user.avatar = user.image;
+        user.role = user.roleId;
         yield put({
           type: 'saveCurrentUser',
           payload: user,

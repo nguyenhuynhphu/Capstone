@@ -8,16 +8,10 @@ import {
   List,
   Result,
   Row,
-  Image,
   Space,
   Spin,
   Steps,
   Typography,
-  Input,
-  Table,
-  Select,
-  Descriptions,
-  Popover,
   Popconfirm,
   Skeleton,
   ConfigProvider,
@@ -36,7 +30,6 @@ import {
   fetchBookByBarcode,
   fetchBooks,
   fetchBorrowBook,
-  fetchBorrowDetail,
   fetchBorrowDetailByBarcode,
   fetchCustomer,
   fetchCustomerByName,
@@ -44,8 +37,6 @@ import {
 import Title from 'antd/lib/typography/Title';
 import styles from './ManageBorrowPage.less';
 import moment from 'moment';
-import Column from 'antd/lib/table/Column';
-import { fetchDrawer } from '@/services/organizebook';
 import ReturnBookTable from './components/ReturnBookTable';
 import ReturnFeeChart from './components/ReturnFeeChart';
 import TableHeader from '@/components/CustomDesign/TableHeader';
@@ -247,11 +238,9 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
               />
             </div>
           </div>
-          {this.props.manageborrow.returnList ? (
+          {this.props.manageborrow.borrowDetail.borrowDetail ? (
             <Space style={{ width: '100%' }} direction={'vertical'}>
-              {this.props.manageborrow.returnList?.map((borrowBook: any) => (
-                <BorrowBookSection borrowBook={borrowBook} />
-              ))}
+              <BorrowBookSection borrowBook={this.props.manageborrow.borrowDetail} />
             </Space>
           ) : (
             <> </>
@@ -596,10 +585,10 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     if (connection != undefined) {
       connection
         .start()
-        .then((value) => {
+        .then(() => {
           connection.on('ReceiveMessageToBorrow', async (value) => {
             //tunwgf cuoons
-            console.log("ReceiveMessageToBorrow", value);
+            console.log('MOT CUON', value);
             if (value.staffId !== this.props.user.currentUser.id) {
               var book: any = await fetchBookByBarcode(value.barcode);
               if (book.data[0] != undefined) {
@@ -616,8 +605,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
           });
           connection.on('ReceiveMessage', async (value) => {
             //wishlist
-            console.log("ReceiveMessage", value);
-            
+            console.log('WISHLIST', value);
 
             if (value.staffId !== this.props.user.currentUser.id) {
               var promiese: any = [];
@@ -648,43 +636,25 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
           });
 
           connection.on('ReceiveMessageToReturnBook', async (value) => {
-            console.log('ReceiveMessageToReturnBook', value);
-
+            console.log('TRA SACH', value);
             if (value.staffId !== this.props.user.currentUser.id) {
-              var listBorrow = await fetchBorrowDetailByBarcode(value.barcode);
-
-              if (listBorrow.data != undefined) {
-                if (listBorrow.data.length != 0) {
-                  var tmp: any = manageborrow.returnList.find(
-                    (record: any) => record.borrowBookId == listBorrow.data[0].borrowId,
-                  );
-                  if (tmp == undefined) {
-                    // chua ton tai
-                    var fetchBorrowDetail = await fetchBorrowBook(listBorrow.data[0].borrowId);
-
-                    var customer = await fetchCustomer(fetchBorrowDetail.data.customerId);
-                    var firstScan = listBorrow.data.find(
-                      (borrowDetail: any) => borrowDetail.barcode == value.barcode,
-                    );
-                    firstScan.isReturn = true;
-                    tmp = {
-                      customer: customer.data,
-                      borrowBookId: listBorrow.data[0].borrowId,
-                      borrowDetails: listBorrow.data.map((borrowDetail: any) => borrowDetail),
-                    };
-                    dispatch({
-                      type: 'manageborrow/addToReturnList',
-                      payload: tmp,
-                    });
-                  } else {
-                    // ton tai
-                    var scanItem = tmp.borrowDetails.find(
-                      (borrowDetail: any) => borrowDetail.barcode == value.barcode,
-                    );
-                    scanItem.isReturn = true;
-                  }
-                  console.log('manageborrow.returnList', manageborrow.returnList);
-                }
+              console.log("manageborrow.borrowDetail", manageborrow.borrowDetail);
+              
+              if (manageborrow.borrowDetail.id != undefined) {
+                console.log("RUNNN");
+                
+                dispatch({
+                  type: 'manageborrow/addToReturnBorrow',
+                  payload: value.barcode,
+                });
+              } else {
+                var listBorrow = await fetchBorrowDetailByBarcode(value.barcode);
+                var tmp = listBorrow.data.find((x: any) => x.barcode == value.barcode);
+                tmp.isReturn = true;
+                dispatch({
+                  type: 'manageborrow/fetchBorrowDetail',
+                  payload: listBorrow,
+                });
               }
             }
           });
@@ -706,6 +676,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
 
   async fetchWishList(customerId: any) {
     const { dispatch, manageborrow } = this.props;
+    console.log('manageborrow.scanId', manageborrow.scanId);
 
     for (let i = 0; i < manageborrow.scanId.length; i++) {
       const book = manageborrow.scanId[i];

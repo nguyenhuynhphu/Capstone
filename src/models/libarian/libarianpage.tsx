@@ -1,11 +1,11 @@
 import { deleteLibarian, editLibarian, insertLibarian } from '@/services/libarian';
+import { notification } from 'antd';
 import { visible } from 'chalk';
 import { Effect, Reducer } from 'umi';
 
 export interface LibarianPageState {
-  createLibarianVisible: boolean;
+  inputLibarianVisible: boolean;
   viewLibarianVisible: boolean;
-  editLibarianVisible: boolean;
 
   choiceLibarian: any;
 }
@@ -15,14 +15,9 @@ export interface LibarianPageType {
   state: LibarianPageState;
   effects: {
     //#region Page Formm
-    showCreateLibarian: Effect;
-    hideCreateLibarian: Effect;
-
     showViewLibarian: Effect;
     hideViewLibarian: Effect;
 
-    showEditLibarian: Effect;
-    hideEditLibarian: Effect;
     //#endregion
 
     insertLibarian: Effect;
@@ -30,43 +25,23 @@ export interface LibarianPageType {
     editLibarian: Effect;
   };
   reducers: {
-    displayScrollBar: Reducer<LibarianPageState>;
-    displayCreateLibarian: Reducer<LibarianPageState>;
-    displayViewLibarian: Reducer<LibarianPageState>;
-    displayEditLibarian: Reducer<LibarianPageState>;
+    displayScrollBar: Reducer;
+    displayViewLibarian: Reducer;
+
+    displayInputForm: Reducer;
   };
 }
 
 const LibarianPageModel: LibarianPageType = {
   namespace: 'libarianpage',
   state: {
-    createLibarianVisible: false,
+    inputLibarianVisible: false,
     viewLibarianVisible: false,
-    editLibarianVisible: false,
+
     choiceLibarian: {},
   },
   effects: {
     //#region Form
-    *showCreateLibarian(_, { put }) {
-      yield put({
-        type: 'displayScrollBar',
-        payload: false,
-      });
-      yield put({
-        type: 'displayCreateLibarian',
-        payload: true,
-      });
-    },
-    *hideCreateLibarian(_, { put }) {
-      yield put({
-        type: 'displayScrollBar',
-        payload: true,
-      });
-      yield put({
-        type: 'displayCreateLibarian',
-        payload: false,
-      });
-    },
     //===================================
     *showViewLibarian({ payload }, { put }) {
       yield put({
@@ -75,7 +50,7 @@ const LibarianPageModel: LibarianPageType = {
       });
       yield put({
         type: 'displayViewLibarian',
-        payload: {visible: true, record: payload},
+        payload: { visible: true, record: payload },
       });
     },
     *hideViewLibarian(_, { put }) {
@@ -85,40 +60,64 @@ const LibarianPageModel: LibarianPageType = {
       });
       yield put({
         type: 'displayViewLibarian',
-        payload: {visible: false, record: {}},
+        payload: { visible: false, record: {} },
       });
-      
     },
     //===================================
-    *showEditLibarian({ payload }, { put }) {
-      yield put({
-        type: 'displayEditLibarian',
-        payload: true,
-      });
-    },
-    *hideEditLibarian(_, { put }) {
-      yield put({
-        type: 'displayEditLibarian',
-        payload: false,
-      });
-      
-    },
     //#endregion
     *insertLibarian({ payload }, { put, call }) {
-      yield call(insertLibarian, payload);
+      const response = yield call(insertLibarian, payload);
+      if (response.data.id != undefined) {
+        notification.open({
+          message: 'New librarian was created !',
+          type: 'success',
+          description: 'New librarian created, please re check information !',
+          duration: 2,
+        });
+        yield put({
+          type: 'displayInputForm',
+          payload: false,
+        });
+      } else {
+        notification.open({
+          message: 'Create librarian fail !',
+          type: 'error',
+          description: 'Something went wrong, please re check input field !',
+          duration: 2,
+        });
+      }
       yield put({
-        type: 'displayCreateLibarian',
-        payload: false,
+        type: 'displayScrollBar',
+        payload: true,
       });
     },
     *deleteLibarian({ payload }, { call }) {
       yield call(deleteLibarian, payload);
     },
     *editLibarian({ payload }, { put, call }) {
-      yield call(editLibarian, payload);
+      const response = yield call(editLibarian, payload);
+      if (response.data) {
+        notification.open({
+          message: 'New librarian was update !',
+          type: 'success',
+          description: 'Llibrarian infor have success update !',
+          duration: 2,
+        });
+        yield put({
+          type: 'displayInputForm',
+          payload: false,
+        });
+      } else {
+        notification.open({
+          message: 'Update librarian fail !',
+          type: 'error',
+          description: 'Something went wrong, please re check input field !',
+          duration: 2,
+        });
+      }
       yield put({
-        type: 'displayEditLibarian',
-        payload: false,
+        type: 'displayScrollBar',
+        payload: true,
       });
     },
   },
@@ -135,24 +134,21 @@ const LibarianPageModel: LibarianPageType = {
         ...state,
       };
     },
-    displayCreateLibarian(state, { payload }) {
+
+    displayInputForm(state, { payload }) {
       return {
         ...state,
-        createLibarianVisible: payload,
+        inputLibarianVisible: payload,
+        viewLibarianVisible: false,
       };
     },
-    displayViewLibarian(state, {payload}) {
-      const {visible, record} = payload;
+
+    displayViewLibarian(state, { payload }) {
+      const { visible, record } = payload;
       return {
         ...state,
         viewLibarianVisible: visible,
-        choiceLibarian: record
-      };
-    },
-    displayEditLibarian(state, {payload}) {
-      return {
-        ...state,
-        editLibarianVisible: payload,
+        choiceLibarian: record,
       };
     },
   },

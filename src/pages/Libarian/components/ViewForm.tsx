@@ -1,5 +1,6 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Col, Divider, Row, Space, Typography } from 'antd';
+import { Button, Col, Descriptions, Divider, Row, Space, Typography } from 'antd';
+import Avatar from 'antd/lib/avatar/avatar';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
@@ -22,84 +23,50 @@ class ViewForm extends React.Component<ViewFormProps> {
       <div>
         <Row align={'middle'} style={{ marginBottom: 20 }}>
           <Col span={12}>
-            <Title level={4} style={{ marginTop: 6 }}>
+            <Title level={5} style={{ marginTop: 6 }}>
               Libarian Detail
             </Title>
           </Col>
           <Col span={12} style={{ textAlign: 'right' }}>
             <Space>
               <Button
-                onClick={() =>
+                onClick={() =>{
                   this.props.dispatch({
-                    type: 'libarianpage/showEditLibarian',
-                    payload: {},
+                    type: 'libarianpage/displayInputForm',
+                    payload: true,
                   })
-                }
+                  this.props.dispatch({
+                    type: 'libarianpage/displayScrollBar',
+                    payload: false,
+                  });
+                }}
                 icon={<EditOutlined style={{ color: '#0078d4' }} />}
               >
                 Edit
               </Button>
-              <Button icon={<DeleteOutlined style={{ color: 'red' }} />}>Delete</Button>
+              {/* <Button icon={<DeleteOutlined style={{ color: 'red' }} />}>Delete</Button> */}
             </Space>
           </Col>
         </Row>
         <Divider />
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            Name:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceLibarian.name}
-          </Col>
-        </Row>
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            Gender:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceLibarian.gender}
-          </Col>
-        </Row>
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            Date Of Birth:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceLibarian.doB}
-          </Col>
-        </Row>
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            Phone:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceLibarian.phone}
-          </Col>
-        </Row>
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            Address:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceLibarian.address}
-          </Col>
-        </Row>
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            User Name:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceLibarian.username}
-          </Col>
-        </Row>
-        <Row className={styles.viewFormRow}>
-          <Col span={titleSpace} className={styles.viewFormTitle}>
-            Mail:
-          </Col>
-          <Col span={fieldSpace} className={styles.viewFormField}>
-            {choiceLibarian.email}
-          </Col>
-        </Row>
+        <Space
+          direction="vertical"
+          style={{ width: '100%', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}
+        >
+          <Avatar style={{ width: 100, height: 100 }} src={choiceLibarian.image} />
+          <p style={{ fontWeight: 'bold' }}>{choiceLibarian.name}</p>
+        </Space>
+
+        <Descriptions column={1} bordered>
+          <Descriptions.Item label="Gender">{choiceLibarian.gender}</Descriptions.Item>
+          <Descriptions.Item label="User Name">{choiceLibarian.username}</Descriptions.Item>
+          <Descriptions.Item label="Email">{choiceLibarian.email}</Descriptions.Item>
+          <Descriptions.Item label="Date Of Birth">
+            {choiceLibarian.doB?.split('T')[0]}
+          </Descriptions.Item>
+          <Descriptions.Item label="Phone">{choiceLibarian.phone}</Descriptions.Item>
+          <Descriptions.Item label="Address">{choiceLibarian.address}</Descriptions.Item>
+        </Descriptions>
       </div>
     );
   }

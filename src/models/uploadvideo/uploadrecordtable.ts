@@ -4,7 +4,7 @@ import { Effect, Reducer } from 'umi';
 export interface UploadRecordTableState {
   data: any;
   isLoading: boolean;
-  filterName: string;
+  filterRecord: any;
   pagination: any;
 }
 
@@ -27,8 +27,12 @@ const UploadRecordTableModel: UploadRecordTableType = {
     pagination: {
       current: 1,
       total: 0,
+      showSizeChanger: false
     },
-    filterName: '',
+    filterRecord: [
+      '',
+      ''
+    ],
     isLoading: false,
   },
   effects: {
@@ -36,9 +40,7 @@ const UploadRecordTableModel: UploadRecordTableType = {
       yield put({
         type: 'isLoading',
       });
-      console.log(payload);
-      
-      if(payload.filterName == undefined) payload.filterName = '';
+
       const response = yield call(fetchRecord, payload);
       yield put({
         type: 'loadData',
@@ -61,11 +63,12 @@ const UploadRecordTableModel: UploadRecordTableType = {
       });
       return {
         ...state,
-        filterName: filter.filterName,
+        filterRecord: filter.filterRecord,
         data: response.data,
         pagination: {
           current: filter.pagination,
           total: response.meta.totalCount,
+          showSizeChanger: false
         },
         isLoading: false,
       };
