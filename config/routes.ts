@@ -27,7 +27,6 @@
                 path: '/',
                 name: 'Dashboard',
                 icon: 'dashboard',
-
                 component: './Welcome/Welcome',
                 authority: ['admin', 'user'],
               },
@@ -49,7 +48,6 @@
                   },
                 ],
               },
-
               {
                 path: '/book',
                 name: 'Book',
@@ -84,7 +82,7 @@
                 component: './UploadVideo/UploadVideo',
                 authority: ['admin', 'user'],
               },
-
+              { path: '/no-permission', component: './401.tsx' },
               {
                 component: './404',
               },

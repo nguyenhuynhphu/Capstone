@@ -1,4 +1,4 @@
-import { Form, Col, Row, Input, Select, Badge } from 'antd';
+import { Form, Col, Row, Input, Select, Badge, InputNumber } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React from 'react';
 import { connect } from 'umi';
@@ -43,33 +43,100 @@ const InputForm = (props: any) => {
           .then(() =>
             props.dispatch({
               type: 'bookshelftable/fetchData',
-              payload: { filterName: props.bookshelftable.filterName, pagination: props.bookshelftable.pagination.current },
+              payload: {
+                filterName: props.bookshelftable.filterName,
+                pagination: props.bookshelftable.pagination.current,
+              },
             }),
           );
       }}
     >
       <Row gutter={16}>
         <Col span={24}>
-          <Form.Item name="name" label="Book Shelf Name" required>
+          <Form.Item
+            name="name"
+            label="Book Shelf Name"
+            required
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  if (value != undefined) {
+                    return Promise.resolve();
+                  } else {
+                    return Promise.reject(`Name must no empty`);
+                  }
+                },
+              }),
+            ]}
+          >
             <Input placeholder="Please enter book shelf name" />
           </Form.Item>
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item name="row" label="Row Number" required>
-            <Input placeholder="Please enter page number" />
+          <Form.Item
+            name="row"
+            label="Row Number"
+            required
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  if (value != undefined) {
+                    return Promise.resolve();
+                  } else {
+                    return Promise.reject(`Row must no empty`);
+                  }
+                },
+              }),
+            ]}
+          >
+            <InputNumber style={{ width: '100%' }} min={1} placeholder="Please input row number" />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item name="col" label="Column Number" required>
-            <Input placeholder="Please enter book's width" />
+          <Form.Item
+            name="col"
+            label="Column Number"
+            required
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  if (value != undefined) {
+                    return Promise.resolve();
+                  } else {
+                    return Promise.reject(`Column must no empty`);
+                  }
+                },
+              }),
+            ]}
+          >
+            <InputNumber
+              style={{ width: '100%' }}
+              min={1}
+              placeholder="Please input column number"
+            />
           </Form.Item>
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={24}>
-          <Form.Item name="locationId" label="Location" required>
+          <Form.Item
+            name="locationId"
+            label="Location"
+            required
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  if (value != undefined) {
+                    return Promise.resolve();
+                  } else {
+                    return Promise.reject(`Location must be choice`);
+                  }
+                },
+              }),
+            ]}
+          >
             <Select placeholder={'Select location'}>{getOptions()}</Select>
           </Form.Item>
         </Col>

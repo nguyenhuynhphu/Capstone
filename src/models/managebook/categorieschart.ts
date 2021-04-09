@@ -1,4 +1,4 @@
-import { fetchAllBookGroup, fetchBookByCategory, fetchCategories } from '@/services/bookgroup';
+import { fetchAllBookGroup, fetchBookByCategory, fetchCategories, fetchTop } from '@/services/bookgroup';
 import { Effect, Reducer } from 'umi';
 
 export interface CategoriesChartState {
@@ -30,7 +30,7 @@ const CategoriesChartModel: CategoriesChartType = {
         type: 'isLoading',
         payload: {},
       });
-      const listCategories = yield call(fetchCategories, payload);
+      const listCategories = yield call(fetchTop, payload);
       var tmp: any = [];
       for (let i = 0; i < listCategories.data.length; i++) {
         const cate = listCategories.data[i];

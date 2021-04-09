@@ -15,6 +15,9 @@ export async function fetchNewestBookGroup(): Promise<any> {
 }
 
 export async function fetchCategories(): Promise<any> {
+  return request(`/api/Category?PageSize=1000`);
+}
+export async function fetchTop(): Promise<any> {
   return request(`/api/Category?PageSize=5`);
 }
 
@@ -64,6 +67,8 @@ export async function insertBookGroup(values: any) {
 }
 
 export async function editBookGroup(values: any) {
+  console.log("JSON.stringify(values)", JSON.stringify(values),);
+  
   return request(`/api/BookGroup?id=${values.id}`, {
     method: 'PUT',
     body: JSON.stringify(values),

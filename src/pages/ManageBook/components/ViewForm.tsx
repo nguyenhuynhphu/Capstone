@@ -85,7 +85,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                 className={styles.buttonCustom}
                 onClick={() =>
                   this.props.dispatch({
-                    type: 'managebook/showEditBook',
+                    type: 'managebook/showInputBook',
                     payload: { ...bookGroup },
                   })
                 }
@@ -155,7 +155,9 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                     <Text className={styles.title}>Size: </Text>
                   </Col>
                   <Col span={18}>
-                    <Text>{`${bookGroup.width}x${bookGroup.height}`}</Text>
+                    <Text>{`${bookGroup.width ? bookGroup.width : ''}${
+                      bookGroup.height ? `x${bookGroup.height}` : ''
+                    }`}</Text>
                   </Col>
                 </Row>
               </Col>
@@ -218,7 +220,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
         </Paragraph>
 
         <Drawer
-          title="Show book"
+          title="Copy"
           width={320}
           closable={false}
           onClose={this.onChildrenDrawerClose}
@@ -262,7 +264,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
         bookGroup.image.forEach((image: any) => {
           tmp.push(
             <div>
-              <Image width={200} height={270} src={image.url} />
+              <Image width={200} height={280} src={image.url} />
             </div>,
           );
         });

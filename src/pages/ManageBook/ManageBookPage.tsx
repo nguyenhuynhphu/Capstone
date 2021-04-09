@@ -18,6 +18,7 @@ import NewBookInSystem from './components/NewBookInSystem';
 import { RedoOutlined } from '@ant-design/icons';
 import { ResponsiveBar } from '@nivo/bar';
 import CategoriesChart from './components/CategoriesChart';
+import { underline } from 'chalk';
 
 interface ManageBookPageProps {
   dispatch: Dispatch;
@@ -69,7 +70,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
     this.hideViewDrawer = this.hideViewDrawer.bind(this);
 
-    this.hideUpdateDrawer = this.hideUpdateDrawer.bind(this);
+    this.hideInputBook = this.hideInputBook.bind(this);
 
     this.handelSubmit = this.handelSubmit.bind(this);
     this.hideCategoriesModal = this.hideCategoriesModal.bind(this);
@@ -114,7 +115,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
               }}
             >
               {categorieschart.isLoading ? (
-                <Space direction="vertical" style={{alignItems: 'center'}}>
+                <Space direction="vertical" style={{ alignItems: 'center' }}>
                   <p style={{ marginBottom: 4 }}>Loading Chart</p>
                   <Spin spinning />
                 </Space>
@@ -166,7 +167,6 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
             />
           </Col>
         </Row>
-
         <Drawer
           width={700}
           placement="right"
@@ -174,22 +174,27 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           onClose={this.hideViewDrawer}
           visible={managebook.viewBookVisible}
           className={styles.viewBookGroupForm}
+          style={{ zIndex: 999 }}
         >
           <ViewForm bookGroup={managebook.choiceBook} />
         </Drawer>
+
         <Drawer
-          title="Create a new book group"
+          title={
+            managebook.choiceBook.id != underline ? 'Edit book detail' : 'Create a new book group'
+          }
           width={750}
-          onClose={() => this.hideCreateDrawer()}
-          visible={managebook.createBookVisible}
+          onClose={() => this.hideInputBook()}
+          visible={managebook.inputBookVisible}
           bodyStyle={{ paddingBottom: 80 }}
+          style={{ zIndex: 9999 }}
           footer={
             <div
               style={{
                 textAlign: 'right',
               }}
             >
-              <Button onClick={() => this.hideCreateDrawer()} style={{ marginRight: 8 }}>
+              <Button onClick={() => this.hideInputBook()} style={{ marginRight: 8 }}>
                 Cancel
               </Button>
               <Button
@@ -199,12 +204,12 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
                 htmlType="submit"
                 type="primary"
               >
-                Add Book
+                Save
               </Button>
             </div>
           }
         >
-          <InputForm handelSubmit={this.handelSubmit} formRef={this.state.formRef} />
+          <InputForm handelSubmit={this.handelSubmit} />
         </Drawer>
         <Drawer
           placement={'bottom'}
@@ -228,36 +233,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
             </Col>
           </Row>
         </Drawer>
-        <Drawer
-          title="Edit book"
-          width={750}
-          closable={true}
-          onClose={this.hideUpdateDrawer}
-          visible={managebook.editBookVisible}
-          footer={
-            <div
-              style={{
-                textAlign: 'right',
-              }}
-            >
-              <Button onClick={this.hideUpdateDrawer} style={{ marginRight: 8 }}>
-                Cancel
-              </Button>
-              <Button
-                form={'inputForm'}
-                key="submit"
-                htmlType="submit"
-                type="primary"
-                onClick={this.hideUpdateDrawer}
-                loading={managebook.loadingButton}
-              >
-                Save
-              </Button>
-            </div>
-          }
-        >
-          <InputForm handelSubmit={this.handelSubmit} formRef={this.state.formRef} />
-        </Drawer>
+
         <Modal
           visible={managebook.categoriesModalVisible}
           title="Manage Categories"
@@ -276,6 +252,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   handleDelete() {
     const { dispatch, bookgrouptable } = this.props;
+
     dispatch({
       type: 'managebook/deleteBookGroup',
       payload: this.state.selectedRowKeys,
@@ -292,7 +269,12 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           filterName: bookgrouptable.filterName,
           pagination: bookgrouptable.pagination.current,
         },
-      });
+      }).then(() =>
+        dispatch({
+          type: 'managebook/hideDeleteBook',
+          payload: {},
+        }),
+      );
     });
   }
 
@@ -314,9 +296,13 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   async handelSubmit(bookGroup: any) {
     const { dispatch, bookgrouptable, managebook } = this.props;
+    console.log('BOOKGROUP >>', bookGroup);
 
+    console.log('InForm');
     if (managebook.choiceBook.id != undefined) {
       //update
+      console.log('UPDATE');
+
       bookGroup.quantity = managebook.choiceBook.quantity;
       //bookGroup.publishDate = bookGroup.publishDate.format();
       if (bookGroup.images != undefined) {
@@ -326,7 +312,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           var promises: any = [];
           var promises2: any = [];
           var oldImage: any = [];
-          bookGroup.images.fileList.forEach((image: any) => {
+          bookGroup.images.forEach((image: any) => {
             if (image.key == undefined) {
               //kiem tra tam nao moi tam nao cu
               //tam nay moi
@@ -368,8 +354,8 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
                   payload: bookGroup,
                 }).then(() =>
                   dispatch({
-                    type: 'managebook/hideViewBook',
-                    payload: {},
+                    type: 'managebook/hideInputBook',
+                    payload: managebook.choiceBook,
                   }).then(() =>
                     dispatch({
                       type: 'bookgrouptable/fetchData',
@@ -390,8 +376,8 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
             payload: bookGroup,
           }).then(() =>
             dispatch({
-              type: 'managebook/hideViewBook',
-              payload: {},
+              type: 'managebook/hideInputBook',
+              payload: managebook.choiceBook,
             }).then(() =>
               dispatch({
                 type: 'bookgrouptable/fetchData',
@@ -412,8 +398,8 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           payload: bookGroup,
         }).then(() =>
           dispatch({
-            type: 'managebook/hideViewBook',
-            payload: {},
+            type: 'managebook/hideInputBook',
+            payload: managebook.choiceBook,
           }).then(() =>
             dispatch({
               type: 'bookgrouptable/fetchData',
@@ -432,9 +418,11 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
       );
     } else {
       //insert
+      console.log('INSERT');
+
       var promises: any = [];
       var promises2: any = [];
-      bookGroup.images.fileList.forEach((image: any) => {
+      bookGroup.images.forEach((image: any) => {
         const task = storage
           .ref()
           .child(`${bookGroup.name}/${image.uid}_${image.name}`)
@@ -466,13 +454,18 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
             dispatch({
               type: 'managebook/insertBookGroup',
               payload: bookGroup,
-            }).then(() =>
+            }).then(
+              () =>
+                dispatch({
+                  type: 'bookgrouptable/fetchData',
+                  payload: {
+                    filterName: bookgrouptable.filterName,
+                    pagination: bookgrouptable.pagination.current,
+                  },
+                }),
               dispatch({
-                type: 'bookgrouptable/fetchData',
-                payload: {
-                  filterName: bookgrouptable.filterName,
-                  pagination: bookgrouptable.pagination.current,
-                },
+                type: 'managebook/hideInputBook',
+                payload: {},
               }),
             );
           });
@@ -502,23 +495,16 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
       );
   }
 
-  hideCreateDrawer() {
+  hideInputBook() {
     this.props.dispatch({
-      type: 'managebook/hideCreateBook',
-      payload: {},
+      type: 'managebook/hideInputBook',
+      payload: this.props.managebook.choiceBook,
     });
   }
 
   hideDeleteDrawer() {
     this.setState({
       deleteDrawerVisible: false,
-    });
-  }
-
-  hideUpdateDrawer() {
-    this.props.dispatch({
-      type: 'managebook/hideEditBook',
-      payload: {},
     });
   }
   //#endregion

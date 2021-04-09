@@ -49,6 +49,14 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
     if (!isLogin && window.location.pathname !== '/user/login') {
       return <Redirect to={`/user/login?${queryString}`} />;
     }
+    var url = window.location.href;
+
+    var isAdmin = currentUser?.role == '1';
+    if(url.indexOf('/manage-user') != -1 && !isAdmin){
+      console.log("DONT HAVE PERMISSION !");
+      return <Redirect to={`/no-permission`} />;
+    }
+    
     return children;
   }
 }

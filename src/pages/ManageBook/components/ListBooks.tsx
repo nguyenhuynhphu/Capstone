@@ -28,8 +28,14 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
               <Descriptions column={2}>
                 <Descriptions.Item label="Barcode">#{item.barCode}</Descriptions.Item>
                 <Descriptions.Item label="ID">{item.id}</Descriptions.Item>
-                <Descriptions.Item label="Status">
+                <Descriptions.Item label="Status" span={2}>
                   {item.isAvailable ? 'Available' : 'Not Available'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Drawer" span={2}>
+                  {item.drawerName}
+                </Descriptions.Item>
+                <Descriptions.Item label="Book Shelf" >
+                  {item.bookShelfName}
                 </Descriptions.Item>
               </Descriptions>
               <Divider />

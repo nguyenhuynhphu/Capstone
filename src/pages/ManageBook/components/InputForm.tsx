@@ -1,4 +1,16 @@
-import { Form, Button, Col, Row, Input, DatePicker, Upload, Select } from 'antd';
+import {
+  Form,
+  Button,
+  Col,
+  Row,
+  Input,
+  DatePicker,
+  Upload,
+  Select,
+  InputNumber,
+  message,
+  notification,
+} from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import React, { useReducer, useState } from 'react';
 import moment from 'moment';
@@ -6,16 +18,17 @@ import { connect, Dispatch } from 'umi';
 import { render } from 'react-dom';
 import { FormInstance } from 'antd/lib/form';
 import { fileList } from '@/pages/Libarian/components/InputForm';
+import _ from 'lodash';
 interface InputFormProps {
   dispatch: Dispatch;
   managebook?: any;
   handelSubmit: Function;
-  formRef: any;
 }
 
 interface InputFormState {
   fileList: any;
-  cates: any;
+  form: any;
+  errorFile: string;
 }
 
 class InputForm extends React.Component<InputFormProps, InputFormState> {
@@ -23,16 +36,18 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
     super(props);
     this.state = {
       fileList: [],
-      cates: [],
+      errorFile: '',
+      form: React.createRef<FormInstance>(),
     };
     this.handelFile = this.handelFile.bind(this);
   }
   componentDidMount() {
     this.initForm();
   }
+
   componentDidUpdate(prepProp: any) {
     const { managebook } = this.props;
-    if (prepProp.managebook.choiceBook.id != managebook.choiceBook.id) {
+    if (prepProp.managebook.choiceBook?.id != managebook.choiceBook?.id) {
       this.setState({ fileList: [] });
       this.initForm();
     }
@@ -40,85 +55,207 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
 
   render() {
     const { managebook } = this.props;
-    let children: any = [];
-    for (let i = 0; i < managebook.categories.length; i++) {
-      let tmp = managebook.categories[i];
-      children.push(
-        <Select.Option key={tmp.id} value={tmp.id}>
-          {tmp.name}
-        </Select.Option>,
-      );
-    }
     return (
       <Form
-        ref={this.props.formRef}
+        ref={this.state.form}
         layout="vertical"
         id={'inputForm'}
         onFinish={(value) => {
           if (managebook.choiceBook != undefined) {
             value.id = managebook.choiceBook.id;
           }
-          this.props.handelSubmit(value);
+          if(this.state.fileList.length != 0){
+            value.images = this.state.fileList
+            this.props.handelSubmit(value);
+          }else{
+            this.setState({errorFile: 'Please upload book image !'})
+          }
+         
         }}
       >
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item name="name" label="Book Group Name" required>
+            <Form.Item
+              name="name"
+              label="Book Group Name"
+              required
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (value != undefined) {
+                      return Promise.resolve();
+                    } else {
+                      return Promise.reject('Name is required');
+                    }
+                  },
+                }),
+              ]}
+            >
               <Input placeholder="Please enter book group name" />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name="author" label="Author" required>
+            <Form.Item
+              name="author"
+              label="Author"
+              required
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (value != undefined) {
+                      return Promise.resolve();
+                    } else {
+                      return Promise.reject('Author is required');
+                    }
+                  },
+                }),
+              ]}
+            >
               <Input placeholder="Please enter book author" />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item name="pageNumber" label="Page Number" required>
+            <Form.Item name="pageNumber" label="Page Number">
               <Input placeholder="Please enter page number" />
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item name="width" label="Width" required>
-              <Input placeholder="Please enter book's width" />
+            <Form.Item name="width" label="Width">
+              <InputNumber
+                min={0}
+                placeholder="Please enter book's width"
+                style={{ width: '100%' }}
+              />
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item name="height" label="Height" required>
-              <Input placeholder="Please enter book's height" />
+            <Form.Item name="height" label="Height">
+              <InputNumber
+                min={0}
+                placeholder="Please enter book's height"
+                style={{ width: '100%' }}
+              />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={16}>
-          {managebook.choiceBook.id == undefined ? (
+          {managebook.choiceBook?.id == undefined ? (
             <>
               <Col span={12}>
-                <Form.Item name="quantity" label="Quantity" required>
-                  <Input placeholder="Please enter quantity" />
+                <Form.Item
+                  name="quantity"
+                  label="Quantity"
+                  required
+                  rules={[
+                    ({ getFieldValue }) => ({
+                      validator(rule, value) {
+                        if (value != undefined) {
+                          return Promise.resolve();
+                        } else {
+                          return Promise.reject('Quantity is required');
+                        }
+                      },
+                    }),
+                  ]}
+                >
+                  <InputNumber
+                    min={1}
+                    placeholder="Please enter quantity"
+                    style={{ width: '100%' }}
+                  />
                 </Form.Item>
               </Col>
               <Col span={6}>
-                <Form.Item name="fee" label="Fee" required>
-                  <Input placeholder="Please enter book's fee" />
+                <Form.Item
+                  name="fee"
+                  label="Fee"
+                  required
+                  rules={[
+                    ({ getFieldValue }) => ({
+                      validator(rule, value) {
+                        if (value != undefined) {
+                          return Promise.resolve();
+                        } else {
+                          return Promise.reject('Fee is required');
+                        }
+                      },
+                    }),
+                  ]}
+                >
+                  <InputNumber min={1} placeholder="Please enter Fee" style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
               <Col span={6}>
-                <Form.Item name="punishFee" label="Punish Fee" required>
-                  <Input placeholder="Please enter book's Punish Fee" />
+                <Form.Item
+                  name="punishFee"
+                  label="Punish Fee"
+                  required
+                  rules={[
+                    ({ getFieldValue }) => ({
+                      validator(rule, value) {
+                        if (value != undefined) {
+                          return Promise.resolve();
+                        } else {
+                          return Promise.reject('Punish Fee is required');
+                        }
+                      },
+                    }),
+                  ]}
+                >
+                  <InputNumber
+                    min={1}
+                    placeholder="Please enter Punish Fee"
+                    style={{ width: '100%' }}
+                  />
                 </Form.Item>
               </Col>
             </>
           ) : (
             <>
               <Col span={12}>
-                <Form.Item name="fee" label="Fee" required>
-                  <Input placeholder="Please enter book's fee" />
+                <Form.Item
+                  name="fee"
+                  label="Fee"
+                  required
+                  rules={[
+                    ({ getFieldValue }) => ({
+                      validator(rule, value) {
+                        if (value != undefined) {
+                          return Promise.resolve();
+                        } else {
+                          return Promise.reject('Fee is required');
+                        }
+                      },
+                    }),
+                  ]}
+                >
+                  <InputNumber min={1} placeholder="Please enter Fee" style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="punishFee" label="Punish Fee" required>
-                  <Input placeholder="Please enter book's Punish Fee" />
+                <Form.Item
+                  name="punishFee"
+                  label="Punish Fee"
+                  required
+                  rules={[
+                    ({ getFieldValue }) => ({
+                      validator(rule, value) {
+                        if (value != undefined) {
+                          return Promise.resolve();
+                        } else {
+                          return Promise.reject('Punish Fee is required');
+                        }
+                      },
+                    }),
+                  ]}
+                >
+                  <InputNumber
+                    min={1}
+                    placeholder="Please enter Punish Fee"
+                    style={{ width: '100%' }}
+                  />
                 </Form.Item>
               </Col>
             </>
@@ -126,17 +263,40 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         </Row>
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item name="category" label="Category">
+            <Form.Item
+              name="category"
+              label="Category"
+              required
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (value != undefined) {
+                      return Promise.resolve();
+                    } else {
+                      return Promise.reject(`Please choice at lease one category`);
+                    }
+                  },
+                }),
+              ]}
+            >
               <Select
                 mode="multiple"
                 size={'middle'}
                 placeholder="Please select"
-                style={{ width: '100%' }}
+                style={{ width: '100%', zIndex: 999 }}
               >
-                {children}
+                {managebook.categories.map((cate: any) => (
+                  <Select.Option key={cate.id} value={cate.id}>
+                    {cate.name}
+                  </Select.Option>
+                ))}
               </Select>
             </Form.Item>
-            <Form.Item name="images" label="">
+            <Form.Item
+              name="images"
+              label=""
+              required
+            >
               <Upload
                 onChange={this.handelFile}
                 listType={'picture'}
@@ -148,41 +308,35 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
               >
                 <Button icon={<UploadOutlined />}>Upload</Button>
               </Upload>
+              <p style={{ marginBottom: 0, color: 'red' }}>
+                {this.state.errorFile.length != 0 ? this.state.errorFile : ''}
+              </p>
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name="publishCompany" label="Publishing Company" required>
+            <Form.Item name="publishCompany" label="Publishing Company">
               <Input placeholder="Please enter publishing company" />
             </Form.Item>
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item name="publishDate" label="Publishing Date" required>
+                <Form.Item name="publishDate" label="Publishing Date">
                   <DatePicker style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="edition" label="Publishing Number" required>
+                <Form.Item name="edition" label="Edition">
                   <Input placeholder="Please enter publishing place" />
                 </Form.Item>
               </Col>
             </Row>
-            <Form.Item name="publishPlace" label="Publishing Palace" required>
+            <Form.Item name="publishPlace" label="Publishing Palace">
               <Input placeholder="Please enter publishing place" />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={16} style={{ marginTop: 15 }}>
           <Col span={24}>
-            <Form.Item
-              name="description"
-              label="Description"
-              rules={[
-                {
-                  required: true,
-                  message: 'please enter url description',
-                },
-              ]}
-            >
+            <Form.Item name="description" label="Description">
               <Input.TextArea rows={4} placeholder="please enter url description" />
             </Form.Item>
           </Col>
@@ -193,25 +347,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
 
   initForm() {
     const { managebook } = this.props;
-    if (managebook.choiceBook != undefined) {
-
-      this.props.formRef.current?.setFieldsValue({
-        name: managebook.choiceBook.name,
-        author: managebook.choiceBook.author,
-        pageNumber: managebook.choiceBook.pageNumber,
-        width: managebook.choiceBook.width,
-        height: managebook.choiceBook.height,
-        quantity: managebook.choiceBook.quantity,
-        fee: managebook.choiceBook.fee,
-        punishFee: managebook.choiceBook.punishFee,
-        category: this.handelCate(managebook.choiceBook.category),
-        images: managebook.choiceBook.images,
-        publishCompany: managebook.choiceBook.publishCompany,
-        publishDate: moment.utc(managebook.choiceBook.publishDate),
-        edition: managebook.choiceBook.edition,
-        publishPlace: managebook.choiceBook.publishPlace,
-        description: managebook.choiceBook.description,
-      });
+    if (managebook.choiceBook.id != undefined) {
       let tmp: any = [];
       if (managebook.choiceBook.image != undefined) {
         managebook.choiceBook.image.forEach((image: any, index: number) => {
@@ -222,14 +358,53 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             url: image.url,
           });
         });
-        if (this.state.fileList.length == 0) this.setState({ fileList: tmp });
+        this.setState({ fileList: tmp });
       }
+      this.state.form.current?.setFieldsValue({
+        name: managebook.choiceBook.name,
+        author: managebook.choiceBook.author,
+        pageNumber: managebook.choiceBook.pageNumber,
+        width: managebook.choiceBook.width,
+        height: managebook.choiceBook.height,
+        quantity: managebook.choiceBook.quantity,
+        fee: managebook.choiceBook.fee,
+        punishFee: managebook.choiceBook.punishFee,
+        category: this.handelCate(managebook.choiceBook.category),
+        images: { fileList: tmp },
+        publishCompany: managebook.choiceBook.publishCompany,
+        publishDate: moment.utc(managebook.choiceBook.publishDate),
+        edition: managebook.choiceBook.edition,
+        publishPlace: managebook.choiceBook.publishPlace,
+        description: managebook.choiceBook.description,
+      });
+    } else {
+      this.setState({ fileList: [] });
+      this.state.form.current?.resetFields();
     }
   }
 
   handelFile(images: any) {
+    let fileError: any = [];
+    var error: string = '';
+    images.fileList.forEach((file: any) => {
+      if (
+        !(
+          file.type === 'image/png' ||
+          file.type === 'image/jpeg' ||
+          file.type === 'image/jpg' ||
+          file.url
+        )
+      ) {
+        fileError.push(file);
+        error = 'File not valid';
+      }
+    });
 
-    this.setState({ fileList: images.fileList });
+    if (fileError.length != 0) {
+      _.pullAll(images.fileList, fileError);
+    }
+
+    this.setState({ fileList: images.fileList, errorFile: error });
   }
 
   handelCate(categories: any) {

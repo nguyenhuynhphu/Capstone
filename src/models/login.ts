@@ -57,7 +57,7 @@ const Model: LoginModelType = {
             return;
           }
         }
-        history.replace(redirect || '/');
+        history.replace('/');
       }
     },
 
@@ -68,8 +68,9 @@ const Model: LoginModelType = {
       // clear localStorage
       yield put({ type: 'user/saveCurrentUser', payload: null });
       // remove currentUser
-
       const { redirect } = getPageQuery();
+      console.log("PAGE_QUERY >>", redirect);
+      
       // Note: There may be security issues, please note
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({

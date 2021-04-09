@@ -137,14 +137,14 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                 Cancel
               </Button>
               <Button type="primary" form={'createBookShelf'} key="submit" htmlType="submit">
-                Submit
+                Save
               </Button>
             </div>
           }
         >
           <InputForm bookShelf={{}} />
         </Drawer>
-        
+
         <Drawer
           title="Create book shelf"
           width={400}
@@ -265,9 +265,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
               key="submit"
               htmlType="submit"
               type="primary"
-              onClick={() => {
-                this.hideCreateLocation();
-              }}
+
             >
               Save
             </Button>,
@@ -280,12 +278,42 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
               this.insertLocation(value);
             }}
           >
-            <Form.Item label="Location Name" name="name">
+            <Form.Item
+              label="Location Name"
+              name="name"
+              required
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (value != undefined) {
+                      return Promise.resolve();
+                    } else {
+                      return Promise.reject(`Location name must not empty`);
+                    }
+                  },
+                }),
+              ]}
+            >
               <Input />
             </Form.Item>
             <Row gutter={16}>
               <Col span={14}>
-                <Form.Item label="Represent Color" name="color">
+                <Form.Item
+                  label="Color"
+                  name="color"
+                  required
+                  rules={[
+                    ({ getFieldValue }) => ({
+                      validator(rule, value) {
+                        if (value != undefined) {
+                          return Promise.resolve();
+                        } else {
+                          return Promise.reject(`Please choice color`);
+                        }
+                      },
+                    }),
+                  ]}
+                >
                   <Select placeholder="Select color" style={{ width: 120 }}>
                     {global.colors.map((color: any) => (
                       <Select.Option key={color} value={color}>
@@ -315,27 +343,13 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                   <p>{organizebook.choiceLocation.name}</p>
                 </Space>
                 <Space direction="horizontal">
-                  <p style={{marginBottom: 0}}>Color: </p>
+                  <p style={{ marginBottom: 0 }}>Color: </p>
                   <Badge
                     color={organizebook.choiceLocation.color}
                     text={organizebook.choiceLocation.color}
                   />
                 </Space>
               </Space>
-
-              {/* <Row>
-                <Col span={24}>
-                  <DescriptionItem
-                    title="Color"
-                    content={
-                      <Badge
-                        color={organizebook.choiceLocation.color}
-                        text={organizebook.choiceLocation.color}
-                      />
-                    }
-                  />
-                </Col>
-              </Row> */}
             </>
           ) : (
             <>
@@ -350,6 +364,20 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                   label="Location Name"
                   name="name"
                   initialValue={organizebook.choiceLocation.name}
+                  required
+                  rules={[
+                    ({ getFieldValue }) => ({
+                      validator(rule, value) {
+                        console.log(value);
+                        
+                        if (value.length != 0) {
+                          return Promise.resolve();
+                        } else {
+                          return Promise.reject(`Location name must not empty`);
+                        }
+                      },
+                    }),
+                  ]}
                 >
                   <Input />
                 </Form.Item>
@@ -359,8 +387,20 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                       label="Represent Color"
                       name="color"
                       initialValue={organizebook.choiceLocation.color}
+                      required
+                      rules={[
+                        ({ getFieldValue }) => ({
+                          validator(rule, value) {
+                            if (value != undefined) {
+                              return Promise.resolve();
+                            } else {
+                              return Promise.reject(`Please choice color`);
+                            }
+                          },
+                        }),
+                      ]}
                     >
-                      <Select placeholder="Select color" style={{ width: 120 }}>
+                      <Select placeholder="Select color" style={{ width: 100 }}>
                         {global.colors.map((color: any) => (
                           <Select.Option value={color}>
                             <Badge color={color} text={color} />
@@ -423,6 +463,8 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
 
   insertLocation(location: any) {
     const { dispatch, locationtable } = this.props;
+    console.log("LOCATION", location);
+    
     dispatch({
       type: 'organizebook/insertLocation',
       payload: { ...location },
@@ -436,6 +478,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
         },
       });
     });
+    this.hideCreateLocation()
   }
 
   editLocation(location: any) {

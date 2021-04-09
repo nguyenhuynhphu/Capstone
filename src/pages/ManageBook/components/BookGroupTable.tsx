@@ -83,7 +83,7 @@ const columns = [
         } else {
           record.category.map((cate: any) =>
             tmp.push(
-              <Tag icon={<TagOutlined />} color="#2db7f5">
+              <Tag key={cate.id} icon={<TagOutlined />} color="#2db7f5">
                 {cate.name}
               </Tag>,
             ),
@@ -203,7 +203,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
                   type="primary"
                   onClick={() =>
                     this.props.dispatch({
-                      type: 'managebook/showCreateBook',
+                      type: 'managebook/showInputBook',
                       payload: {},
                     })
                   }

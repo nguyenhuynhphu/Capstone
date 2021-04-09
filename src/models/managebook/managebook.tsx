@@ -11,8 +11,8 @@ import { Effect, Reducer } from 'umi';
 export interface ManageBookState {
   //#region Form
   viewBookVisible: boolean;
-  createBookVisible: boolean;
-  editBookVisible: boolean;
+  inputBookVisible: boolean;
+
   deleteBookVisible: boolean;
   categoriesModalVisible: boolean;
 
@@ -30,11 +30,8 @@ export interface ManageBookType {
     showViewBook: Effect;
     hideViewBook: Effect;
 
-    showCreateBook: Effect;
-    hideCreateBook: Effect;
-
-    showEditBook: Effect;
-    hideEditBook: Effect;
+    showInputBook: Effect;
+    hideInputBook: Effect;
 
     showDeleteBook: Effect;
     hideDeleteBook: Effect;
@@ -53,8 +50,9 @@ export interface ManageBookType {
   reducers: {
     //#region Forms
     displayViewBook: Reducer;
-    displayCreateBook: Reducer;
-    displayEditBook: Reducer;
+
+    displayInputBook: Reducer;
+
     displayDeleteBook: Reducer;
 
     displayCategoriesModal: Reducer;
@@ -71,8 +69,8 @@ const ManageBookModel: ManageBookType = {
   namespace: 'managebook',
   state: {
     viewBookVisible: false,
-    createBookVisible: false,
-    editBookVisible: false,
+    inputBookVisible: true,
+
     deleteBookVisible: false,
     categoriesModalVisible: false,
     choiceBook: {},
@@ -82,79 +80,57 @@ const ManageBookModel: ManageBookType = {
   effects: {
     //#region Forms
     *showViewBook({ payload }, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayScrollBar',
         payload: false,
       });
-      yield call(() => {});
+
       yield put({
         type: 'displayViewBook',
         payload: { visible: true, record: payload },
       });
     },
     *hideViewBook(_, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayScrollBar',
         payload: true,
       });
-      yield call(() => {});
-      yield put({
-        type: 'displayViewBook',
-        payload: { visible: false, record: undefined },
-      });
-    },
-    *showCreateBook(_, { call, put }) {
-      yield call(() => {});
-      yield put({
-        type: 'displayScrollBar',
-        payload: false,
-      });
-      yield call(() => {});
-      yield put({
-        type: 'displayCreateBook',
-        payload: true,
-      });
-    },
-    *hideCreateBook(_, { call, put }) {
-      yield call(() => {});
-      yield put({
-        type: 'displayScrollBar',
-        payload: true,
-      });
-      yield call(() => {});
-      yield put({
-        type: 'displayCreateBook',
-        payload: false,
-      });
-    },
-    *showEditBook({ payload }, { call, put }) {
-      yield call(() => {});
 
       yield put({
-        type: 'displayEditBook',
+        type: 'displayViewBook',
+        payload: { visible: false, record: {} },
+      });
+    },
+
+    *showInputBook({ payload }, { call, put }) {
+      yield put({
+        type: 'displayScrollBar',
+        payload: false,
+      });
+      yield put({
+        type: 'displayInputBook',
         payload: { visible: true, record: payload },
       });
     },
-    *hideEditBook(_, { call, put }) {
-      yield call(() => {});
+
+    *hideInputBook({ payload }, { call, put }) {
       yield put({
-        type: 'displayEditBook',
-        payload: { visible: false, record: undefined },
+        type: 'displayScrollBar',
+        payload: true,
+      });
+      yield put({
+        type: 'displayInputBook',
+        payload: { visible: false, record: payload },
       });
     },
 
     *showDeleteBook({}, { call, put }) {
-      yield call(() => {});
-
       yield put({
         type: 'displayDeleteBook',
         payload: true,
       });
     },
     *hideDeleteBook(_, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayDeleteBook',
         payload: false,
@@ -189,10 +165,6 @@ const ManageBookModel: ManageBookType = {
       payload.bookCategory = tmpCate;
 
       yield call(insertBookGroup, payload);
-      yield put({
-        type: 'displayCreateBook',
-        payload: false,
-      });
     },
 
     *editBookGroup({ payload }, { call, put }) {
@@ -209,18 +181,10 @@ const ManageBookModel: ManageBookType = {
       payload.bookCategory = tmpCate;
 
       yield call(editBookGroup, payload);
-      yield put({
-        type: 'displayEditBook',
-        payload: false,
-      });
     },
 
     *deleteBookGroup({ payload }, { call, put }) {
       yield call(deleteBookGroup, payload);
-      yield put({
-        type: 'displayDeleteBook',
-        payload: false,
-      });
     },
 
     *fetchCategories({}, { call, put }) {
@@ -242,34 +206,19 @@ const ManageBookModel: ManageBookType = {
   reducers: {
     //#region Forms
     displayViewBook(state, { payload }) {
-      if (payload.visible == true) {
-        return {
-          ...state,
-          viewBookVisible: payload.visible,
-          choiceBook: payload.record != undefined ? payload.record : state?.choiceBook,
-        };
-      } else {
-        return {
-          ...state,
-          viewBookVisible: payload.visible,
-          choiceBook: {},
-        };
-      }
-    },
-    displayCreateBook(state, { payload }) {
       return {
         ...state,
-        createBookVisible: payload,
-        loadingButton: false,
-        choiceBook: {},
+        viewBookVisible: payload.visible,
+        choiceBook: payload.record,
       };
     },
-    displayEditBook(state, { payload }) {
-      const { visible } = payload;
+    displayInputBook(state, { payload }) {
       return {
         ...state,
-        editBookVisible: visible,
+        inputBookVisible: payload.visible,
         loadingButton: false,
+        choiceBook: payload.record,
+        displayViewBook: !payload.visible,
       };
     },
 

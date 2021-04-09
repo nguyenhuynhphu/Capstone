@@ -61,7 +61,7 @@ class NewBookInSystem extends React.Component<NewBookInSystemProps> {
             trigger="hover"
             placement={'right'}
           >
-            <List.Item style={{ cursor: 'pointer' }}>
+            <List.Item style={{ cursor: 'pointer' }} key={item.id}>
               <Space
                 direction="horizontal"
                 style={{ width: '100%', justifyContent: 'start' }}
