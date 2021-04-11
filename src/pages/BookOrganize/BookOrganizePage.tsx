@@ -260,13 +260,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
             <Button key="back" onClick={this.hideCreateLocation}>
               Cancel
             </Button>,
-            <Button
-              form={'createLocation'}
-              key="submit"
-              htmlType="submit"
-              type="primary"
-
-            >
+            <Button form={'createLocation'} key="submit" htmlType="submit" type="primary">
               Save
             </Button>,
           ]}
@@ -369,7 +363,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                     ({ getFieldValue }) => ({
                       validator(rule, value) {
                         console.log(value);
-                        
+
                         if (value.length != 0) {
                           return Promise.resolve();
                         } else {
@@ -427,7 +421,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                   </Button>
                   <Button
                     className={styles.buttonCustom}
-                    onClick={() => {}}
+                    onClick={() => this.deleteLocation()}
                     icon={<DeleteOutlined style={{ color: 'red' }} />}
                   >
                     Delete
@@ -463,8 +457,8 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
 
   insertLocation(location: any) {
     const { dispatch, locationtable } = this.props;
-    console.log("LOCATION", location);
-    
+    console.log('LOCATION', location);
+
     dispatch({
       type: 'organizebook/insertLocation',
       payload: { ...location },
@@ -478,7 +472,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
         },
       });
     });
-    this.hideCreateLocation()
+    this.hideCreateLocation();
   }
 
   editLocation(location: any) {
@@ -488,6 +482,23 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
       payload: { ...location, id: organizebook.choiceLocation.id },
     }).then(() => {
       sendNotification('Edit Location Successfull !', '', 'success');
+      dispatch({
+        type: 'locationtable/fetchData',
+        payload: {
+          filterName: locationtable.filterName,
+          pagination: locationtable.pagination.current,
+        },
+      });
+    });
+  }
+
+  deleteLocation() {
+    const { dispatch, locationtable, organizebook } = this.props;
+    dispatch({
+      type: 'organizebook/deleteLocation',
+      payload: organizebook.choiceLocation.id,
+    }).then(() => {
+      sendNotification('Delete Location Successfull !', '', 'success');
       dispatch({
         type: 'locationtable/fetchData',
         payload: {

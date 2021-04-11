@@ -94,7 +94,7 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
           dataSource={locationtable.data}
           loading={locationtable.isLoading}
           pagination={locationtable.pagination}
-          rowSelection={rowSelection}
+         
           scroll={{ y: 480 }}
           size={'middle'}
           onChange={(pagination) => {
@@ -107,7 +107,8 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
           <Column
             title="No"
             key="name"
-            width={40}
+            width={50}
+            align='center'
             render={(name: string, record: any, index: number) => <div>#{index + 1}</div>}
           />
           <Column

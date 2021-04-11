@@ -1,5 +1,10 @@
 import { deleteBookShelf } from '@/services/bookshelf';
-import { deleteLocation, editLocation, insertBookShelf, insertLocation } from '@/services/organizebook';
+import {
+  deleteLocation,
+  editLocation,
+  insertBookShelf,
+  insertLocation,
+} from '@/services/organizebook';
 import { Effect, Reducer } from 'umi';
 
 export interface OrganizeBookState {
@@ -90,14 +95,12 @@ const OrganizeBookModel: OrganizeBookType = {
   effects: {
     //#region
     *showViewLocation(_, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayViewLocation',
         payload: true,
       });
     },
     *hideViewLocation(_, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayViewLocation',
         payload: false,
@@ -105,14 +108,12 @@ const OrganizeBookModel: OrganizeBookType = {
     },
 
     *showCreateLocation(_, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayCreateLocation',
         payload: true,
       });
     },
     *hideCreateLocation(_, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayCreateLocation',
         payload: false,
@@ -120,15 +121,12 @@ const OrganizeBookModel: OrganizeBookType = {
     },
 
     *showDeleteLocation({ payload }, { call, put }) {
-
-      yield call(() => {});
       yield put({
         type: 'displayDeleteLocation',
         payload: { visible: true, data: payload },
       });
     },
     *hideDeleteLocation(_, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayDeleteLocation',
         payload: { visible: false, data: [] },
@@ -136,24 +134,22 @@ const OrganizeBookModel: OrganizeBookType = {
     },
 
     *showCreateBookShelf(_, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayScrollBar',
         payload: false,
       });
-      yield call(() => {});
+
       yield put({
         type: 'displayCreateBookShelf',
         payload: true,
       });
     },
     *hideCreateBookShelf(_, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayScrollBar',
         payload: true,
       });
-      yield call(() => {});
+
       yield put({
         type: 'displayCreateBookShelf',
         payload: false,
@@ -161,12 +157,11 @@ const OrganizeBookModel: OrganizeBookType = {
     },
 
     *hideOrganizeBookShelf(_, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'displayScrollBar',
         payload: true,
       });
-      yield call(() => {});
+
       yield put({
         type: 'displayOrganizeBookShelf',
         payload: false,
@@ -181,7 +176,6 @@ const OrganizeBookModel: OrganizeBookType = {
     //#endregion
 
     *insertLocation({ payload }, { call, put }) {
-
       yield call(insertLocation, payload);
       yield put({
         type: 'displayCreateLocation',
@@ -189,14 +183,12 @@ const OrganizeBookModel: OrganizeBookType = {
       });
     },
     *editLocation({ payload }, { call, put }) {
-
       yield call(editLocation, payload);
       yield put({
         type: 'displayCreateLocation',
         payload: false,
       });
     },
-    
 
     *deleteLocation({ payload }, { call, put }) {
       yield call(deleteLocation, payload);
@@ -207,7 +199,6 @@ const OrganizeBookModel: OrganizeBookType = {
     },
 
     *onSelectLocation({ payload }, { call, put }) {
-      yield call(() => {});
       yield put({
         type: 'loadSelectLocation',
         payload: { ...payload },
@@ -226,7 +217,6 @@ const OrganizeBookModel: OrganizeBookType = {
     },
 
     *insertBookShelf({ payload }, { call, put }) {
-
       yield call(insertBookShelf, payload);
       yield put({
         type: 'displayCreateLocation',
@@ -277,8 +267,7 @@ const OrganizeBookModel: OrganizeBookType = {
       const { visible, data } = payload;
       return {
         ...state,
-        selectedRowKeys: data,
-        deleteLocationVisible: visible,
+        viewLocationVisible: visible,
       };
     },
 

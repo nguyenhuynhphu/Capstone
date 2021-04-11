@@ -46,12 +46,8 @@ export async function editLocation(values: any): Promise<any> {
     body: JSON.stringify(values),
   });
 }
-export async function deleteLocation(locationIds: any) {
-  var tmp = '';
-  locationIds.forEach((id: any) => {
-    tmp += `id=${id}&`;
-  });
-  return request(`/api/Location?` + tmp, {
+export async function deleteLocation(locationId: any) {
+  return request(`/api/Location?id=${locationId}`, {
     method: 'DELETE',
   });
 }
