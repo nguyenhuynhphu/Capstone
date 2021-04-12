@@ -228,7 +228,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
           )}
         </Row>
         <Table
-          rowSelection={rowSelection}
+          rowSelection={this.props.user.currentUser.role != 1 ? rowSelection : undefined}
           columns={columns}
           loading={bookgrouptable.isLoading}
           className={styles.bookTable}

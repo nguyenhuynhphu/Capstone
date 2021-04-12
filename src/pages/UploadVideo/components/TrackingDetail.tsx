@@ -13,6 +13,7 @@ import {
   CloseOutlined,
   QuestionOutlined,
 } from '@ant-design/icons';
+import LoadingDrone from '@/components/CustomDesign/LoadingDrone';
 
 interface TrackingDetailProps {
   dispatch: Dispatch;
@@ -100,9 +101,9 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                           flexDirection: 'column',
                           display: 'flex',
                         }}
-                        status="success"
-                        title="No Error Was Found !"
-                        subTitle="No error been detected in this scanning"
+                        status="warning"
+                        title="No Drawer Was Found !"
+                        subTitle="There are something wrong, please recheck video that you was uploaded !"
                       />
                     )}
                   </>
@@ -140,13 +141,42 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                         </span>
                       }
                       key="1"
+                      style={
+                        this.props.model.isLoading
+                          ? {
+                              height: 400,
+                              width: '100%',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }
+                          : {}
+                      }
                     >
-                      {this.props.model.listError.map((record: any) =>
-                        !record.isConfirm && !record.isReject ? (
-                          <BookTrackingItem record={record} />
+                      {!this.props.model.isLoading ? (
+                        this.props.model.listError.length != 0 ? (
+                          this.props.model.listError.map((record: any) =>
+                            !record.isConfirm && !record.isReject ? (
+                              <BookTrackingItem record={record} />
+                            ) : (
+                              <></>
+                            ),
+                          )
                         ) : (
-                          <></>
-                        ),
+                          <Result
+                            status="success"
+                            title="Successfully Purchased Cloud Server ECS!"
+                            subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
+                            extra={[
+                              <Button type="primary" key="console">
+                                Go Console
+                              </Button>,
+                              <Button key="buy">Buy Again</Button>,
+                            ]}
+                          />
+                        )
+                      ) : (
+                        <Spin spinning />
                       )}
                     </Tabs.TabPane>
                     <Tabs.TabPane

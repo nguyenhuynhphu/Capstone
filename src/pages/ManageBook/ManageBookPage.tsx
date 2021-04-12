@@ -167,6 +167,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
             />
           </Col>
         </Row>
+       
         <Drawer
           width={700}
           placement="right"
@@ -181,7 +182,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
         <Drawer
           title={
-            managebook.choiceBook.id != underline ? 'Edit book detail' : 'Create a new book group'
+            managebook.choiceBook.id != undefined ? 'Edit book detail' : 'Create a new book group'
           }
           width={750}
           onClose={() => this.hideInputBook()}

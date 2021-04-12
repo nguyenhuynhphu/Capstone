@@ -58,6 +58,10 @@ const TrackingDetailModel: TrackingDetailType = {
     },
 
     *fetchError({ payload }, { put, call }) {
+      yield put({
+        type: 'isLoading',
+      });
+
       const response = yield call(fetchError, payload);
       const response2 = yield call(fetchUndifileError, payload);
       var tmp = _.concat(response, response2);
@@ -107,6 +111,7 @@ const TrackingDetailModel: TrackingDetailType = {
       });
       return {
         ...state,
+        isLoading: false,
         listError: payload,
       };
     },

@@ -320,7 +320,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item name="publishDate" label="Publishing Date">
-                  <DatePicker style={{ width: '100%' }} />
+                  <DatePicker style={{ width: '100%', zIndex: 99999999 }} />
                 </Form.Item>
               </Col>
               <Col span={12}>

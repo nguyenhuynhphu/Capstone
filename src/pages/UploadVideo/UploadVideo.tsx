@@ -45,9 +45,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import UploadRecordTable from './components/UploadRecordTable';
 import TableHeader from '@/components/CustomDesign/TableHeader';
-import { ResponsiveCalendar } from '@nivo/calendar';
 import PeriorChart from './components/PeriorChart';
-import DetectionStatistic from './components/DetectionStatistic';
 import ManageBorrowStatistic from '../ManageBorrow/components/ManageBorrowStatistic';
 import NewDetect from './components/NewDetect';
 const { RangePicker } = DatePicker;
@@ -76,35 +74,53 @@ interface UploadVideoState {
 const responseDetect = [
   {
     link:
-      'https://firebasestorage.googleapis.com/v0/b/capstone-96378.appspot.com/o/webadmin.MP4?alt=media&token=1fc47b6f-a46d-4e54-afa4-78227e5aebc0',
+      'https://papv.blob.core.windows.net/videos/DJI_0502_1618185243.mp4?sv=2020-02-10&ss=bfqt&srt=sco&sp=rwdlacupx&se=2021-05-31T21%3A36%3A09Z&st=2021-04-10T13%3A36%3A09Z&spr=https&sig=te5dpk%2FASSegm2WRSVxQZEHX7HIB92MRFuPbv7E70Pg%3D',
     list_code: [
       {
         books: [
-          'A000202',
-          'A000101',
-          'D050308',
-          'M032611',
-          'H562417',
-          'R208010',
-          'J620311',
-          'U238417',
-          'A150208',
-          'K140611',
-          'KS203099',
-          'K241209',
-          'A008513',
-          'O789428',
-          'R308011',
+          'A003811',
+          'A002103',
+          'A003003',
+          'A003508',
+          'A003407',
+          'A003710',
+          'sadasdasdasd',
+          'A001708',
+          'A002810',
+          'A002709',
         ],
-        drawer: 'KS200099',
+        drawer: 'KS001800',
       },
       {
-        books: ['H071210', 'A001102', 'KS201099', 'Z999936', 'A001506', 'K678930', 'A130913'],
-        drawer: 'KS201099',
+        books: [
+          'A002911',
+          'A002608',
+          'A003104',
+          'A003912',
+          'A004004',
+          'A003609',
+          'A001910',
+          'A001405',
+          'A002406',
+          'A004206',
+          'A004509',
+        ],
+        drawer: 'KS001300',
       },
       {
-        books: ['A000202', 'KS203099', 'J620311', 'D050308'],
-        drawer: 'KS006000',
+        books: [
+          'A003205',
+          'A003306',
+          'A002002',
+          'A002507',
+          'A004812',
+          'A002305',
+          'A002204',
+          'A001607',
+          'A004307',
+          'A001304',
+        ],
+        drawer: 'KS000700',
       },
     ],
   },
@@ -454,10 +470,9 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
         return file;
       } else {
         error = true;
-        
       }
     });
-    if(error){
+    if (error) {
       message.error(`File upload is not a video file`);
       fileList = [];
     }
@@ -471,7 +486,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
     const formData = new FormData();
 
     formData.append('files', fileList[0].originFileObj);
-    // this.uploadSuccess2(responseDetect[0]);
+    //this.uploadSuccess(responseDetect[0]);
     axios
       .post('http://127.0.0.1:5000/upload', formData, {
         headers: {
@@ -481,14 +496,235 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
       .then((response) => {
         console.log(response);
 
-        this.uploadSuccess2(response.data[0]);
+        this.uploadSuccess(response.data[0]);
       })
       .catch(function (error) {
         console.log('ERROR >>', error);
       });
   };
 
-  async uploadSuccess2(data: any) {
+  // async uploadSuccess2(data: any) {
+  //   const { dispatch, uploadrecordtable } = this.props;
+  //   var msgToServer: any = {
+  //     staffId: this.props.user.currentUser.id,
+  //     url: data.link,
+  //     bookShelfId: this.state.selectedBookShelf,
+  //     time: moment(),
+  //     thumbnail: 'string',
+  //   };
+
+  //   var drawerInSystem = await fetchDrawer(this.state.selectedBookShelf);
+
+  //   var found: any = [];
+  //   var notFound: any = [];
+  //   data.list_code.forEach((scanDrawer: any) => {
+  //     drawerInSystem.forEach((drawerInSystem: any) => {
+  //       if (drawerInSystem.barcode != undefined) {
+  //         if (scanDrawer.drawer.trim() == drawerInSystem.barcode.trim()) {
+  //           found.push(drawerInSystem);
+  //         } else {
+  //           notFound.push(drawerInSystem);
+  //         }
+  //       }
+  //     });
+  //   });
+  //   console.log('FOUND >>>>', found);
+  //   if (found.length != 0) {
+  //     var promises: any = [];
+  //     found.forEach((drawer: any) => {
+  //       promises.push(fetchBookInDrawer(drawer.id));
+  //     });
+
+  //     var bookInDrawer: any = await Promise.all(promises);
+
+  //     for (let i = 0; i < found.length; i++) {
+  //       var drawer = found[i];
+  //       drawer.books = bookInDrawer[i].data;
+  //     }
+
+  //     found.forEach((drawer: any) => {
+  //       // xác định vị trí cho những cuốn sai
+  //       data.list_code.forEach((scanDrawer: any) => {
+  //         //matching pair
+  //         let tmp: any = [];
+  //         let removeBarcode: any = [];
+  //         if (drawer.barcode != undefined) {
+  //           if (drawer.barcode.trim() == scanDrawer.drawer.trim()) {
+  //             drawer.books.map((orgBook: any) => {
+  //               scanDrawer.books.map((barcode: any) => {
+  //                 if (orgBook.barCode != undefined && orgBook.barCode.trim() == barcode.trim()) {
+  //                   tmp.push(orgBook);
+  //                   removeBarcode.push(barcode);
+  //                 }
+  //               });
+  //             });
+  //             _.pullAll(drawer.books, tmp);
+  //             _.pullAll(scanDrawer.books, removeBarcode);
+  //             drawer.wrongPosition = scanDrawer.books;
+  //           }
+  //         }
+  //       });
+  //     });
+
+  //     //xu ly sach sai vi tri
+  //     var drawerDetection: any = [];
+  //     var checkWrong = new Promise<void>((resolve, reject) => {
+  //       found.forEach(async (drawer: any, index: number, array: any) => {
+  //         var errorMsg: any = [];
+  //         var undefinedError: any = [];
+  //         promises = [];
+  //         if (drawer.wrongPosition != undefined) {
+  //           drawer.wrongPosition.forEach((book: any) => {
+  //             promises.push(checkingPosition(book));
+  //           });
+  //         }
+  //         var realPositions = await Promise.all(promises); // xu ly sach nam sai truoc
+
+  //         realPositions.forEach((position: any, index: number) => {
+  //           if (position.data.length != 0) {
+  //             errorMsg.push({
+  //               errorMessage: `Sách nằm sai vị trí, bị trí thực sự ở: Bookshelf: ${position.data[0].bookShelfName} Drawer: ${position.data[0].drawerId} !`,
+  //               bookId: position.data[0].id,
+  //               typeError: 2,
+  //             });
+  //           } else {
+  //             undefinedError.push({
+  //               errorMessage: `Phát hiện barcode lạ: "${drawer.wrongPosition[index]}"`,
+  //               typeError: 1,
+  //             });
+  //           }
+  //         });
+
+  //         //xu ly sach mat
+  //         promises = [];
+  //         if (drawer.books.length != 0) {
+  //           drawer.books.forEach((book: any) => {
+  //             promises.push(getRealPosition(book.id));
+  //           });
+  //         }
+  //         Promise.all(promises).then((detectLocation: any) => {
+  //           detectLocation.forEach((book: any, index: number) => {
+  //             if (book.data.isAvailable == true) {
+  //               // chưa được mượn
+  //               if (book.data.customerId == undefined) {
+  //                 // chưa từng đưọcw mượn
+  //                 errorMsg.push({
+  //                   errorMessage: `Sách mất, cuốn này chưa từng được ai mượn !`,
+  //                   bookId: book.data.id,
+  //                   typeError: 3,
+  //                 });
+  //               } else {
+  //                 // lần cuối mượn và trả rồi
+  //                 errorMsg.push({
+  //                   errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${book.data.customerName}`,
+  //                   bookId: book.data.id,
+  //                   typeError: 4,
+  //                 });
+  //               }
+  //             } else {
+  //               //được mượn
+  //               errorMsg.push({
+  //                 errorMessage: `Sách mất. Sách chưa được trả bởi ${book.data.customerName}`,
+  //                 bookId: book.data.id,
+  //                 isError: 5,
+  //               });
+  //             }
+  //           });
+
+  //           drawerDetection.push({
+  //             drawerId: drawer.id,
+  //             detectionError: errorMsg,
+  //             undefinedError: undefinedError,
+  //           });
+  //           if (index == array.length - 1) {
+  //             resolve();
+  //           }
+  //         });
+  //       });
+  //     });
+  //     console.log('>>>>>>>>>>>>>', drawerDetection);
+
+  //     checkWrong.finally(() => {
+  //       Object.assign(msgToServer, {
+  //         drawerDetection: drawerDetection,
+  //       });
+
+  //       dispatch({
+  //         type: 'uploadvideo/insertRecord',
+  //         payload: msgToServer,
+  //       }).finally(() => {
+  //         this.setState({ isUpload: false });
+  //         if (!this.props.uploadvideo.uploadModalVisible) {
+  //           this.changeNotification();
+  //         }
+  //         setTimeout(() => {
+  //           dispatch({
+  //             type: 'uploadvideo/renderModel',
+  //             payload: false,
+  //           });
+  //           dispatch({
+  //             type: 'uploadvideo/resetState',
+  //             payload: false,
+  //           });
+  //           this.resetTracking();
+  //           dispatch({
+  //             type: 'uploadrecordtable/fetchData',
+  //             payload: {
+  //               filterName: uploadrecordtable.filterName,
+  //               pagination: uploadrecordtable.pagination.current,
+  //             },
+  //           }),
+  //             this.setState({
+  //               uploadStep: 0,
+  //               fileList: [],
+  //               modalWidth: 600,
+  //               selectedBookShelf: -1,
+  //               selectedRecord: {},
+  //             });
+  //         }, 2000);
+  //       });
+  //     });
+  //   } else {
+  //     Object.assign(msgToServer, {
+  //       drawerDetection: [],
+  //     });
+  //     dispatch({
+  //       type: 'uploadvideo/insertRecord',
+  //       payload: msgToServer,
+  //     }).finally(() => {
+  //       this.setState({ isUpload: false });
+  //       if (!this.props.uploadvideo.uploadModalVisible) {
+  //         this.changeNotification();
+  //       }
+  //       setTimeout(() => {
+  //         dispatch({
+  //           type: 'uploadvideo/renderModel',
+  //           payload: false,
+  //         });
+  //         dispatch({
+  //           type: 'uploadvideo/resetState',
+  //           payload: false,
+  //         });
+  //         this.resetTracking();
+  //         dispatch({
+  //           type: 'uploadrecordtable/fetchData',
+  //           payload: {
+  //             filterName: uploadrecordtable.filterName,
+  //             pagination: uploadrecordtable.pagination.current,
+  //           },
+  //         }),
+  //           this.setState({
+  //             uploadStep: 0,
+  //             fileList: [],
+  //             modalWidth: 600,
+  //             selectedBookShelf: -1,
+  //             selectedRecord: {},
+  //           });
+  //       }, 2000);
+  //     });
+  //   }
+  // }
+  async uploadSuccess(data: any) {
     const { dispatch, uploadrecordtable } = this.props;
     var msgToServer: any = {
       staffId: this.props.user.currentUser.id,
@@ -497,177 +733,43 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
       time: moment(),
       thumbnail: 'string',
     };
-
-    var drawerInSystem = await fetchDrawer(this.state.selectedBookShelf);
-
-    var found: any = [];
-    var notFound: any = [];
-    data.list_code.forEach((scanDrawer: any) => {
-      drawerInSystem.forEach((drawerInSystem: any) => {
-        if (drawerInSystem.barcode != undefined) {
-          if (scanDrawer.drawer.trim() == drawerInSystem.barcode.trim()) {
-            found.push(drawerInSystem);
-          } else {
-            notFound.push(drawerInSystem);
-          }
-        }
-      });
-    });
-    console.log('FOUND >>>>', found);
-
-    var promises: any = [];
-    found.forEach((drawer: any) => {
-      promises.push(fetchBookInDrawer(drawer.id));
-    });
-
-    var bookInDrawer: any = await Promise.all(promises);
-
-    for (let i = 0; i < found.length; i++) {
-      var drawer = found[i];
-      drawer.books = bookInDrawer[i].data;
-    }
-
-    found.forEach((drawer: any) => {
-      // xác định vị trí cho những cuốn sai
-      data.list_code.forEach((scanDrawer: any) => {
-        //matching pair
-        let tmp: any = [];
-        let removeBarcode: any = [];
-        if (drawer.barcode != undefined) {
-          if (drawer.barcode.trim() == scanDrawer.drawer.trim()) {
-            drawer.books.map((orgBook: any) => {
-              scanDrawer.books.map((barcode: any) => {
-                if (orgBook.barCode != undefined && orgBook.barCode.trim() == barcode.trim()) {
-                  tmp.push(orgBook);
-                  removeBarcode.push(barcode);
-                }
-              });
-            });
-            _.pullAll(drawer.books, tmp);
-            _.pullAll(scanDrawer.books, removeBarcode);
-            drawer.wrongPosition = scanDrawer.books;
-          }
-        }
-      });
-    });
-
-    //xu ly sach sai vi tri
-    var drawerDetection: any = [];
-    var checkWrong = new Promise<void>((resolve, reject) => {
-      found.forEach(async (drawer: any, index: number, array: any) => {
-        var errorMsg: any = [];
-        var undefinedError: any = [];
-        promises = [];
-        if (drawer.wrongPosition != undefined) {
-          drawer.wrongPosition.forEach((book: any) => {
-            promises.push(checkingPosition(book));
-          });
-        }
-        var realPositions = await Promise.all(promises); // xu ly sach nam sai truoc
-
-        realPositions.forEach((position: any, index: number) => {
-          if (position.data.length != 0) {
-            errorMsg.push({
-              errorMessage: `Sách nằm sai vị trí, bị trí thực sự ở: Bookshelf: ${position.data[0].bookShelfName} Drawer: ${position.data[0].drawerId} !`,
-              bookId: position.data[0].id,
-              typeError: 2,
-            });
-          } else {
-            undefinedError.push({
-              errorMessage: `Phát hiện barcode lạ: "${drawer.wrongPosition[index]}"`,
-              typeError: 1,
-            });
-          }
+    dispatch({
+      type: 'uploadvideo/insertRecord',
+      payload: {
+        msgToServer: msgToServer,
+        data: data,
+        selectedBookShelf: this.state.selectedBookShelf,
+      },
+    }).finally(() => {
+      this.setState({ isUpload: false });
+      if (!this.props.uploadvideo.uploadModalVisible) {
+        this.changeNotification();
+      }
+      setTimeout(() => {
+        dispatch({
+          type: 'uploadvideo/renderModel',
+          payload: false,
         });
-
-        //xu ly sach mat
-        promises = [];
-        if (drawer.books.length != 0) {
-          drawer.books.forEach((book: any) => {
-            promises.push(getRealPosition(book.id));
-          });
-        }
-        Promise.all(promises).then((detectLocation: any) => {
-          detectLocation.forEach((book: any, index: number) => {
-            if (book.data.isAvailable == true) {
-              // chưa được mượn
-              if (book.data.customerId == undefined) {
-                // chưa từng đưọcw mượn
-                errorMsg.push({
-                  errorMessage: `Sách mất, cuốn này chưa từng được ai mượn !`,
-                  bookId: book.data.id,
-                  typeError: 3,
-                });
-              } else {
-                // lần cuối mượn và trả rồi
-                errorMsg.push({
-                  errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${book.data.customerName}`,
-                  bookId: book.data.id,
-                  typeError: 4,
-                });
-              }
-            } else {
-              //được mượn
-              errorMsg.push({
-                errorMessage: `Sách mất. Sách chưa được trả bởi ${book.data.customerName}`,
-                bookId: book.data.id,
-                isError: 5,
-              });
-            }
-          });
-
-          drawerDetection.push({
-            drawerId: drawer.id,
-            detectionError: errorMsg,
-            undefinedError: undefinedError,
-          });
-          if (index == array.length - 1) {
-            resolve();
-          }
+        dispatch({
+          type: 'uploadvideo/resetState',
+          payload: false,
         });
-      });
-    });
-    console.log('>>>>>>>>>>>>>', drawerDetection);
-
-    checkWrong.finally(() => {
-      Object.assign(msgToServer, {
-        drawerDetection: drawerDetection,
-      });
-
-      dispatch({
-        type: 'uploadvideo/insertRecord',
-        payload: msgToServer,
-      }).finally(() => {
-        this.setState({ isUpload: false });
-        if (!this.props.uploadvideo.uploadModalVisible) {
-          this.changeNotification();
-        }
-        setTimeout(() => {
-          dispatch({
-            type: 'uploadvideo/renderModel',
-            payload: false,
+        this.resetTracking();
+        dispatch({
+          type: 'uploadrecordtable/fetchData',
+          payload: {
+            filterName: uploadrecordtable.filterName,
+            pagination: uploadrecordtable.pagination.current,
+          },
+        }),
+          this.setState({
+            uploadStep: 0,
+            fileList: [],
+            modalWidth: 600,
+            selectedBookShelf: -1,
+            selectedRecord: {},
           });
-          dispatch({
-            type: 'uploadvideo/resetState',
-            payload: false,
-          });
-          this.resetTracking();
-          dispatch({
-            type: 'uploadrecordtable/fetchData',
-            payload: {
-              filterName: uploadrecordtable.filterName,
-              pagination: uploadrecordtable.pagination.current,
-            },
-          }),
-            this.setState({
-              uploadStep: 0,
-              fileList: [],
-              modalWidth: 600,
-              selectedBookShelf: -1,
-              selectedRecord: {},
-            });
-        }, 2000);
-      });
+      }, 2000);
     });
   }
 

@@ -7,6 +7,7 @@ import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
 import styles from '@/pages/BookOrganize/BookOrganizePage.less';
+import sendNotification from '@/utils/Notification';
 const { Column } = Table;
 
 interface BookShelfTableProps {
@@ -141,14 +142,15 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
                     onConfirm={() =>
                       this.props
                         .dispatch({ type: 'organizebook/deleteBookShelf', payload: [id] })
-                        .then(() =>
+                        .then(() => {
+                          sendNotification('Delete BookShelf Successfull !', '', 'success');
                           this.props.dispatch({
                             type: 'bookshelftable/fetchData',
                             payload: {
                               filterName: bookshelftable.filterName,
                               pagination: bookshelftable.pagination.current,
                             },
-                          }),
+                          })}
                         )
                     }
                   >

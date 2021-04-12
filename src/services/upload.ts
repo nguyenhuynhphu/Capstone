@@ -31,16 +31,18 @@ export async function insertRecord(record: any): Promise<any> {
 }
 
 export async function fetchRecord(payload: any): Promise<any> {
-  if(payload.filterRecord[0] != ''){
-    return request(
-      `/api/Detection?StartTime=${payload.filterRecord[0].format("YYYY-MM-DD")}&EndTime=${payload.filterRecord[1].format("YYYY-MM-DD")}&PageNumber=${payload.pagination}`,
-    );
-  }else{
-    return request(
-      `/api/Detection?StartTime=&EndTime=&PageNumber=${payload.pagination}`,
-    );
+  if (payload.filterRecord != undefined) {
+    if (payload.filterRecord[0] != '') {
+      return request(
+        `/api/Detection?StartTime=${payload.filterRecord[0].format(
+          'YYYY-MM-DD',
+        )}&EndTime=${payload.filterRecord[1].format('YYYY-MM-DD')}&PageNumber=${
+          payload.pagination
+        }`,
+      );
+    }
   }
-  
+  return request(`/api/Detection?StartTime=&EndTime=&PageNumber=${payload.pagination}`);
 }
 export async function fetchTrackingDetail(detectionId: number): Promise<any> {
   return request(`/api/DrawerDetection?DetectionId=${detectionId}`);

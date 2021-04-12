@@ -186,7 +186,7 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
                 <Table
                   size={'small'}
                   columns={columns}
-                  rowSelection={rowBooksDrawerSelection}
+                  rowSelection={this.props.user.currentUser.role != 1 ? rowBooksDrawerSelection : undefined}
                   loading={transferbook.isLoadingDrawer}
                   dataSource={transferbook.bookInDrawer}
                   pagination={transferbook.paginationDrawer}

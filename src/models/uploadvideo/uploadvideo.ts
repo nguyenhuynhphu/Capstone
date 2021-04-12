@@ -1,4 +1,12 @@
-import { findBookShelf, insertRecord } from '@/services/upload';
+import {
+  checkingPosition,
+  fetchBookInDrawer,
+  fetchDrawer,
+  findBookShelf,
+  getRealPosition,
+  insertRecord,
+} from '@/services/upload';
+import _ from 'lodash';
 import { Effect, Reducer } from 'umi';
 
 export interface UploadVideoState {
@@ -53,12 +61,128 @@ const UploadVideoModel: UploadVideoType = {
     },
 
     *insertRecord({ payload }, { put, call }) {
-      yield call(insertRecord, payload);
+      const { msgToServer, data, selectedBookShelf } = payload;
+      var drawerInSystem: any = yield call(fetchDrawer, selectedBookShelf);
+
+      var found: any = [];
+      var notFound: any = [];
+      data.list_code.forEach((scanDrawer: any) => {
+        drawerInSystem.forEach((drawerInSystem: any) => {
+          if (drawerInSystem.barcode != undefined) {
+            if (scanDrawer.drawer.trim() == drawerInSystem.barcode.trim()) {
+              found.push(drawerInSystem);
+            } else {
+              notFound.push(drawerInSystem);
+            }
+          }
+        });
+      });
+      console.log('FOUND >>>>', found);
+      if (found.length != 0) {
+        for (let i = 0; i < found.length; i++) {
+          const drawer = found[i];
+          const response = yield call(fetchBookInDrawer, drawer.id);
+          drawer.books = response.data;
+        }
+        console.log('XXXX >>>>', found);
+
+        found.forEach((drawer: any) => {
+          // xác định vị trí cho những cuốn sai
+          data.list_code.forEach((scanDrawer: any) => {
+            //matching pair
+            let tmp: any = [];
+            let removeBarcode: any = [];
+            if (drawer.barcode != undefined) {
+              if (drawer.barcode.trim() == scanDrawer.drawer.trim()) {
+                drawer.books.map((orgBook: any) => {
+                  scanDrawer.books.map((barcode: any) => {
+                    if (orgBook.barCode != undefined && orgBook.barCode.trim() == barcode.trim()) {
+                      tmp.push(orgBook);
+                      removeBarcode.push(barcode);
+                    }
+                  });
+                });
+                _.pullAll(drawer.books, tmp);
+                _.pullAll(scanDrawer.books, removeBarcode);
+                drawer.wrongPosition = scanDrawer.books;
+              }
+            }
+          });
+        });
+
+        var drawerDetection: any = [];
+
+        for (let i = 0; i < found.length; i++) {
+          const drawer = found[i];
+          var errorMsg: any = [];
+          var undefinedError: any = [];
+          if (drawer.wrongPosition != undefined) {
+            for (let j = 0; j < drawer.wrongPosition.length; j++) {
+              const book = drawer.wrongPosition[j];
+              const wrongResponse = yield call(checkingPosition, book);
+              if (wrongResponse.data.length != 0) {
+                errorMsg.push({
+                  errorMessage: `Sách nằm sai vị trí, bị trí thực sự ở: Bookshelf: ${wrongResponse.data[0].bookShelfName} Drawer: ${wrongResponse.data[0].drawerId} !`,
+                  bookId: wrongResponse.data[0].id,
+                  typeError: 2,
+                });
+              } else {
+                undefinedError.push({
+                  errorMessage: `Phát hiện barcode lạ: "${book}"`,
+                  typeError: 1,
+                });
+              }
+            }
+          }
+
+          if (drawer.books.length != 0) {
+            for (let j = 0; j < drawer.books.length; j++) {
+              const book = drawer.books[j];
+              const bookResponse = yield call(getRealPosition, book.id);
+              if (bookResponse.data.isAvailable == true) {
+                // chưa được mượn
+                if (bookResponse.data.customerId == undefined) {
+                  // chưa từng đưọcw mượn
+                  errorMsg.push({
+                    errorMessage: `Sách mất, cuốn này chưa từng được ai mượn !`,
+                    bookId: bookResponse.data.id,
+                    typeError: 3,
+                  });
+                } else {
+                  // lần cuối mượn và trả rồi
+                  errorMsg.push({
+                    errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${bookResponse.data.customerName}`,
+                    bookId: bookResponse.data.id,
+                    typeError: 4,
+                  });
+                }
+              } else {
+                //được mượn
+                errorMsg.push({
+                  errorMessage: `Sách mất. Sách chưa được trả bởi ${bookResponse.data.customerName}`,
+                  bookId: bookResponse.data.id,
+                  isError: 5,
+                });
+              }
+            }
+          }
+          drawerDetection.push({
+            drawerId: drawer.id,
+            detectionError: errorMsg,
+            undefinedError: undefinedError,
+          });
+        }
+        console.log('drawerDetection', drawerDetection);
+
+      }
+      Object.assign(msgToServer, {
+        drawerDetection: drawerDetection,
+      });
+      yield call(insertRecord, msgToServer);
     },
-    
   },
   reducers: {
-    resetState(state, { }) {
+    resetState(state, {}) {
       return {
         ...state,
         uploadModalVisible: false,

@@ -69,7 +69,7 @@ const ManageBookModel: ManageBookType = {
   namespace: 'managebook',
   state: {
     viewBookVisible: false,
-    inputBookVisible: true,
+    inputBookVisible: false,
 
     deleteBookVisible: false,
     categoriesModalVisible: false,
@@ -218,7 +218,7 @@ const ManageBookModel: ManageBookType = {
         inputBookVisible: payload.visible,
         loadingButton: false,
         choiceBook: payload.record,
-        displayViewBook: !payload.visible,
+        // displayViewBook: !payload.visible,
       };
     },
 

@@ -15,6 +15,7 @@ const { Text } = Typography;
 interface ViewFormProps {
   dispatch: Dispatch;
   bookGroup: any;
+  user?: any;
 }
 interface ViewFormState {
   viewBookQuantity: boolean;
@@ -80,27 +81,31 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
             </Row>
           </Col>
           <Col span={12} style={{ paddingTop: 5, textAlign: 'right' }}>
-            <Space className={styles.stickButton}>
-              <Button
-                className={styles.buttonCustom}
-                onClick={() =>
-                  this.props.dispatch({
-                    type: 'managebook/showInputBook',
-                    payload: { ...bookGroup },
-                  })
-                }
-                icon={<EditOutlined style={{ color: '#0078d4' }} />}
-              >
-                Edit
-              </Button>
-              <Button
-                className={styles.buttonCustom}
-                onClick={() => {}}
-                icon={<DeleteOutlined style={{ color: 'red' }} />}
-              >
-                Delete
-              </Button>
-            </Space>
+            {this.props.user.currentUser.role != 1 ? (
+              <Space className={styles.stickButton}>
+                <Button
+                  className={styles.buttonCustom}
+                  onClick={() =>
+                    this.props.dispatch({
+                      type: 'managebook/showInputBook',
+                      payload: { ...bookGroup },
+                    })
+                  }
+                  icon={<EditOutlined style={{ color: '#0078d4' }} />}
+                >
+                  Edit
+                </Button>
+                <Button
+                  className={styles.buttonCustom}
+                  onClick={() => {}}
+                  icon={<DeleteOutlined style={{ color: 'red' }} />}
+                >
+                  Delete
+                </Button>
+              </Space>
+            ) : (
+              <></>
+            )}
           </Col>
         </Row>
         <Divider orientation="left">Overview</Divider>
@@ -220,8 +225,8 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
         </Paragraph>
 
         <Drawer
-          title="Copy"
-          width={320}
+          title="Book List"
+          width={500}
           closable={false}
           onClose={this.onChildrenDrawerClose}
           visible={this.state.viewBookQuantity}

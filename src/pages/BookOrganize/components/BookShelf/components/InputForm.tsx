@@ -1,3 +1,4 @@
+import sendNotification from '@/utils/Notification';
 import { Form, Col, Row, Input, Select, Badge, InputNumber } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import React from 'react';
@@ -40,15 +41,20 @@ const InputForm = (props: any) => {
             type: 'organizebook/insertBookShelf',
             payload: { ...value },
           })
-          .then(() =>
+          .then(() => {
+            sendNotification('Add BookShelf Successfull !', '', 'success');
             props.dispatch({
               type: 'bookshelftable/fetchData',
               payload: {
                 filterName: props.bookshelftable.filterName,
                 pagination: props.bookshelftable.pagination.current,
               },
-            }),
-          );
+            });
+            props.dispatch({
+              type: 'organizebook/hideCreateBookShelf',
+              payload: {},
+            });
+          });
       }}
     >
       <Row gutter={16}>

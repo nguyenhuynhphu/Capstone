@@ -144,30 +144,6 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
         >
           <InputForm bookShelf={{}} />
         </Drawer>
-
-        <Drawer
-          title="Create book shelf"
-          width={400}
-          closable={false}
-          onClose={this.hideCreateLocation}
-          visible={this.state.editFormVisible}
-          footer={
-            <div
-              style={{
-                textAlign: 'right',
-              }}
-            >
-              <Button onClick={() => {}} style={{ marginRight: 8 }}>
-                Cancel
-              </Button>
-              <Button type="primary" form={'createBookShelf'} key="submit" htmlType="submit">
-                Submit
-              </Button>
-            </div>
-          }
-        >
-          <InputForm bookShelf={{}} />
-        </Drawer>
         <Drawer
           title="Organize Book"
           width={'100vw'}
@@ -280,7 +256,11 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
                     if (value != undefined) {
-                      return Promise.resolve();
+                      if (value.trim().length != 0) {
+                        return Promise.resolve();
+                      } else {
+                        return Promise.reject(`Location name must not empty`);
+                      }
                     } else {
                       return Promise.reject(`Location name must not empty`);
                     }
@@ -362,10 +342,12 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                   rules={[
                     ({ getFieldValue }) => ({
                       validator(rule, value) {
-                        console.log(value);
-
-                        if (value.length != 0) {
-                          return Promise.resolve();
+                        if (value != undefined) {
+                          if (value.trim().length != 0) {
+                            return Promise.resolve();
+                          } else {
+                            return Promise.reject(`Location name must not empty`);
+                          }
                         } else {
                           return Promise.reject(`Location name must not empty`);
                         }

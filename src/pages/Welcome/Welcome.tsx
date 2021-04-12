@@ -13,6 +13,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { Dispatch } from 'umi';
+import PeriorChart from '../UploadVideo/components/PeriorChart';
 interface WelcomeProps {
   user?: any;
   dispatch: Dispatch;
@@ -99,6 +100,19 @@ class Welcome extends React.Component<WelcomeProps> {
             </Col>
           </Row>
           <StatisticHeader />
+          <Row
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '15px',
+              padding: '20px 35px',
+              marginTop: 15,
+            }}
+          >
+            Tracking
+            <Col span={24} style={{height: 300}}>
+              <PeriorChart />
+            </Col>
+          </Row>
         </PageContainer>
       </>
     );

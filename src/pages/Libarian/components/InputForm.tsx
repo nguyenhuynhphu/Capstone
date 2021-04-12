@@ -54,7 +54,12 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Form.Item
               name="name"
               label="Name"
+              required
               rules={[
+                {
+                  required: true,
+                  message: 'Name field is required!',
+                },
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
                     if (value?.length <= 8) {
@@ -72,6 +77,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Form.Item
               name="address"
               label="Address"
+              required
               rules={[
                 {
                   required: true,
@@ -96,6 +102,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Form.Item
               name="doB"
               label="Date of birth"
+              required
               rules={[
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
@@ -114,6 +121,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Form.Item
               name="phone"
               label="Phone"
+              required
               rules={[
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
@@ -136,11 +144,12 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Form.Item
               name="username"
               label="Username"
+              required
               rules={[
                 ({ getFieldValue }) => ({
                   async validator(rule, value) {
                     if (getFieldValue('id') == undefined) {
-                      if (value.length != 0) {
+                      if (value?.length != 0) {
                         const response = await fetchLibariansByUsername(value);
                         if (response.data[0] == undefined) {
                           return Promise.resolve();
@@ -165,12 +174,13 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Form.Item
               name="email"
               label="Email"
+              required
               rules={[
                 ({ getFieldValue }) => ({
                   async validator(rule, value) {
-                    if (value.length != 0) {
+                    if (value?.length != 0) {
                       var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                      if (value.match(regex)) {
+                      if (value?.match(regex)) {
                         const response = await fetchLibariansByEmail(value);
                         if (getFieldValue('id') == undefined) {
                           if (response.data[0] == undefined) {
@@ -207,6 +217,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
               <Form.Item
                 name="password"
                 label="Password"
+                required
                 rules={[
                   ({ getFieldValue }) => ({
                     validator(rule, value) {
@@ -226,6 +237,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
               <Form.Item
                 name="confirm"
                 label="Confirm Password"
+                required
                 rules={[
                   ({ getFieldValue }) => ({
                     validator(rule, value) {
@@ -250,6 +262,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Form.Item
               name="image"
               label="Avatar"
+              required
               rules={[
                 ({ getFieldValue }) => ({
                   validator(rule, value) {

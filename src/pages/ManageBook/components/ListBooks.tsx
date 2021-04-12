@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { connect, Dispatch } from 'umi';
-import { List, Skeleton, Button, Descriptions, Divider } from 'antd';
+import { List, Skeleton, Button, Descriptions, Divider, Tag, Row, Col, Alert, Space } from 'antd';
+import { CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 
 interface ListBookProps {
   dispatch: Dispatch;
@@ -25,20 +26,118 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
           dataSource={listbooks.data}
           renderItem={(item: any) => (
             <>
-              <Descriptions column={2}>
-                <Descriptions.Item label="Barcode">#{item.barCode}</Descriptions.Item>
-                <Descriptions.Item label="ID">{item.id}</Descriptions.Item>
-                <Descriptions.Item label="Status" span={2}>
-                  {item.isAvailable ? 'Available' : 'Not Available'}
-                </Descriptions.Item>
-                <Descriptions.Item label="Drawer" span={2}>
-                  {item.drawerName}
-                </Descriptions.Item>
-                <Descriptions.Item label="Book Shelf" >
-                  {item.bookShelfName}
-                </Descriptions.Item>
-              </Descriptions>
-              <Divider />
+              <Row key={item.id}>
+                <Col span={24}>
+                  <Descriptions column={2}>
+                    <Descriptions.Item label="" style={{ cursor: 'pointer' }}>
+                      {item.bookShelfName ? (
+                        <Alert
+                          style={{ width: '100%' }}
+                          message={
+                            <Space
+                              direction="horizontal"
+                              size="small"
+                              style={{
+                                width: '100%',
+                                justifyContent: 'space-between',
+                                paddingRight: 10,
+                              }}
+                            >
+                              <div>Book ID: {item.id}</div>
+                              <div style={{ fontSize: 14, fontWeight: 'bold' }}>#{item.barCode}</div>
+                            </Space>
+                          }
+                          description={`In Bookshelf: ${item.bookShelfName} at Drawer: ${item.drawerName}`}
+                          action={
+                            <Space
+                              direction="vertical"
+                              style={{
+                                width: '100%',
+                                justifyContent: 'center',
+                                alignItems: 'flex-end',
+                              }}
+                            >
+                              {item.isAvailable ? (
+                                <Tag
+                                  icon={
+                                    <CheckOutlined
+                                      style={{ color: '#FFFFFF', cursor: 'pointer', margin: 0 }}
+                                    />
+                                  }
+                                  color="#87d068"
+                                >
+                                  Available
+                                </Tag>
+                              ) : (
+                                <Tag
+                                  icon={
+                                    <CheckOutlined
+                                      style={{ color: '#FFFFFF', cursor: 'pointer', margin: 0 }}
+                                    />
+                                  }
+                                  color="#f50"
+                                >
+                                  Not Available
+                                </Tag>
+                              )}
+                              <Button type="primary" size="small" icon={<DeleteOutlined />}>
+                                Remove
+                              </Button>
+                            </Space>
+                          }
+                          type="info"
+                          showIcon
+                        />
+                      ) : (
+                        <Alert
+                          style={{ width: '100%' }}
+                          message={`Book ID: ${item.id}`}
+                          description={`Not in any Bookshelf yet !`}
+                          action={
+                            <Space
+                              direction="vertical"
+                              style={{
+                                width: '100%',
+                                justifyContent: 'center',
+                                alignItems: 'flex-end',
+                              }}
+                            >
+                              {item.isAvailable ? (
+                                <Tag
+                                  icon={
+                                    <CheckOutlined
+                                      style={{ color: '#FFFFFF', cursor: 'pointer', margin: 0 }}
+                                    />
+                                  }
+                                  color="#87d068"
+                                >
+                                  Available
+                                </Tag>
+                              ) : (
+                                <Tag
+                                  icon={
+                                    <CheckOutlined
+                                      style={{ color: '#FFFFFF', cursor: 'pointer', margin: 0 }}
+                                    />
+                                  }
+                                  color="#f50"
+                                >
+                                  Not Available
+                                </Tag>
+                              )}
+                              <Button type="primary" size="small" icon={<DeleteOutlined />}>
+                                Remove
+                              </Button>
+                            </Space>
+                          }
+                          type="warning"
+                          showIcon
+                        />
+                      )}
+                    </Descriptions.Item>
+                  </Descriptions>
+                </Col>
+              </Row>
             </>
           )}
         />
