@@ -1,0 +1,104 @@
+.grid,
+.grid * {
+  box-sizing: border-box;
+}
+.grid {
+  display: grid;
+  position: relative;
+  z-index: 999;
+  width: fit-content;
+  height: fit-content;
+  grid-column-gap: 7.5px;
+  row-gap: 7.5px;
+}
+.item {
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+  padding: 15px 15px;
+  margin-bottom: 10px;
+}
+.item * {
+  font-weight: 500;
+  margin-bottom: 0;
+  position: relative;
+}
+.item:hover {
+  background-color: rgba(248, 248, 248);
+}
+.item:after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  background-color: rgba(248, 248, 248);
+}
+
+.bookShelfSection {
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: auto;
+  align-items: center;
+  padding: 30px 30px;
+  justify-items: center;
+}
+.titleTransfer {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.bookShelfSection::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+}
+.bookShelfSection::-webkit-scrollbar-thumb {
+  background: #888;
+}
+.shelfName {
+  position: absolute;
+  top: -38px;
+  left: 0;
+  z-index: 9999;
+  background-color: #0078d4;
+}
+.textTable {
+  line-height: 2;
+  margin: 0 10px;
+}
+
+.transferBook {
+  display: grid;
+  grid-template-columns: 100%;
+  justify-content: center;
+  height: 100%;
+  :global {
+    .ant-transfer-list {
+      width: 100% !important;
+      border-left: none;
+      border-right: none;
+    }
+    .ant-transfer-operation {
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-column-gap: 30px;
+      padding: 0 20px;
+    }
+  }
+}
+.booksInSystem {
+  background-color: white;
+  width: 100%;
+  height: 98%;
+  position: absolute;
+  z-index: 9;
+  top: 0;
+  transition: all 0.1s;
+}
+.bodyGrid{
+  padding: 20px 20px !important;
+}
+.decoTable {
+  :global {
+    .ant-table-thead > tr > th {
+      background-color: rgba(64, 169, 255, 0.2);
+    }
+  }
+}

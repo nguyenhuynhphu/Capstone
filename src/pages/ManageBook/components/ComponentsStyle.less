@@ -1,0 +1,74 @@
+.bookList::-webkit-scrollbar {
+  width: 3px;
+}
+.bookList::-webkit-scrollbar-thumb {
+  background: #888;
+}
+.bookList {
+  height: 450px;
+  overflow-y: auto;
+}
+
+.noMarginBot {
+  margin-bottom: 0;
+}
+.ant-modal-close-x {
+  width: 20px;
+  height: 20px;
+}
+
+.bookGroupModal {
+  :global {
+    .ant-modal-close-x {
+      height: 50px;
+      width: 50px;
+      line-height: 35px;
+      overflow: auto;
+    }
+  }
+}
+.listBook{
+ :global{
+   .ant-tag{
+     margin-right: 0;
+   }
+ }
+}
+.exportSection{
+  :global{
+    .ant-table-cell{
+      background-color: white;
+    }
+    .ant-table-body{
+      height: 300px;
+    }
+  }
+}
+.headerDeco {
+  height: 130px;
+  background-color: #f3f9fd;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding-left: 25px;
+  position: relative;
+}
+.bodyDeco {
+  padding: 0 25px;
+  padding-top: 15px;
+}
+
+:global {
+  .ant-drawer-body::-webkit-scrollbar {
+    width: 5px;
+  }
+  .ant-drawer-body::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+}
+.row{
+  margin-bottom: 15px;
+}
+.title{
+  font-weight: 500;
+}
