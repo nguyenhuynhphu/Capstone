@@ -1,10 +1,12 @@
 import { deleteLibarian, editLibarian, insertLibarian } from '@/services/libarian';
+import sendNotification from '@/utils/Notification';
 import { notification } from 'antd';
 import { visible } from 'chalk';
 import { Effect, Reducer } from 'umi';
 
 export interface LibarianPageState {
   inputLibarianVisible: boolean;
+  updateLibrarianVisible: boolean;
   viewLibarianVisible: boolean;
 
   choiceLibarian: any;
@@ -27,7 +29,7 @@ export interface LibarianPageType {
   reducers: {
     displayScrollBar: Reducer;
     displayViewLibarian: Reducer;
-
+    displayUpdateLibrarian: Reducer;
     displayInputForm: Reducer;
   };
 }
@@ -37,7 +39,7 @@ const LibarianPageModel: LibarianPageType = {
   state: {
     inputLibarianVisible: false,
     viewLibarianVisible: false,
-
+    updateLibrarianVisible: false,
     choiceLibarian: {},
   },
   effects: {
@@ -93,12 +95,13 @@ const LibarianPageModel: LibarianPageType = {
     },
     *deleteLibarian({ payload }, { call }) {
       yield call(deleteLibarian, payload);
+      sendNotification("Delete librarian success !", "", "success");
     },
     *editLibarian({ payload }, { put, call }) {
       const response = yield call(editLibarian, payload);
       if (response.data) {
         notification.open({
-          message: 'New librarian was update !',
+          message: 'Librarian was updated !',
           type: 'success',
           description: 'Llibrarian infor have success update !',
           duration: 2,
@@ -139,8 +142,13 @@ const LibarianPageModel: LibarianPageType = {
       return {
         ...state,
         inputLibarianVisible: payload,
-        viewLibarianVisible: false,
-      };
+      };  
+    },
+    displayUpdateLibrarian(state, { payload }) {
+      return {
+        ...state,
+        updateLibrarianVisible: payload,
+      };  
     },
 
     displayViewLibarian(state, { payload }) {

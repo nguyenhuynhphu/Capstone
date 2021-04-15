@@ -156,7 +156,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                       {!this.props.model.isLoading ? (
                         this.props.model.listError.length != 0 ? (
                           this.props.model.listError.map((record: any) =>
-                            !record.isConfirm && !record.isReject ? (
+                            !record.isConfirm && !record.isRejected ? (
                               <BookTrackingItem record={record} />
                             ) : (
                               <></>
@@ -165,14 +165,9 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                         ) : (
                           <Result
                             status="success"
-                            title="Successfully Purchased Cloud Server ECS!"
-                            subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
-                            extra={[
-                              <Button type="primary" key="console">
-                                Go Console
-                              </Button>,
-                              <Button key="buy">Buy Again</Button>,
-                            ]}
+                            title="No error found !"
+                            //subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
+                            
                           />
                         )
                       ) : (
@@ -202,7 +197,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                       key="3"
                     >
                       {this.props.model.listError.map((record: any) =>
-                        record.isReject ? <BookTrackingItem record={record} /> : <></>,
+                        record.isRejected ? <BookTrackingItem record={record} /> : <></>,
                       )}
                     </Tabs.TabPane>
                   </Tabs>

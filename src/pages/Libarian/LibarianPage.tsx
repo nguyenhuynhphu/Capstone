@@ -18,6 +18,8 @@ import { FormInstance } from 'antd/lib/form';
 
 import TableHeader from '@/components/CustomDesign/TableHeader';
 import { storage } from '@/firebase/Firebase';
+import UpdateForm from './components/UpdateForm';
+import moment from 'moment';
 
 interface LibarianPageProps {
   dispatch: Dispatch;
@@ -25,16 +27,19 @@ interface LibarianPageProps {
   libariantable?: any;
 }
 interface LibarianPageState {
-  form: any;
+  createForm: any;
+  updateForm: any;
 }
 class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      form: React.createRef<FormInstance>(),
+      createForm: React.createRef<FormInstance>(),
+      updateForm: React.createRef<FormInstance>(),
     };
 
     this.handelSubmit = this.handelSubmit.bind(this);
+    this.handelUpdate = this.handelUpdate.bind(this);
     this.hideViewLibarian = this.hideViewLibarian.bind(this);
   }
 
@@ -65,6 +70,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
                     type="primary"
                     size="middle"
                     onClick={() => {
+                      this.initCreateForm();
                       this.props.dispatch({
                         type: 'libarianpage/displayInputForm',
                         payload: true,
@@ -113,7 +119,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
           <ViewForm />
         </Drawer>
         <Drawer
-          title={libarianpage.choiceLibarian.id ? 'Update Librarian' : 'Create Libarian'}
+          title="Create Libarian"
           width={550}
           onClose={() => {
             this.props.dispatch({
@@ -154,53 +160,64 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
             </div>
           }
         >
-          <InputForm handelSubmit={this.handelSubmit} />
+          <InputForm form={this.state.createForm} handelSubmit={this.handelSubmit} />
+        </Drawer>
+        <Drawer
+          title="Update Librarian"
+          width={550}
+          onClose={() => {
+            this.props.dispatch({
+              type: 'libarianpage/displayUpdateLibrarian',
+              payload: false,
+            });
+          }}
+          visible={libarianpage.updateLibrarianVisible}
+          bodyStyle={{ paddingBottom: 80 }}
+          footer={
+            <div
+              style={{
+                textAlign: 'right',
+              }}
+            >
+              <Button
+                onClick={() => {
+                  this.props.dispatch({
+                    type: 'libarianpage/displayUpdateLibrarian',
+                    payload: false,
+                  });
+                }}
+                style={{ marginRight: 8 }}
+              >
+                Cancel
+              </Button>
+              <Button form={'updateLibarian'} key="submit" htmlType="submit" type="primary">
+                Save
+              </Button>
+            </div>
+          }
+        >
+          <UpdateForm handelSubmit={this.handelUpdate} />
         </Drawer>
       </>
     );
   }
 
   handelSubmit(libarian: any) {
-    const { dispatch, libarianpage, libariantable } = this.props;
-    if (libarianpage.choiceLibarian.id != undefined) {
-      //update
-      libarian.id = libarianpage.choiceLibarian.id;
-      libarian.password = libarianpage.choiceLibarian.password;
-      libarian.roleId = libarianpage.choiceLibarian.roleId;
+    const { dispatch, libariantable } = this.props;
+    const task = storage
+      .ref()
+      .child(`${libarian.name}/${libarian.image.uid}_${libarian.image.name}`)
+      .put(libarian.image, { contentType: libarian.image.type });
 
-      if (libarian.image.url == undefined) {
-        // co up hinh moi
-        const task = storage
-          .ref()
-          .child(`${libarian.name}/${libarian.image.uid}_${libarian.image.name}`)
-          .put(libarian.image, { contentType: libarian.image.type });
-
-        task.on(
-          'state_changed',
-          function progress(snapshot) {},
-          function error() {},
-          async () => {
-            const loadUrl = await task.snapshot.ref.getDownloadURL();
-            libarian.image = loadUrl;
-            dispatch({
-              type: 'libarianpage/editLibarian',
-              payload: libarian,
-            }).then(() => {
-              dispatch({
-                type: 'libariantable/fetchData',
-                payload: {
-                  filterName: libariantable.filterName,
-                  pagination: libariantable.pagination.current,
-                },
-              });
-            });
-          },
-        );
-      } else {
-        // khong up hinh
-        libarian.image = libarian.image.url;
+    task.on(
+      'state_changed',
+      function progress(snapshot) {},
+      function error() {},
+      async () => {
+        const loadUrl = await task.snapshot.ref.getDownloadURL();
+        libarian.image = loadUrl;
         dispatch({
-          type: 'libarianpage/editLibarian',
+          type: 'libarianpage/insertLibarian',
           payload: libarian,
         }).then(() => {
           dispatch({
@@ -211,9 +228,18 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
             },
           });
         });
-      }
-    } else {
-      //insert
+      },
+    );
+  }
+  handelUpdate(libarian: any) {
+    const { dispatch, libarianpage, libariantable } = this.props;
+    libarian.id = libarianpage.choiceLibarian.id;
+    libarian.password = libarianpage.choiceLibarian.password;
+    libarian.roleId = libarianpage.choiceLibarian.roleId;
+    console.log('LIBRARIAN', libarian);
+
+    if (libarian.image.url == undefined) {
+      // co up hinh moi
       const task = storage
         .ref()
         .child(`${libarian.name}/${libarian.image.uid}_${libarian.image.name}`)
@@ -227,7 +253,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
           const loadUrl = await task.snapshot.ref.getDownloadURL();
           libarian.image = loadUrl;
           dispatch({
-            type: 'libarianpage/insertLibarian',
+            type: 'libarianpage/editLibarian',
             payload: libarian,
           }).then(() => {
             dispatch({
@@ -240,6 +266,21 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
           });
         },
       );
+    } else {
+      // khong up hinh
+      libarian.image = libarian.image.url;
+      dispatch({
+        type: 'libarianpage/editLibarian',
+        payload: libarian,
+      }).then(() => {
+        dispatch({
+          type: 'libariantable/fetchData',
+          payload: {
+            filterName: libariantable.filterName,
+            pagination: libariantable.pagination.current,
+          },
+        });
+      });
     }
   }
 
@@ -248,6 +289,10 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
       type: 'libarianpage/hideViewLibarian',
       payload: {},
     });
+  }
+
+  initCreateForm() {
+    this.state.createForm.current?.resetFields();
   }
 }
 

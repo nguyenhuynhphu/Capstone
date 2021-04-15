@@ -19,6 +19,8 @@ export async function insertLibarian(values: any) {
 
 
 export async function editLibarian(values: any) {
+  console.log(values);
+  
   return request(`/api/Staff?id=${values.id}`, {
     method: 'PUT',
     body: JSON.stringify(values),

@@ -17,10 +17,9 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
 
   render() {
     const { borrowItem } = this.props;
-
+    console.log(borrowItem.selectedBook);
     return (
       <>
-     
         <Space direction={'horizontal'} style={{ width: '90%', alignItems: 'start' }}>
           <Image
             width={80}
@@ -49,16 +48,18 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
 
             {borrowItem.selectedBook != undefined ? (
               <Descriptions size="small" style={{ width: 330 }} column={2}>
-                <Descriptions.Item label="BookID">{borrowItem.selectedBook.id}</Descriptions.Item>
-                <Descriptions.Item label="Bookshelf">
+                <Descriptions.Item label="Bookshelf" span={2}>
                   {borrowItem.selectedBook.bookShelfName}
                 </Descriptions.Item>
+                <Descriptions.Item label="BookID">{borrowItem.selectedBook.id}</Descriptions.Item>
+
                 <Descriptions.Item label="Drawer">
                   {borrowItem.selectedBook.drawerId}
                 </Descriptions.Item>
-                <Descriptions.Item label="BarCode">
+
+                {/* <Descriptions.Item label="BarCode">
                   {borrowItem.selectedBook.barCode}
-                </Descriptions.Item>
+                </Descriptions.Item> */}
               </Descriptions>
             ) : (
               <Alert
@@ -78,16 +79,15 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
                 style={{ width: 150 }}
                 defaultValue={borrowItem.selectedBook ? borrowItem.selectedBook.id : null}
                 onChange={(bookId: any) => {
-              
-                  var tmp = borrowItem.drawer?.find(
-                    (book: any) => book.bookId == bookId,
-                  );
+                  console.log(borrowItem);
+
+                  var tmp = borrowItem.drawer?.find((book: any) => book.bookId == bookId);
                   borrowItem.selectedBook = {
                     barCode: tmp.barcode?.trim(),
                     bookShelfName: tmp.bookShelfName,
                     drawerId: tmp.id,
                     id: tmp.bookId,
-                  }
+                  };
                   this.setState({});
                   //borrowItem.choiceBook = bookId;
                 }}

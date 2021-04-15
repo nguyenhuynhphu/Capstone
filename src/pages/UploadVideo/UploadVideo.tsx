@@ -156,6 +156,9 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
       type: 'manageborrowstatistic/fetchData',
       payload: { pagination: 1, filterRecord: this.state.filterRecord },
     });
+    this.props.dispatch({
+      type: 'newdetect/fetchData',
+    });
   }
 
   render() {
@@ -606,7 +609,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
   //           detectLocation.forEach((book: any, index: number) => {
   //             if (book.data.isAvailable == true) {
   //               // chưa được mượn
-  //               if (book.data.customerId == undefined) {
+  //               if (book.data.patronId == undefined) {
   //                 // chưa từng đưọcw mượn
   //                 errorMsg.push({
   //                   errorMessage: `Sách mất, cuốn này chưa từng được ai mượn !`,
@@ -616,7 +619,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
   //               } else {
   //                 // lần cuối mượn và trả rồi
   //                 errorMsg.push({
-  //                   errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${book.data.customerName}`,
+  //                   errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${book.data.patronName}`,
   //                   bookId: book.data.id,
   //                   typeError: 4,
   //                 });
@@ -624,7 +627,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
   //             } else {
   //               //được mượn
   //               errorMsg.push({
-  //                 errorMessage: `Sách mất. Sách chưa được trả bởi ${book.data.customerName}`,
+  //                 errorMessage: `Sách mất. Sách chưa được trả bởi ${book.data.patronName}`,
   //                 bookId: book.data.id,
   //                 isError: 5,
   //               });

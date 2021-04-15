@@ -17,8 +17,7 @@ class ViewForm extends React.Component<ViewFormProps> {
   render() {
     const { libarianpage } = this.props;
     const { choiceLibarian } = libarianpage;
-    const titleSpace = 7;
-    const fieldSpace = 17;
+
     return (
       <div>
         <Row align={'middle'} style={{ marginBottom: 20 }}>
@@ -30,11 +29,11 @@ class ViewForm extends React.Component<ViewFormProps> {
           <Col span={12} style={{ textAlign: 'right' }}>
             <Space>
               <Button
-                onClick={() =>{
+                onClick={() => {
                   this.props.dispatch({
-                    type: 'libarianpage/displayInputForm',
+                    type: 'libarianpage/displayUpdateLibrarian',
                     payload: true,
-                  })
+                  });
                   this.props.dispatch({
                     type: 'libarianpage/displayScrollBar',
                     payload: false,
@@ -51,7 +50,12 @@ class ViewForm extends React.Component<ViewFormProps> {
         <Divider />
         <Space
           direction="vertical"
-          style={{ width: '100%', justifyContent: 'center', alignItems: 'center', marginBottom: 10 }}
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: 10,
+          }}
         >
           <Avatar style={{ width: 100, height: 100 }} src={choiceLibarian.image} />
           <p style={{ fontWeight: 'bold' }}>{choiceLibarian.name}</p>

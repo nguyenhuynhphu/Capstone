@@ -30,8 +30,8 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
     const column = [
       {
         title: 'Name',
-        dataIndex: 'customerName',
-        key: 'customerName',
+        dataIndex: 'patronName',
+        key: 'patronName',
 
         render: (text: string, record: any) => (
           <Space>
@@ -130,7 +130,7 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
         >
           <TableHeader title="List Borrow" description="List borrow detail" />
           <Search
-            placeholder="Type customer name"
+            placeholder="Type patron name"
             enterButton="Search"
             style={{ width: 350 }}
             suffix={<UserOutlined style={{ color: '#40A9FF' }} />}

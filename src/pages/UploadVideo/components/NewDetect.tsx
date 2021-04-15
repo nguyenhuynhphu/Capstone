@@ -1,30 +1,36 @@
 import React from 'react';
-import { ResponsiveCalendar } from '@nivo/calendar';
 import { connect, Dispatch } from 'umi';
-import { Progress } from 'antd';
+import { Space, Spin } from 'antd';
+import Avatar from 'antd/lib/avatar/avatar';
 
 interface NewDetectProps {
   dispatch: Dispatch;
-
+  newdetect?: any;
 }
+interface NewDetectState {}
 
-class NewDetect extends React.Component<NewDetectProps> {
+class NewDetect extends React.Component<NewDetectProps, NewDetectState> {
   constructor(props: any) {
     super(props);
   }
 
   render() {
-    const { periorchart } = this.props;
+    const { newdetect } = this.props;
+
     return (
       <>
-        <Progress
-          strokeColor={{
-            from: '#108ee9',
-            to: '#87d068',
-          }}
-          percent={99.9}
-          status="active"
-        />
+        <Space>
+          {/* <Avatar
+            shape="square"
+            style={{ width: 100, height: 100 }}
+            src={record.image}
+            size="large"
+          />
+          <div>
+            <p style={{ marginBottom: 0 }}>{record.staffName}</p>
+            <p style={{ marginBottom: 0 }}>{record.time.split('T')[0]}</p>
+          </div> */}
+        </Space>
       </>
     );
   }

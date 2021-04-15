@@ -42,9 +42,9 @@
                     component: './Libarian/LibarianPage',
                   },
                   {
-                    path: '/manage-user/customer',
-                    name: 'Manage Customer',
-                    component: './Customer/CustomerPage',
+                    path: '/manage-user/patron',
+                    name: 'Manage Patron',
+                    component: './Patron/PatronPage',
                   },
                 ],
               },

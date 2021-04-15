@@ -2,49 +2,49 @@ import { deleteLibarian, editLibarian, insertLibarian } from '@/services/libaria
 import { visible } from 'chalk';
 import { Effect, Reducer } from 'umi';
 
-export interface CustomerPageState {
-  viewCustomerVisible: boolean;
-  choiceCustomer: any;
+export interface PatronPageState {
+  viewPatronVisible: boolean;
+  choicePatron: any;
 }
 
-export interface CustomerPageType {
+export interface PatronPageType {
   namespace: string;
-  state: CustomerPageState;
+  state: PatronPageState;
   effects: {
-    showViewCustomer: Effect;
-    hideViewCustomer: Effect;
+    showViewPatron: Effect;
+    hideViewPatron: Effect;
   };
   reducers: {
-    displayScrollBar: Reducer<CustomerPageState>;
-    displayViewCustomer: Reducer<CustomerPageState>;
+    displayScrollBar: Reducer;
+    displayViewPatron: Reducer;
   };
 }
 
-const CustomerPageModel: CustomerPageType = {
-  namespace: 'customerpage',
+const PatronPageModel: PatronPageType = {
+  namespace: 'patronpage',
   state: {
-    viewCustomerVisible: false,
-    choiceCustomer: {},
+    viewPatronVisible: false,
+    choicePatron: {},
   },
   effects: {
     //===================================
-    *showViewCustomer({ payload }, { put }) {
+    *showViewPatron({ payload }, { put }) {
       yield put({
         type: 'displayScrollBar',
         payload: false,
       });
       yield put({
-        type: 'displayViewCustomer',
+        type: 'displayViewPatron',
         payload: {visible: true, record: payload},
       });
     },
-    *hideViewCustomer(_, { put }) {
+    *hideViewPatron(_, { put }) {
       yield put({
         type: 'displayScrollBar',
         payload: true,
       });
       yield put({
-        type: 'displayViewCustomer',
+        type: 'displayViewPatron',
         payload: {visible: false, record: {}},
       });
       
@@ -63,15 +63,15 @@ const CustomerPageModel: CustomerPageType = {
         ...state,
       };
     },
-    displayViewCustomer(state, {payload}) {
+    displayViewPatron(state, {payload}) {
       const {visible, record} = payload;
       return {
         ...state,
-        viewCustomerVisible: visible,
-        choiceCustomer: record
+        viewPatronVisible: visible,
+        choicePatron: record
       };
     },
   },
 };
 
-export default CustomerPageModel;
+export default PatronPageModel;

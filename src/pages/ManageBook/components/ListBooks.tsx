@@ -1,8 +1,22 @@
 import React from 'react';
 
 import { connect, Dispatch } from 'umi';
-import { List, Skeleton, Button, Descriptions, Divider, Tag, Row, Col, Alert, Space } from 'antd';
+import {
+  List,
+  Skeleton,
+  Button,
+  Descriptions,
+  Divider,
+  Tag,
+  Row,
+  Col,
+  Alert,
+  Space,
+  Popconfirm,
+} from 'antd';
 import { CheckOutlined, DeleteOutlined } from '@ant-design/icons';
+import sendNotification from '@/utils/Notification';
+import { deleteBook } from '@/services/book';
 
 interface ListBookProps {
   dispatch: Dispatch;
@@ -77,15 +91,22 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                       style={{ color: '#FFFFFF', cursor: 'pointer', margin: 0 }}
                                     />
                                   }
-                  
                                   color="#f50"
                                 >
                                   Not Available
                                 </Tag>
                               )}
-                              <Button type="primary" size="small" icon={<DeleteOutlined />}>
-                                Remove
-                              </Button>
+                              <Popconfirm
+                                title="Are you sure to delete this book?"
+                                onConfirm={() => this.deleteBook(item)}
+                                okText="Yes"
+                                cancelText="No"
+                                placement='left'
+                              >
+                                <Button type="primary" size="small" icon={<DeleteOutlined />}>
+                                  Remove
+                                </Button>
+                              </Popconfirm>
                             </Space>
                           }
                           type="info"
@@ -94,7 +115,22 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                       ) : (
                         <Alert
                           style={{ width: '100%' }}
-                          message={`Book ID: ${item.id}`}
+                          message={
+                            <Space
+                              direction="horizontal"
+                              size="small"
+                              style={{
+                                width: '100%',
+                                justifyContent: 'space-between',
+                                paddingRight: 10,
+                              }}
+                            >
+                              <div>Book ID: {item.id}</div>
+                              <div style={{ fontSize: 14, fontWeight: 'bold' }}>
+                                #{item.barCode}
+                              </div>
+                            </Space>
+                          }
                           description={`Not in any Bookshelf yet !`}
                           action={
                             <Space
@@ -136,9 +172,17 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                   Not Available
                                 </Tag>
                               )}
-                              <Button type="primary" size="small" icon={<DeleteOutlined />}>
-                                Remove
-                              </Button>
+                              <Popconfirm
+                                title="Are you sure to delete this book?"
+                                onConfirm={() => this.deleteBook(item)}
+                                okText="Yes"
+                                cancelText="No"
+                                placement='left'
+                              >
+                                <Button type="primary" size="small" icon={<DeleteOutlined />}>
+                                  Remove
+                                </Button>
+                              </Popconfirm>
                             </Space>
                           }
                           type="warning"
@@ -154,6 +198,16 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
         />
       </Skeleton>
     );
+  }
+
+  async deleteBook(book: any){
+    await deleteBook(book.id).finally(() => {
+      sendNotification("Delete book success !", "", "success");
+      this.props.dispatch({
+        type: 'listbooks/fetchData',
+        payload: book.bookGroupId,
+      })
+    })
   }
 }
 

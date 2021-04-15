@@ -73,7 +73,7 @@ const TrackingDetailModel: TrackingDetailType = {
     },
 
     *updateError({ payload }, { put, call }) {
-      yield call(updateError, payload);
+      yield call(updateError, payload);s
     },
     *updateErrorUndefined({ payload }, { put, call }) {
       yield call(updateUndefined, payload);

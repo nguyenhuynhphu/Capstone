@@ -141,7 +141,7 @@ const UploadVideoModel: UploadVideoType = {
               const bookResponse = yield call(getRealPosition, book.id);
               if (bookResponse.data.isAvailable == true) {
                 // chưa được mượn
-                if (bookResponse.data.customerId == undefined) {
+                if (bookResponse.data.patronId == undefined) {
                   // chưa từng đưọcw mượn
                   errorMsg.push({
                     errorMessage: `Sách mất, cuốn này chưa từng được ai mượn !`,
@@ -151,7 +151,7 @@ const UploadVideoModel: UploadVideoType = {
                 } else {
                   // lần cuối mượn và trả rồi
                   errorMsg.push({
-                    errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${bookResponse.data.customerName}`,
+                    errorMessage: `Sách mất. Lần cuối được mượn và trả rồi bởi ${bookResponse.data.patronName}`,
                     bookId: bookResponse.data.id,
                     typeError: 4,
                   });
@@ -159,7 +159,7 @@ const UploadVideoModel: UploadVideoType = {
               } else {
                 //được mượn
                 errorMsg.push({
-                  errorMessage: `Sách mất. Sách chưa được trả bởi ${bookResponse.data.customerName}`,
+                  errorMessage: `Sách mất. Sách chưa được trả bởi ${bookResponse.data.patronName}`,
                   bookId: bookResponse.data.id,
                   isError: 5,
                 });

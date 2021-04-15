@@ -18,9 +18,9 @@ export interface LibarianTableType {
     onSelect: Effect;
   };
   reducers: {
-    isLoading: Reducer<LibarianTableState>;
-    loadData: Reducer<LibarianTableState>;
-    selected: Reducer<LibarianTableState>;
+    isLoading: Reducer;
+    loadData: Reducer;
+    selected: Reducer;
   };
 }
 

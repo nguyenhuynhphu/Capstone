@@ -69,3 +69,6 @@ export async function updateUndefined(undefinedError: any): Promise<any> {
     body: JSON.stringify(undefinedError),
   });
 }
+export async function fetchNewestDetect(): Promise<any> {
+  return request(`/api/Detection?PageSize=1`);
+}

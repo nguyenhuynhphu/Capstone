@@ -56,7 +56,7 @@ export default {
   "menu.Book.Manage Borrow": "Manage Borrow",
   'menu.User': 'User',
   "menu.User.Manage Libarian": "Manage Libarian",
-  "menu.User.Manage Customer": "Manage Customer",
+  "menu.User.Manage Patron": "Manage Patron",
   "menu.Organize Books": "Organize Books",
   
 

@@ -54,9 +54,6 @@ class BookTrackingItem extends React.Component<BookTrackingItemProps> {
               ) : (
                 <Alert message={this.props.record.errorMessage} type="error" />
               )}
-
-              
-
               {this.handelAlert()}
             </Space>
           </Col>
@@ -71,6 +68,7 @@ class BookTrackingItem extends React.Component<BookTrackingItemProps> {
   handelConfirm() {
     const { record, dispatch } = this.props;
     record.isConfirm = true;
+    record.isRejected = false;
     if (record.bookId != undefined) {
       dispatch({ type: 'trackingdetail/updateError', payload: record });
     } else {
@@ -79,7 +77,8 @@ class BookTrackingItem extends React.Component<BookTrackingItemProps> {
   }
   handelReject() {
     const { record, dispatch } = this.props;
-    record.isReject = true;
+    record.isConfirm = false;
+    record.isRejected = true;
     if (record.bookId != undefined) {
       dispatch({ type: 'trackingdetail/updateError', payload: record });
     } else {
@@ -106,7 +105,7 @@ class BookTrackingItem extends React.Component<BookTrackingItemProps> {
     }
   }
   handelAlert() {
-    if (!this.props.record.isConfirm && !this.props.record.isReject) {
+    if (!this.props.record.isConfirm && !this.props.record.isRejected) {
       return (
         <Space direction="horizontal" style={{ width: '100%', justifyContent: 'end' }}>
           <Button
@@ -127,9 +126,9 @@ class BookTrackingItem extends React.Component<BookTrackingItemProps> {
           </Button>
         </Space>
       );
-    } else if (this.props.record.isConfirm && !this.props.record.isReject) {
+    } else if (this.props.record.isConfirm && !this.props.record.isRejected) {
       return <Alert type="success" showIcon message="Confirmed !" />;
-    } else if (!this.props.record.isConfirm && this.props.record.isReject) {
+    } else if (!this.props.record.isConfirm && this.props.record.isRejected) {
       return <Alert type="error" showIcon message="Reject !" />;
     }
   }

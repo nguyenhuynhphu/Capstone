@@ -31,7 +31,7 @@ class ViewForm extends React.Component<ViewFormProps> {
     return (
       <div>
         <Descriptions column={1} bordered>
-          <Descriptions.Item label="Customer Name"> {choiceBorrow.customerName}</Descriptions.Item>
+          <Descriptions.Item label="Patron Name"> {choiceBorrow.patronName}</Descriptions.Item>
           <Descriptions.Item label="Start Time">
             {choiceBorrow.startTime?.split('T')[0]}
           </Descriptions.Item>

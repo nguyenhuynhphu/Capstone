@@ -68,7 +68,16 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             value.images = this.state.fileList
             this.props.handelSubmit(value);
           }else{
-            this.setState({errorFile: 'Please upload book image !'})
+            this.setState({errorFile: 'Book image is required'})
+          }
+         
+        }}
+        onFinishFailed={(value: any) => {
+          if (managebook.choiceBook != undefined) {
+            value.id = managebook.choiceBook.id;
+          }
+          if(this.state.fileList.length == 0){
+            this.setState({errorFile: 'Book image is required'})
           }
          
         }}
@@ -85,7 +94,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                     if (value != undefined) {
                       return Promise.resolve();
                     } else {
-                      return Promise.reject('Name is required');
+                      return Promise.reject('Book Group Name is required');
                     }
                   },
                 }),

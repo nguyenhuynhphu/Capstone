@@ -8,46 +8,43 @@ import _, { trim } from 'lodash';
 import { FormInstance } from 'antd/lib/form';
 
 const { Option } = Select;
-interface InputFormProps {
+interface UpdateFormProps {
   dispatch: Dispatch;
   libarianpage?: any;
   handelSubmit: Function;
+}
+interface UpdateFormState {
+  fileList: any;
   form: any;
 }
-interface InputFormState {
-  fileList: any;
 
-  errorFile: string;
-}
-
-class InputForm extends React.Component<InputFormProps, InputFormState> {
+class UpdateForm extends React.Component<UpdateFormProps, UpdateFormState> {
   constructor(props: any) {
     super(props);
     this.state = {
       fileList: [],
-      errorFile: '',
+      form: React.createRef<FormInstance>(),
     };
+  }
+  componentDidMount() {
+    this.initForm();
+  }
+  componentDidUpdate(prepProp: any) {
+    const { libarianpage } = this.props;
+    if (prepProp.libarianpage.choiceLibarian?.id != libarianpage.choiceLibarian?.id) {
+      this.initForm();
+    }
   }
 
   render() {
     return (
       <Form
-        ref={this.props.form}
+        ref={this.state.form}
         layout="vertical"
-        id={'inputLibarian'}
+        id={'updateLibarian'}
         onFinish={(value) => {
-          value.image = this.state.fileList[0].originFileObj;
-          if (value.image) {
-            this.props.handelSubmit(value);
-          } else {
-            this.setState({ errorFile: 'Avartar is required' });
-          }
-        }}
-        onFinishFailed={(value: any) => {
           value.image = this.state.fileList[0];
-          if (!value.image) {
-            this.setState({ errorFile: 'Avartar is required' });
-          }
+          this.props.handelSubmit(value);
         }}
       >
         <Row gutter={16}>
@@ -151,28 +148,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         </Row>
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item
-              name="username"
-              label="Username"
-        
-              required
-              rules={[
-                ({ getFieldValue }) => ({
-                  async validator(rule, value) {
-                    if (value?.trim().length != 0) {
-                      const response = await fetchLibariansByUsername(value);
-                      if (response.data[0] == undefined) {
-                        return Promise.resolve();
-                      } else {
-                        return Promise.reject('Username is exits');
-                      }
-                    } else {
-                      return Promise.reject('Username is required');
-                    }
-                  },
-                }),
-              ]}
-            >
+            <Form.Item name="username" label="Username" required>
               <Input
                 placeholder="Please enter username"
                 disabled={this.props.libarianpage.choiceLibarian.id != undefined}
@@ -183,7 +159,6 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Form.Item
               name="email"
               label="Email"
-        
               required
               rules={[
                 ({ getFieldValue }) => ({
@@ -192,11 +167,14 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                       var regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                       if (value?.match(regex)) {
                         const response = await fetchLibariansByEmail(value);
-
-                        if (response.data[0] == undefined) {
-                          return Promise.resolve();
+                        if (response.data[0]) {
+                          if (response.data[0].id == getFieldValue('id')) {
+                            return Promise.resolve();
+                          } else {
+                            return Promise.reject('Email is exits');
+                          }
                         } else {
-                          return Promise.reject('Email is exits');
+                          return Promise.resolve();
                         }
                       } else {
                         return Promise.reject('Email invalid');
@@ -260,48 +238,94 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         )}
         <Row gutter={16}>
           <Col span={24}>
-            <Form.Item name="image" label="Avatar">
+            <Form.Item
+              name="image"
+              label="Avatar"
+              required
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    console.log('validator', value);
+                    if (value != undefined) {
+                      var file = value.fileList[0];
+                      if (file != undefined) {
+                        if (file.url == undefined) {
+                          if (
+                            file.type === 'image/png' ||
+                            file.type === 'image/jpeg' ||
+                            file.type === 'image/jpg'
+                          ) {
+                            return Promise.resolve();
+                          } else {
+                            value.fileList = [];
+                            return Promise.reject(`${file.name} is not a valid file`);
+                          }
+                        }
+                        return Promise.resolve();
+                      } else {
+                        return Promise.reject('Avatar is required');
+                      }
+                    } else {
+                      return Promise.reject('Avatar is required');
+                    }
+                  },
+                }),
+              ]}
+            >
               <Upload
                 listType="picture"
                 fileList={this.state.fileList}
-                beforeUpload={() => false}
-                onChange={(images: any) => {
-                  var error: string = '';
-                  var fileError: any = [];
-                  console.log(images);
-
-                  if (images.fileList.length != 0) {
-                    images.fileList.forEach((file: any) => {
-                      if (
-                        !(
-                          file.type === 'image/png' ||
-                          file.type === 'image/jpeg' ||
-                          file.type === 'image/jpg' ||
-                          file.url
-                        )
-                      ) {
-                        fileError.push(file);
-                        error = 'File not valid';
-                      }
-                    });
-                    _.pullAll(images.fileList, fileError);
-                  } else {
-                    error = 'Avatar is required';
+                beforeUpload={(file: { type: string; name: any }) => {
+                  return false;
+                }}
+                onChange={(info: any) => {
+                  console.log(info);
+                  if (info.fileList.length != 0) {
+                    info.fileList = [];
+                    var file = info.file;
+                    if (
+                      file.type === 'image/png' ||
+                      file.type === 'image/jpeg' ||
+                      file.type === 'image/jpg'
+                    ) {
+                      info.fileList = [info.file];
+                    }
                   }
-                  this.setState({ fileList: images.fileList, errorFile: error });
+                  this.setState({ fileList: info.fileList });
                 }}
               >
                 <Button icon={<UploadOutlined />}>Upload file</Button>
               </Upload>
-              <p style={{ marginBottom: 0, color: 'red' }}>
-                {this.state.errorFile.length != 0 ? this.state.errorFile : ''}
-              </p>
             </Form.Item>
           </Col>
         </Row>
       </Form>
     );
   }
+
+  initForm() {
+    const { libarianpage } = this.props;
+    let tmp = {
+      key: `${libarianpage.choiceLibarian.id}`,
+      uid: `${libarianpage.choiceLibarian.id}`,
+      name: 'Current avatar',
+      type: 'image/png',
+      url: libarianpage.choiceLibarian.image,
+    };
+    this.state.form.current?.setFieldsValue({
+      id: libarianpage.choiceLibarian.id,
+      name: libarianpage.choiceLibarian.name,
+      address: libarianpage.choiceLibarian.address,
+      email: libarianpage.choiceLibarian.email,
+      gender: libarianpage.choiceLibarian.gender,
+      doB: moment(libarianpage.choiceLibarian.doB),
+      phone: libarianpage.choiceLibarian.phone,
+      username: libarianpage.choiceLibarian.username,
+      image: { fileList: [tmp] },
+    });
+
+    this.setState({ fileList: [tmp] });
+  }
 }
 
-export default connect((state) => ({ ...state }))(InputForm);
+export default connect((state) => ({ ...state }))(UpdateForm);

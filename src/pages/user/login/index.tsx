@@ -64,12 +64,11 @@ const Login: React.FC<LoginProps> = (props) => {
         <Form
           layout={'vertical'}
           name="basic"
-          initialValues={{ remember: true }}
+          initialValues={{ remember: false }}
           onFinish={(value) => {
             setLogin(true);
             handleSubmit(value);
           }}
-          onFinishFailed={() => {}}
         >
           <Form.Item
             label={
@@ -80,7 +79,10 @@ const Login: React.FC<LoginProps> = (props) => {
             name="username"
             rules={[{ message: 'Please input your username!' }]}
           >
-            <Input bordered={false} style={{ borderBottom: '1px solid rgba(0, 0, 0, .8)' }} />
+            <Input
+              bordered={false}
+              style={{ borderBottom: '1px solid rgba(0, 0, 0, .8)' }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -103,7 +105,11 @@ const Login: React.FC<LoginProps> = (props) => {
               Sign In
             </Button>
           </Form.Item>
-          {status == 'error' ? <Alert type="error" message="Wrong username and password !" banner /> : <></>}
+          {status == 'error' ? (
+            <Alert type="error" message="Wrong username and password !" banner />
+          ) : (
+            <></>
+          )}
         </Form>
       </Spin>
     </div>

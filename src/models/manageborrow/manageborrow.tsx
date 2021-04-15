@@ -1,4 +1,9 @@
-import { confirmBorrow, fetchBorrowBook, fetchCustomer } from '@/services/manageborrow';
+import {
+  confirmBorrow,
+  confirmReturn,
+  fetchBorrowBook,
+  fetchPatron,
+} from '@/services/manageborrow';
 import _ from 'lodash';
 import { Effect, ManageBookState, Reducer } from 'umi';
 
@@ -13,7 +18,7 @@ export interface ManageBorrowState {
 
   scanId: any;
   wishlist: any;
-  customer: any;
+  patron: any;
   borrowDetail: any;
 
   returnList: any;
@@ -26,12 +31,13 @@ export interface ManageBorrowType {
     changeScreen: Effect;
     changeProcess: Effect;
 
-    fetchCustomer: Effect;
+    fetchPatron: Effect;
     loadWishlist: Effect;
 
     fetchBorrowDetail: Effect;
 
     confirmBorrow: Effect;
+    confirmReturn: Effect;
   };
   reducers: {
     renderScreen: Reducer;
@@ -39,7 +45,7 @@ export interface ManageBorrowType {
     renderButton: Reducer;
     renderWishList: Reducer;
     resetState: Reducer;
-    loadCustomer: Reducer;
+    loadPatron: Reducer;
     renderReturnScreen: Reducer;
     loading: Reducer;
 
@@ -63,7 +69,7 @@ const ManageBorrowModel: ManageBorrowType = {
     isMakingReturn: false,
     processStep: 0,
     wishlist: {},
-    customer: {},
+    patron: {},
     borrowDetail: {},
     scanId: [],
     returnList: {},
@@ -87,20 +93,23 @@ const ManageBorrowModel: ManageBorrowType = {
         payload: payload,
       });
     },
-    *fetchCustomer({ payload }, { call, put }) {
-      const response = yield call(fetchCustomer, payload);
+    *fetchPatron({ payload }, { call, put }) {
+      const response = yield call(fetchPatron, payload);
       yield put({
-        type: 'loadCustomer',
+        type: 'loadPatron',
         payload: response.data,
       });
     },
     *confirmBorrow({ payload }, { call, put }) {
       yield call(confirmBorrow, payload);
     },
+    *confirmReturn({ payload }, { call, put }) {
+      yield call(confirmReturn, payload);
+    },
     *fetchBorrowDetail({ payload }, { call, put }) {
       const response = yield call(fetchBorrowBook, payload.data[0].borrowId);
-      const customer = yield call(fetchCustomer, response.data.customerId);
-      response.data.customer = customer.data;
+      const patron = yield call(fetchPatron, response.data.patronId);
+      response.data.patron = patron.data;
       response.data.borrowDetail = payload.data;
       yield put({
         type: 'loadBorrowDetail',
@@ -113,14 +122,15 @@ const ManageBorrowModel: ManageBorrowType = {
       return {
         ...state,
         isMakingTransaction: false,
-        isMakingReturn: false,
         isConnect: false,
         screenLoading: false,
+        isMakingReturn: false,
         processStep: 0,
         wishlist: {},
-        customer: {},
+        patron: {},
+        borrowDetail: {},
         scanId: [],
-        returnList: [],
+        returnList: {},
       };
     },
     loading(state) {
@@ -159,10 +169,10 @@ const ManageBorrowModel: ManageBorrowType = {
     },
     addToReturnBorrow(state, { payload }) {
       var tmp = state.borrowDetail.borrowDetail.find((x: any) => x.barcode == payload);
-      tmp.isReturn = true
+      tmp.isReturn = true;
       return {
         ...state,
-        borrowDetail: state.borrowDetail
+        borrowDetail: state.borrowDetail,
       };
     },
     removeFromScanId(state, { payload }) {
@@ -200,16 +210,16 @@ const ManageBorrowModel: ManageBorrowType = {
         isConnect: payload,
       };
     },
-    loadCustomer(state, { payload }) {
+    loadPatron(state, { payload }) {
       return {
         ...state,
-        customer: payload,
+        Patron: payload,
       };
     },
     loadBorrowDetail(state, { payload }) {
       return {
         ...state,
-        borrowDetail: payload
+        borrowDetail: payload,
       };
     },
 
@@ -222,7 +232,7 @@ const ManageBorrowModel: ManageBorrowType = {
         screenLoading: false,
         processStep: 0,
         wishlist: {},
-        customer: {},
+        patron: {},
       };
     },
   },

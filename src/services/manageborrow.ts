@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export async function fetchManageBorrows({ filterName, pagination }: any): Promise<any> {
-  return request(`/api/BorrowBook?CustomerName=${filterName}&PageNumber=${pagination}`);
+  return request(`/api/BorrowBook?PatronName=${filterName}&PageNumber=${pagination}`);
 }
 
 export async function fetchBooks(bookGroupId: number): Promise<any> {
@@ -12,12 +12,12 @@ export async function fecthDrawer(bookGroupId: number): Promise<any> {
   return request(`/api/Drawer?BookGroupId=${bookGroupId}`);
 }
 
-export async function fetchCustomer(customerId: number): Promise<any> {
-  return request(`/api/Customer/${customerId}`);
+export async function fetchPatron(patronId: number): Promise<any> {
+  return request(`/api/Patron/${patronId}`);
 }
 
-export async function fetchCustomerByName(customerName: string): Promise<any> {
-  return request(`/api/Customer?Name=${customerName}`);
+export async function fetchPatronByName(patronName: string): Promise<any> {
+  return request(`/api/Patron?Name=${patronName}`);
 }
 
 export async function confirmBorrow(value: any): Promise<any> {
@@ -28,6 +28,15 @@ export async function confirmBorrow(value: any): Promise<any> {
     body: JSON.stringify(value),
   });
 }
+export async function confirmReturn(value: any): Promise<any> {
+  console.log(JSON.stringify(value));
+  
+  return request('/api/ReturnBook', {
+    method: 'POST',
+    body: JSON.stringify(value),
+  });
+}
+
 
 
 export async function fetchBorrowDetail(borrowId: number): Promise<any> {
@@ -35,7 +44,7 @@ export async function fetchBorrowDetail(borrowId: number): Promise<any> {
 }
 
 export async function fetchReturnBook({ filterName, pagination }: any): Promise<any> {
-  return request(`/api/ReturnBook?CustomerName=${filterName}&PageNumber=${pagination}`);
+  return request(`/api/ReturnBook?PatronName=${filterName}&PageNumber=${pagination}`);
 }
 
 

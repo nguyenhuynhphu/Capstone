@@ -14,7 +14,7 @@ interface StatisticHeaderProps {
 class StatisticHeader extends React.Component<StatisticHeaderProps> {
   componentDidMount() {
     this.props.dispatch({
-      type: 'statisticheader/fetchCustomerActivities',
+      type: 'statisticheader/fetchPatronActivities',
     });
     this.props.dispatch({
       type: 'statisticheader/fetchReturnToday',
@@ -45,7 +45,7 @@ class StatisticHeader extends React.Component<StatisticHeaderProps> {
               Return today
             </Title>
             <p style={{ fontStyle: 'italic', color: 'rgba(0 ,0, 0, .4)' }}>
-              List customer need return book today
+              List patron need return book today
             </p>
             <Space className={styles.returnToday} direction={'vertical'} size="middle">
               {statisticheader.returnToday.length != 0 ? (
@@ -59,7 +59,7 @@ class StatisticHeader extends React.Component<StatisticHeaderProps> {
                       <Space direction={'horizontal'}>
                         <Avatar shape="square" size="default" src={record.image} />
                         <div>
-                          <p style={{ marginBottom: 0 }}>{record.customerName}</p>
+                          <p style={{ marginBottom: 0 }}>{record.patronName}</p>
                           <p style={{ marginBottom: 0, fontSize: 12, color: 'rgba(0 ,0, 0, .4)' }}>
                             {record.startTime.split('T')[0]}
                           </p>
@@ -99,10 +99,10 @@ class StatisticHeader extends React.Component<StatisticHeaderProps> {
               New Borrow
             </Title>
             <p style={{ fontStyle: 'italic', color: 'rgba(0 ,0, 0, .4)' }}>
-              New customer borrow in system
+              New patron borrow in system
             </p>
             <Space style={{ height: '100%', width: '85%' }} direction={'vertical'} size="middle">
-              {statisticheader.customerActive.map((record: any) => (
+              {statisticheader.patronActive.map((record: any) => (
                 <Space
                   direction={'horizontal'}
                   align={'center'}
@@ -111,7 +111,7 @@ class StatisticHeader extends React.Component<StatisticHeaderProps> {
                   <Space direction={'horizontal'}>
                     <Avatar shape="square" size="default" src={record.image} />
                     <div>
-                      <p style={{ marginBottom: 0 }}>{record.customerName}</p>
+                      <p style={{ marginBottom: 0 }}>{record.patronName}</p>
                       <p style={{ marginBottom: 0, fontSize: 12, color: 'rgba(0 ,0, 0, .4)' }}>
                         {record.startTime.split('T')[0]}
                       </p>

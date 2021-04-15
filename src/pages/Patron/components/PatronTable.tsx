@@ -5,25 +5,25 @@ import Search from 'antd/lib/input/Search';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
-import styles from '../CustomerPage.less';
+import styles from '../PatronPage.less';
 
-interface CustomerPageProps {
+interface PatronPageProps {
   dispatch: Dispatch;
-  customertable?: any;
+  patrontable?: any;
 }
-interface CustomerPageState {}
+interface PatronPageState {}
 
-class CustomerTable extends React.Component<CustomerPageProps, CustomerPageState> {
+class PatronTable extends React.Component<PatronPageProps, PatronPageState> {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'customertable/fetchData',
+      type: 'patrontable/fetchData',
       payload: { filterName: '', pagination: 1 },
     });
   }
 
   render() {
-    const { customertable } = this.props;
+    const { patrontable } = this.props;
     const column = [
       {
         title: 'Name',
@@ -76,7 +76,7 @@ class CustomerTable extends React.Component<CustomerPageProps, CustomerPageState
             justifyContent: 'space-between',
           }}
         >
-          <TableHeader title={'List Customers'} description="List of all customer in system !" />
+          <TableHeader title={'List Patrons'} description="List of all patron in system !" />
 
           <Search
             placeholder="Search by name"
@@ -86,23 +86,23 @@ class CustomerTable extends React.Component<CustomerPageProps, CustomerPageState
             suffix={<UserOutlined style={{ color: '#40A9FF' }} />}
             onSearch={(value: any) => {
               this.props.dispatch({
-                type: 'customertable/fetchData',
-                payload: { filterName: value, pagination: customertable.pagination.current },
+                type: 'patrontable/fetchData',
+                payload: { filterName: value, pagination: patrontable.pagination.current },
               });
             }}
           />
         </Space>
         <Table
-        className={styles.customerTable}
+          className={styles.patronTable}
           columns={column}
-          dataSource={customertable.data}
-          loading={customertable.isLoading}
-          pagination={customertable.pagination}
+          dataSource={patrontable.data}
+          loading={patrontable.isLoading}
+          pagination={patrontable.pagination}
           onRow={(record, rowIndex) => {
             return {
               onDoubleClick: (event) => {
                 this.props.dispatch({
-                  type: 'customerpage/showViewCustomer',
+                  type: 'patronpage/showViewPatron',
                   payload: { ...record },
                 });
               },
@@ -114,4 +114,4 @@ class CustomerTable extends React.Component<CustomerPageProps, CustomerPageState
   }
 }
 
-export default connect((state) => ({ ...state }))(CustomerTable);
+export default connect((state) => ({ ...state }))(PatronTable);

@@ -1,9 +1,9 @@
 import { fetchAllBookGroup } from '@/services/bookgroup';
-import { fetchCustomers } from '@/services/customer';
+import { fetchPatrons } from '@/services/patron';
 import { fetchLibarians } from '@/services/libarian';
 import { Effect, Reducer } from 'umi';
 
-export interface CustomerTableState {
+export interface PatronTableState {
   data: any;
   pagination: any;
   filterName: string;
@@ -11,9 +11,9 @@ export interface CustomerTableState {
   selectedRowKeys: any;
 }
 
-export interface CustomerTableType {
+export interface PatronTableType {
   namespace: string;
-  state: CustomerTableState;
+  state: PatronTableState;
   effects: {
     fetchData: Effect;
     onSelect: Effect;
@@ -25,8 +25,8 @@ export interface CustomerTableType {
   };
 }
 
-const CustomerTableModel: CustomerTableType = {
-  namespace: 'customertable',
+const PatronTableModel: PatronTableType = {
+  namespace: 'patrontable',
   state: {
     data: [],
     pagination: {
@@ -43,7 +43,7 @@ const CustomerTableModel: CustomerTableType = {
         type: 'isLoading',
         payload: {},
       });
-      const response = yield call(fetchCustomers, payload);
+      const response = yield call(fetchPatrons, payload);
       yield put({
         type: 'loadData',
         payload: { response: response, filter: payload },
@@ -96,4 +96,4 @@ const CustomerTableModel: CustomerTableType = {
   },
 };
 
-export default CustomerTableModel;
+export default PatronTableModel;

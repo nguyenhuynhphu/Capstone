@@ -29,13 +29,13 @@ class ReturnBookTable extends React.Component<ReturnBookTableProps> {
     const column = [
       {
         title: 'Name',
-        dataIndex: 'customerId',
-        key: 'customerId',
+        dataIndex: 'patronId',
+        key: 'patronId',
         width: 200,
         render: (text: string, record: any) => (
           <Space>
             <Avatar size={50} src={record.image} />
-            <p style={{ marginBottom: '0px' }}>{record.customerName}</p>
+            <p style={{ marginBottom: '0px' }}>{record.patronName}</p>
           </Space>
         ),
       },
@@ -68,7 +68,7 @@ class ReturnBookTable extends React.Component<ReturnBookTableProps> {
         >
           <TableHeader title="List Return" description="List return detail" />
           <Search
-            placeholder="Type customer name"
+            placeholder="Type patron name"
             enterButton="Search"
             style={{ width: 250 }}
             suffix={<UserOutlined style={{ color: '#40A9FF' }} />}

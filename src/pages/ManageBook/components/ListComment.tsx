@@ -56,7 +56,7 @@ class ListComment extends React.Component<ListCommentProps, ListCommentState> {
                 content={
                   <div>
                     <Divider style={{ margin: 0 }} orientation="left" plain>
-                      {item.customerName}
+                      {item.patronName}
                     </Divider>
                     <Rate
                       allowHalf

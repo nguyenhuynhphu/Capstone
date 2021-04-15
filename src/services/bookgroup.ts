@@ -47,7 +47,7 @@ export async function removeComment(id: number): Promise<any> {
   });
 }
 export async function fetchBooks(bookGroupId: number): Promise<any> {
-  return request(`/api/Book?BookGroupId=${bookGroupId}`);
+  return request(`/api/Book?BookGroupId=${bookGroupId}&PageSize=10000`);
 }
 
 export async function deleteBookGroup(bookGroupIds: any) {

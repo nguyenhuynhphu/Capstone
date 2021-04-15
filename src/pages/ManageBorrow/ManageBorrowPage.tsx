@@ -31,8 +31,8 @@ import {
   fetchBooks,
   fetchBorrowBook,
   fetchBorrowDetailByBarcode,
-  fetchCustomer,
-  fetchCustomerByName,
+  fetchPatron,
+  fetchPatronByName,
 } from '@/services/manageborrow';
 import Title from 'antd/lib/typography/Title';
 import styles from './ManageBorrowPage.less';
@@ -68,9 +68,9 @@ interface ManageBorrowPageProps {
 interface ManageBorrowPageState {
   form: any;
   totalFee: number;
-  customerName: any;
+  patronName: any;
   loadingList: boolean;
-  isGetReturnCustomer: boolean;
+  isGetReturnPatron: boolean;
 }
 const connection = getWishlist();
 class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorrowPageState> {
@@ -79,13 +79,13 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     this.state = {
       form: React.createRef<FormInstance>(),
       totalFee: 0,
-      customerName: [],
+      patronName: [],
       loadingList: false,
-      isGetReturnCustomer: false,
+      isGetReturnPatron: false,
     };
 
     this.hideViewBorrow = this.hideViewBorrow.bind(this);
-    this.searchCustomer = this.searchCustomer.bind(this);
+    this.searchPatron = this.searchPatron.bind(this);
   }
   componentDidMount() {
     this.props.dispatch({ type: 'returnfeechart/fetchData' });
@@ -348,7 +348,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
         return (
           <Result
             title="Scanning QR code"
-            subTitle="Please using phone to scan customer QR code !"
+            subTitle="Please using phone to scan Patron QR code !"
             extra={
               !this.props.manageborrow.isConnect
                 ? [
@@ -405,19 +405,19 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
               />
             </Col>
             <Col span={9} className={styles.confirmForm}>
-              {this.props.manageborrow.customer.id != undefined ? (
+              {this.props.manageborrow.patron.id != undefined ? (
                 <>
                   <Space
                     style={{ marginBottom: 20, width: '100%', justifyContent: 'space-between' }}
                   >
                     <Title level={5} style={{ marginBottom: 0 }}>
-                      Customer Informaton
+                      Patron Informaton
                     </Title>
                     <Popconfirm
                       title="Are you sure to re-choice user?"
                       onConfirm={() =>
                         this.props.dispatch({
-                          type: 'manageborrow/loadCustomer',
+                          type: 'manageborrow/loadPatron',
                           payload: {},
                         })
                       }
@@ -432,19 +432,19 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
 
                   <Row>
                     <Col span={8}>Name:</Col>
-                    <Col span={16}>{this.props.manageborrow?.customer.name}</Col>
+                    <Col span={16}>{this.props.manageborrow?.patron.name}</Col>
                   </Row>
                   <Row>
                     <Col span={8}>Email:</Col>
-                    <Col span={16}>{this.props.manageborrow?.customer.email}</Col>
+                    <Col span={16}>{this.props.manageborrow?.patron.email}</Col>
                   </Row>
                   <Row>
                     <Col span={8}>Address:</Col>
-                    <Col span={16}>{this.props.manageborrow?.customer.address}</Col>
+                    <Col span={16}>{this.props.manageborrow?.patron.address}</Col>
                   </Row>
                   <Row>
                     <Col span={8}>Phone:</Col>
-                    <Col span={16}>{this.props.manageborrow?.customer.phone}</Col>
+                    <Col span={16}>{this.props.manageborrow?.patron.phone}</Col>
                   </Row>
                   <Row>
                     <Col span={8}>Total Fee:</Col>
@@ -481,13 +481,13 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                 </>
               ) : (
                 <Space direction="vertical" style={{ width: '100%', justifyContent: 'center' }}>
-                  <p style={{ marginBottom: 0 }}>Select Customer</p>
+                  <p style={{ marginBottom: 0 }}>Select Patron</p>
                   <Search
                     placeholder="input search text"
                     enterButton="Search"
                     size="middle"
                     suffix={<UserOutlined style={{ color: '#40A9FF' }} />}
-                    onSearch={(customerName: string) => this.searchCustomer(customerName)}
+                    onSearch={(patronName: string) => this.searchPatron(patronName)}
                   />
                   <ConfigProvider
                     renderEmpty={() => (
@@ -501,7 +501,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                       className="demo-loadmore-list"
                       loading={this.state.loadingList}
                       itemLayout="horizontal"
-                      dataSource={this.state.customerName}
+                      dataSource={this.state.patronName}
                       renderItem={(item: any) => (
                         <List.Item
                           actions={[
@@ -509,7 +509,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                               title="Are you sure to select this user?"
                               onConfirm={() => {
                                 this.props.dispatch({
-                                  type: 'manageborrow/fetchCustomer',
+                                  type: 'manageborrow/fetchPatron',
                                   payload: item.id,
                                 });
                               }}
@@ -577,7 +577,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
 
   openConnection() {
     const { dispatch, manageborrow } = this.props;
-    this.setState({ isGetReturnCustomer: true });
+    this.setState({ isGetReturnPatron: true });
     dispatch({
       type: 'manageborrow/renderButton',
       payload: true,
@@ -630,7 +630,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                   });
                 }
 
-                this.fetchWishList(value.customerId);
+                this.fetchWishList(value.patronId);
               }
             }
           });
@@ -641,8 +641,6 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
               console.log("manageborrow.borrowDetail", manageborrow.borrowDetail);
               
               if (manageborrow.borrowDetail.id != undefined) {
-                console.log("RUNNN");
-                
                 dispatch({
                   type: 'manageborrow/addToReturnBorrow',
                   payload: value.barcode,
@@ -664,7 +662,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
   }
 
   closeConnection() {
-    this.setState({ isGetReturnCustomer: false });
+    this.setState({ isGetReturnPatron: false });
     this.props.dispatch({
       type: 'manageborrow/renderButton',
       payload: false,
@@ -674,7 +672,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     }
   }
 
-  async fetchWishList(customerId: any) {
+  async fetchWishList(patronId: any) {
     const { dispatch, manageborrow } = this.props;
     console.log('manageborrow.scanId', manageborrow.scanId);
 
@@ -689,8 +687,8 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
       }
     }
 
-    if (customerId != undefined) {
-      dispatch({ type: 'manageborrow/fetchCustomer', payload: customerId });
+    if (patronId != undefined) {
+      dispatch({ type: 'manageborrow/fetchPatron', payload: patronId });
     }
     dispatch({ type: 'manageborrow/renderWishList', payload: manageborrow.scanId });
     dispatch({ type: 'manageborrow/changeProcess', payload: 1 });
@@ -703,10 +701,10 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     });
   }
 
-  async searchCustomer(customerName: string) {
+  async searchPatron(patronName: string) {
     this.setState({ loadingList: true });
-    var tmp = await fetchCustomerByName(customerName);
-    this.setState({ customerName: tmp.data, loadingList: false });
+    var tmp = await fetchPatronByName(patronName);
+    this.setState({ patronName: tmp.data, loadingList: false });
   }
 
   onConfirm(dateValue: any) {
@@ -723,8 +721,8 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     });
 
     var msgToServer: any = {
-      customerId: manageborrow.customer.id,
-      customerName: manageborrow.customer.name,
+      patronId: manageborrow.patron.id,
+      patronName: manageborrow.patron.name,
       startTime: dateValue.date,
       endTime: dateValue.returnDate,
       quantity: manageborrow.scanId.length,

@@ -5,29 +5,29 @@ import React from 'react';
 import { connect, Dispatch } from 'umi';
 import ViewForm from './components/ViewForm';
 import { FormInstance } from 'antd/lib/form';
-import CustomerTable from './components/CustomerTable';
+import PatronTable from './components/PatronTable';
 import TableHeader from '@/components/CustomDesign/TableHeader';
 
-interface CustomerPageProps {
+interface PatronPageProps {
   dispatch: Dispatch;
-  customerpage?: any;
-  customertable?: any;
+  patronpage?: any;
+  patrontable?: any;
 }
-interface CustomerPageState {
+interface PatronPageState {
   form: any;
 }
-class CustomerPage extends React.Component<CustomerPageProps, CustomerPageState> {
+class PatronPage extends React.Component<PatronPageProps, PatronPageState> {
   constructor(props: any) {
     super(props);
     this.state = {
       form: React.createRef<FormInstance>(),
     };
 
-    this.hideViewCustomer = this.hideViewCustomer.bind(this);
+    this.hideViewPatron = this.hideViewPatron.bind(this);
   }
 
   render() {
-    const { customerpage } = this.props;
+    const { patronpage } = this.props;
     return (
       <>
         <PageHeaderWrapper></PageHeaderWrapper>
@@ -36,7 +36,7 @@ class CustomerPage extends React.Component<CustomerPageProps, CustomerPageState>
             <Row>
               <Col span={24}>
                
-                <CustomerTable />
+                <PatronTable />
               </Col>
             </Row>
           </Col>
@@ -45,8 +45,8 @@ class CustomerPage extends React.Component<CustomerPageProps, CustomerPageState>
           width={420}
           placement="right"
           closable={false}
-          onClose={this.hideViewCustomer}
-          visible={customerpage.viewCustomerVisible}
+          onClose={this.hideViewPatron}
+          visible={patronpage.viewPatronVisible}
         >
           <ViewForm />
         </Drawer>
@@ -54,12 +54,12 @@ class CustomerPage extends React.Component<CustomerPageProps, CustomerPageState>
     );
   }
 
-  hideViewCustomer() {
+  hideViewPatron() {
     this.props.dispatch({
-      type: 'customerpage/hideViewCustomer',
+      type: 'patronpage/hideViewPatron',
       payload: {},
     });
   }
 }
 
-export default connect((state) => ({ ...state }))(CustomerPage);
+export default connect((state) => ({ ...state }))(PatronPage);

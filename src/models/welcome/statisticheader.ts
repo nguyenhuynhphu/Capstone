@@ -1,12 +1,12 @@
 import { fetchAllDectection } from '@/services/upload';
-import { fetchCustomerBorrow, fetchCustomerReturn } from '@/services/welcome';
+import { fetchPatronBorrow, fetchPatronReturn } from '@/services/welcome';
 import _ from 'lodash';
 import { Effect, Reducer } from 'umi';
 
 export interface StatisticHeaderState {
   //   data: any;
   isLoading: boolean;
-  customerActive: any;
+  patronActive: any;
   returnToday: any;
 }
 
@@ -14,7 +14,7 @@ export interface StatisticHeaderType {
   namespace: string;
   state: StatisticHeaderState;
   effects: {
-    fetchCustomerActivities: Effect;
+    fetchPatronActivities: Effect;
     fetchReturnToday: Effect;
   };
   reducers: {
@@ -28,17 +28,17 @@ export interface StatisticHeaderType {
 const StatisticHeaderModel: StatisticHeaderType = {
   namespace: 'statisticheader',
   state: {
-    customerActive: [],
+    patronActive: [],
     returnToday: [],
     isLoading: false,
   },
   effects: {
-    *fetchCustomerActivities({ payload }, { call, put }) {
+    *fetchPatronActivities({ payload }, { call, put }) {
       yield put({
         type: 'isLoading',
         payload: {},
       });
-      var listBorrow = yield call(fetchCustomerBorrow, payload);
+      var listBorrow = yield call(fetchPatronBorrow, payload);
       //   const response = yield call(fetchAllBookGroup, payload);
       yield put({
         type: 'render',
@@ -50,7 +50,7 @@ const StatisticHeaderModel: StatisticHeaderType = {
         type: 'isLoading',
         payload: {},
       });
-      var listReturn = yield call(fetchCustomerReturn, payload);
+      var listReturn = yield call(fetchPatronReturn, payload);
       //   const response = yield call(fetchAllBookGroup, payload);
       yield put({
         type: 'renderReturn',
@@ -69,7 +69,7 @@ const StatisticHeaderModel: StatisticHeaderType = {
     render(state, { payload }) {
       return {
         ...state,
-        customerActive: payload,
+        patronActive: payload,
         isLoading: false,
       };
     },

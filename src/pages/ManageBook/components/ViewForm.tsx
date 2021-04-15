@@ -10,6 +10,7 @@ import {
   Rate,
   Modal,
   Table,
+  InputNumber,
 } from 'antd';
 import styles from './ComponentsStyle.less';
 import React from 'react';
@@ -24,6 +25,9 @@ import ListBooks from './ListBooks';
 import { formatDate } from '@/utils/utils';
 import Column from 'antd/lib/table/Column';
 import Pdf from 'react-to-pdf';
+import { faSleigh } from '@fortawesome/free-solid-svg-icons';
+import { insertBook } from '@/services/book';
+import sendNotification from '@/utils/Notification';
 
 var Barcode = require('react-barcode');
 
@@ -44,7 +48,8 @@ interface ViewFormState {
   booksListHasMore: boolean;
   isModalVisible: boolean;
   isPreviewVisible: boolean;
-
+  isCreateBookVisible: boolean;
+  inputBooks: number;
   exportSelected: any;
   count: number;
   totalBooks: number;
@@ -58,13 +63,17 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
       viewBookFeedbacks: false,
       exportSelected: [],
       bookInGroup: [],
+      inputBooks: 0,
       isPreviewVisible: false,
       booksListLoading: false,
       booksListHasMore: true,
       isModalVisible: false,
+      isCreateBookVisible: false,
+
       count: 1,
       totalBooks: 0,
     };
+    this.createBooks = this.createBooks.bind(this);
   }
 
   render() {
@@ -255,14 +264,29 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
           visible={this.state.viewBookQuantity}
           className={styles.listBook}
         >
-          <Space direction="horizontal" style={{ width: '100%', justifyContent: 'space-between' }}>
+          {this.props.user.currentUser.role != 1 ? (
+            <Space
+              direction="horizontal"
+              style={{ width: '100%', justifyContent: 'space-between' }}
+            >
+              <Title level={5} style={{ marginBottom: 0 }}>
+                Book List
+              </Title>
+              <Space direction="horizontal">
+                <Button type="ghost" onClick={() => this.setState({ isModalVisible: true })}>
+                  Export PDF
+                </Button>
+                <Button type="primary" onClick={() => this.setState({ isCreateBookVisible: true })}>
+                  Create Books
+                </Button>
+              </Space>
+            </Space>
+          ) : (
             <Title level={5} style={{ marginBottom: 0 }}>
               Book List
             </Title>
-            <Button type="ghost" onClick={() => this.setState({ isModalVisible: true })}>
-              Export PDF
-            </Button>
-          </Space>
+          )}
+
           <Divider />
           <ListBooks />
         </Drawer>
@@ -289,7 +313,9 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
             >
               Cancel
             </Button>,
-            <Button onClick={() => this.setState({ isPreviewVisible: true })} type='primary'>Preview</Button>,
+            <Button onClick={() => this.setState({ isPreviewVisible: true })} type="primary">
+              Preview
+            </Button>,
           ]}
         >
           <Table
@@ -321,7 +347,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
               Close
             </Button>,
             <Pdf
-              filename={`${bookGroup.name.replace(/\s/g, "")}.pdf`}
+              filename={`${bookGroup.names?.replace(/\s/g, '')}.pdf`}
               targetRef={pdfRef}
               option={{
                 orientation: 'landscape',
@@ -363,33 +389,69 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
               direction="vertical"
               style={{ height: 200, width: '100%', alignItems: 'center', justifyContent: 'center' }}
             >
-              <SoundOutlined style={{fontSize: 40, color: 'rgba(0, 0, 0, .4)'}}/>
+              <SoundOutlined style={{ fontSize: 40, color: 'rgba(0, 0, 0, .4)' }} />
               <Title level={5} style={{ textAlign: 'center', color: 'rgba(0, 0, 0, .4)' }}>
-              Nothing for review
+                Nothing for review
               </Title>
             </Space>
           )}
         </Modal>
+        <Modal
+          title="Create Book"
+          centered
+          visible={this.state.isCreateBookVisible}
+          width={400}
+          onCancel={() => this.setState({ isCreateBookVisible: false })}
+          footer={[
+            <Button onClick={() => this.setState({ isCreateBookVisible: false, inputBooks: 0 })}>
+              Close
+            </Button>,
+            <Button onClick={this.createBooks} type={'primary'}>
+              Create
+            </Button>,
+          ]}
+        >
+          <Space direction="horizontal" style={{ width: '100%', justifyContent: 'space-between' }}>
+            <p style={{ marginBottom: 0 }}>Number of books: </p>
+            <InputNumber
+              style={{ width: 200 }}
+              min={1}
+              onChange={(value: any) => this.setState({ inputBooks: parseInt(value) })}
+            />
+          </Space>
+        </Modal>
       </>
     );
   }
-  handelBarcode() {
-    var tmp: any = [];
-    console.log('this.state.exportSelected', this.state.exportSelected);
-    console.log('this.props.listbooks.data', this.props.listbooks.data);
-    for (let i = 0; i < this.state.exportSelected.length; i++) {
-      const bookId = this.state.exportSelected[i];
-      for (let j = 0; j < this.props.listbooks.data.length; j++) {
-        const book = this.props.listbooks.data[j];
-        if (book.id == bookId) {
-          tmp.push(book);
-        }
+  async createBooks() {
+    const { inputBooks } = this.state;
+    const { bookGroup, dispatch } = this.props;
+    console.log('inputBooks', inputBooks);
+    var book: any = {
+      bookGroupId: bookGroup.id,
+      barcode: '',
+      isDeleted: false,
+      isAvailable: true,
+      drawerId: null,
+    };
+    let promiese: any = [];
+    if (inputBooks == 0) {
+      sendNotification('Please input quantity upper than 0 to create book !', '', 'warning');
+    } else {
+      for (let i = 0; i < inputBooks; i++) {
+        promiese.push(insertBook(book));
       }
+      Promise.all(promiese).finally(() => {
+        sendNotification('Create books succecss !', '', 'success');
+        dispatch({
+          type: 'listbooks/fetchData',
+          payload: bookGroup.id,
+        });
+        this.setState({ isCreateBookVisible: false, inputBooks: 0 });
+      });
     }
-    console.log('BOOK', tmp);
-
-    return <div></div>;
   }
+
   handelCategory() {
     const { bookGroup } = this.props;
     let tmp = '';

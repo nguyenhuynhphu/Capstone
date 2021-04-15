@@ -27,7 +27,6 @@ const ListBooksModel: ListBooksType = {
   },
   effects: {
     *fetchData({ payload }, { call, put }) {
-      yield call(() => {}, payload);
       yield put({
         type: 'isLoading',
         payload: {},
