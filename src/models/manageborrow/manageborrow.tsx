@@ -5,7 +5,7 @@ import {
   fetchPatron,
 } from '@/services/manageborrow';
 import _ from 'lodash';
-import { Effect, ManageBookState, Reducer } from 'umi';
+import { Effect, Reducer } from 'umi';
 
 export interface ManageBorrowState {
   isMakingTransaction: boolean;
@@ -109,8 +109,10 @@ const ManageBorrowModel: ManageBorrowType = {
     *fetchBorrowDetail({ payload }, { call, put }) {
       const response = yield call(fetchBorrowBook, payload.data[0].borrowId);
       const patron = yield call(fetchPatron, response.data.patronId);
+
       response.data.patron = patron.data;
       response.data.borrowDetail = payload.data;
+      response.endTime = payload.data[0].endTime;
       yield put({
         type: 'loadBorrowDetail',
         payload: response.data,
@@ -149,19 +151,25 @@ const ManageBorrowModel: ManageBorrowType = {
       var tmp;
       var payloadRemoveList: any = [];
       var scanIdRemoveList: any = [];
+
       payload.forEach((book: any) => {
         tmp = state.scanId?.find((x: any) => x.id == book.id);
         if (tmp != undefined) {
           if (tmp.selectedBook != undefined) {
+            tmp.selectedBook = book.selectedBook;
             payloadRemoveList.push(book);
           } else {
+            if (tmp.drawer.length != 0) {
+              book.drawer = tmp.drawer;
+            }
             scanIdRemoveList.push(tmp);
           }
         }
       });
       _.pullAll(payload, payloadRemoveList);
       _.pullAll(state.scanId, scanIdRemoveList);
-
+      console.log('payload', payload);
+      console.log('state.scanId', state.scanId);
       return {
         ...state,
         scanId: _.concat(state.scanId, payload),
@@ -169,7 +177,7 @@ const ManageBorrowModel: ManageBorrowType = {
     },
     addToReturnBorrow(state, { payload }) {
       var tmp = state.borrowDetail.borrowDetail.find((x: any) => x.barcode == payload);
-      tmp.isReturn = true;
+      if (tmp != undefined) tmp.isReturn = true;
       return {
         ...state,
         borrowDetail: state.borrowDetail,
@@ -213,7 +221,7 @@ const ManageBorrowModel: ManageBorrowType = {
     loadPatron(state, { payload }) {
       return {
         ...state,
-        Patron: payload,
+        patron: payload,
       };
     },
     loadBorrowDetail(state, { payload }) {

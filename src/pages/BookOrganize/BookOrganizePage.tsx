@@ -30,11 +30,12 @@ import { connect, Dispatch } from 'umi';
 import sendNotification from '@/utils/Notification';
 interface BookOrganizePageProps {
   dispatch: Dispatch;
-  organizebook: any;
-  locationtable: any;
+  organizebook?: any;
+  locationtable?: any;
   drawergrid?: any;
   transferbook?: any;
-  global: any;
+  global?: any;
+  user?: any;
 }
 interface BookOrganizePageState {
   createLocationVisible: boolean;
@@ -387,49 +388,52 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
               </Form>
             </>
           )}
-
-          <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
-              {!this.state.isEditLocation ? (
-                <>
-                  <Button
-                    className={styles.buttonCustom}
-                    onClick={() => this.setState({ isEditLocation: true })}
-                    icon={<EditOutlined style={{ color: '#0078d4' }} />}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    className={styles.buttonCustom}
-                    onClick={() => this.deleteLocation()}
-                    icon={<DeleteOutlined style={{ color: 'red' }} />}
-                  >
-                    Delete
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    type="primary"
-                    form={'updateLocation'}
-                    key="submit"
-                    htmlType="submit"
-                    className={styles.buttonCustom}
-                    icon={<EditOutlined style={{ color: '#0078d4' }} />}
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    className={styles.buttonCustom}
-                    onClick={() => this.setState({ isEditLocation: false })}
-                    icon={<DeleteOutlined style={{ color: 'red' }} />}
-                  >
-                    Cancel
-                  </Button>
-                </>
-              )}
-            </Col>
-          </Row>
+          {this.props.user.currentUser.roleId == 1 ? (
+            <Row>
+              <Col span={24} style={{ textAlign: 'right' }}>
+                {!this.state.isEditLocation ? (
+                  <>
+                    <Button
+                      className={styles.buttonCustom}
+                      onClick={() => this.setState({ isEditLocation: true })}
+                      icon={<EditOutlined style={{ color: '#0078d4' }} />}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      className={styles.buttonCustom}
+                      onClick={() => this.deleteLocation()}
+                      icon={<DeleteOutlined style={{ color: 'red' }} />}
+                    >
+                      Delete
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      type="primary"
+                      form={'updateLocation'}
+                      key="submit"
+                      htmlType="submit"
+                      className={styles.buttonCustom}
+                      icon={<EditOutlined style={{ color: '#0078d4' }} />}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      className={styles.buttonCustom}
+                      onClick={() => this.setState({ isEditLocation: false })}
+                      icon={<DeleteOutlined style={{ color: 'red' }} />}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                )}
+              </Col>
+            </Row>
+          ) : (
+            <></>
+          )}
         </Modal>
       </>
     );

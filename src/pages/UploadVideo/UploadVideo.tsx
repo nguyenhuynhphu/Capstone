@@ -35,12 +35,6 @@ import Select from 'antd/es/select';
 import Dragger from 'antd/lib/upload/Dragger';
 import axios from 'axios';
 import TrackingDetail from './components/TrackingDetail';
-import {
-  checkingPosition,
-  fetchBookInDrawer,
-  fetchDrawer,
-  getRealPosition,
-} from '@/services/upload';
 import _ from 'lodash';
 import moment from 'moment';
 import UploadRecordTable from './components/UploadRecordTable';
@@ -451,7 +445,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
       );
     } else {
       return (
-        <TrackingDetail record={this.state.selectedRecord} model={this.props.trackingdetail} />
+        <TrackingDetail record={this.state.selectedRecord} />
       );
     }
   }

@@ -50,6 +50,8 @@ const TrackingDetailModel: TrackingDetailType = {
       yield put({
         type: 'isLoading',
       });
+      console.log("FETCH DATA");
+      
       const response = yield call(fetchTrackingDetail, payload);
       yield put({
         type: 'loadData',
@@ -73,7 +75,7 @@ const TrackingDetailModel: TrackingDetailType = {
     },
 
     *updateError({ payload }, { put, call }) {
-      yield call(updateError, payload);s
+      yield call(updateError, payload);
     },
     *updateErrorUndefined({ payload }, { put, call }) {
       yield call(updateUndefined, payload);

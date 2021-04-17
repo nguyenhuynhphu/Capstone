@@ -425,7 +425,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                       cancelText="No"
                     >
                       <Button type={'text'} style={{ color: 'red' }}>
-                        <RedoOutlined /> Rechoice User
+                        <RedoOutlined /> Rechoice Patron
                       </Button>
                     </Popconfirm>
                   </Space>
@@ -446,10 +446,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                     <Col span={8}>Phone:</Col>
                     <Col span={16}>{this.props.manageborrow?.patron.phone}</Col>
                   </Row>
-                  <Row>
-                    <Col span={8}>Total Fee:</Col>
-                    <Col span={16}>{this.state.totalFee}$</Col>
-                  </Row>
+
                   <Form onFinish={(value) => this.onConfirm(value)}>
                     <Form.Item
                       name="date"
@@ -464,10 +461,10 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                       name="returnDate"
                       label="Return Day: "
                       required
-                      initialValue={moment()}
+                      initialValue={moment().add(7, 'days')}
                       style={{ marginBottom: 25 }}
                     >
-                      <DatePicker onChange={() => {}} style={{ marginLeft: 30 }} />
+                      <DatePicker onChange={() => {}} style={{ marginLeft: 30 }} disabled />
                     </Form.Item>
 
                     <Row justify={'end'}>
@@ -587,37 +584,38 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
         .start()
         .then(() => {
           connection.on('ReceiveMessageToBorrow', async (value) => {
-            //tunwgf cuoons
+            //tung cuon
             console.log('MOT CUON', value);
             if (value.staffId !== this.props.user.currentUser.id) {
-              var book: any = await fetchBookByBarcode(value.barcode);
+              var book: any = await fetchBookByBarcode(value.barcode); // get Book infor
               if (book.data[0] != undefined) {
-                var bookGroup = await fetchBooks(book.data[0].bookGroupId);
-                bookGroup.data.selectedBook = book.data[0];
-
+                var bookGroup = await fetchBooks(book.data[0].bookGroupId); // get BookGroup infor
+                bookGroup.data.selectedBook = book.data[0]; // choice book in BookGroup
                 dispatch({
                   type: 'manageborrow/addToScanId',
                   payload: [bookGroup.data],
                 });
-                this.fetchWishList(undefined);
+                dispatch({ type: 'manageborrow/renderWishList', payload: manageborrow.scanId });
+                dispatch({ type: 'manageborrow/changeProcess', payload: 1 });
+                // this.fetchBookInDrawer(undefined);
               }
             }
           });
           connection.on('ReceiveMessage', async (value) => {
             //wishlist
             console.log('WISHLIST', value);
-
             if (value.staffId !== this.props.user.currentUser.id) {
               var promiese: any = [];
               if (value.wishlist != undefined) {
                 value.wishlist.forEach((id: any) => {
-                  promiese.push(fetchBooks(id));
+                  promiese.push(fetchBooks(id)); // get BookGroup infor
                 });
                 var tmp = await Promise.all(promiese);
                 var bookgroupList: any = [];
                 tmp.forEach((notConvertData: any) => {
                   bookgroupList.push(notConvertData.data);
                 });
+
                 if (bookgroupList != undefined) {
                   dispatch({
                     type: 'manageborrow/addToScanId',
@@ -630,29 +628,26 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                   });
                 }
 
-                this.fetchWishList(value.patronId);
+                this.fetchBookInDrawer(value.patronId);
               }
             }
           });
 
           connection.on('ReceiveMessageToReturnBook', async (value) => {
-            console.log('TRA SACH', value);
             if (value.staffId !== this.props.user.currentUser.id) {
-              console.log("manageborrow.borrowDetail", manageborrow.borrowDetail);
-              
-              if (manageborrow.borrowDetail.id != undefined) {
-                dispatch({
-                  type: 'manageborrow/addToReturnBorrow',
-                  payload: value.barcode,
-                });
-              } else {
+              console.log('manageborrow.borrowDetail', manageborrow.borrowDetail);
+
+              if (manageborrow.borrowDetail.id == undefined) {
+                console.log('No');
                 var listBorrow = await fetchBorrowDetailByBarcode(value.barcode);
-                var tmp = listBorrow.data.find((x: any) => x.barcode == value.barcode);
-                tmp.isReturn = true;
-                dispatch({
-                  type: 'manageborrow/fetchBorrowDetail',
-                  payload: listBorrow,
-                });
+                var tmp = listBorrow.data?.find((x: any) => x.barcode == value.barcode);
+                if (tmp != undefined) {
+                  tmp.isReturnToday = true;
+                  dispatch({
+                    type: 'manageborrow/fetchBorrowDetail',
+                    payload: listBorrow,
+                  });
+                }
               }
             }
           });
@@ -672,20 +667,25 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     }
   }
 
-  async fetchWishList(patronId: any) {
+  async fetchBookInDrawer(patronId: any) {
     const { dispatch, manageborrow } = this.props;
-    console.log('manageborrow.scanId', manageborrow.scanId);
 
     for (let i = 0; i < manageborrow.scanId.length; i++) {
       const book = manageborrow.scanId[i];
-      book.drawer = undefined;
-      var drawer = await fecthDrawer(book.id);
-      if (drawer.length == 0) {
+      if (book.selectedBook == undefined) {
         book.drawer = undefined;
-      } else {
-        book.drawer = drawer;
+        var drawer = await fecthDrawer(book.id);
+        if (drawer.length != 0) {
+          let tmpDrawer: any = [];
+          drawer.forEach((book: any) => {
+            if (book == null) tmpDrawer.push(book);
+          });
+          _.pullAll(drawer, tmpDrawer);
+          book.drawer = drawer;
+        }
       }
     }
+    console.log('manageborrow.scanId', manageborrow.scanId);
 
     if (patronId != undefined) {
       dispatch({ type: 'manageborrow/fetchPatron', payload: patronId });

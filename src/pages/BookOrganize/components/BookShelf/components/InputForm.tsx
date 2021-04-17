@@ -97,7 +97,7 @@ const InputForm = (props: any) => {
               }),
             ]}
           >
-            <InputNumber style={{ width: '100%' }} min={1} placeholder="Please input row number" />
+            <InputNumber style={{ width: '100%' }} min={1} max={30} placeholder="Please input row number" />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -120,6 +120,7 @@ const InputForm = (props: any) => {
             <InputNumber
               style={{ width: '100%' }}
               min={1}
+              max={30}
               placeholder="Please input column number"
             />
           </Form.Item>

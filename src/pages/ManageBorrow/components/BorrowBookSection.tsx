@@ -13,6 +13,8 @@ import {
   Form,
   DatePicker,
   Button,
+  Divider,
+  Tag,
 } from 'antd';
 import Column from 'antd/lib/table/Column';
 import Title from 'antd/lib/typography/Title';
@@ -32,10 +34,12 @@ interface BorrowBookSectionProps {
 class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
   constructor(props: any) {
     super(props);
+    this.rerender = this.rerender.bind(this);
   }
 
   render() {
     const { borrowBook } = this.props;
+    console.log('borrow', borrowBook);
 
     return (
       <>
@@ -43,52 +47,109 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
           gutter={16}
           style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}
         >
-          <Col span={14} style={{ height: 500, overflow: 'auto' }}>
+          <Col span={12} style={{ height: 500, overflow: 'auto' }}>
             {borrowBook.borrowDetail.map((returnItem: any) => (
-              <ReturnItem returnItem={returnItem} />
+              <ReturnItem returnItem={returnItem} renderParent={this.rerender} />
             ))}
           </Col>
-          <Col span={10} style={{ paddingLeft: 25 }}>
-            <Space style={{ marginBottom: 20, width: '100%', justifyContent: 'space-between' }}>
-              <Title level={5} style={{ marginBottom: 0 }}>
-                Patron Informaton
-              </Title>
-            </Space>
-            <Row style={{ marginBottom: 15 }}>
-              <Col span={8}>Name:</Col>
-              <Col span={16}>{borrowBook?.patron.name}</Col>
-            </Row>
-            <Row style={{ marginBottom: 15 }}>
-              <Col span={8}>Email:</Col>
-              <Col span={16}>{borrowBook?.patron.email}</Col>
-            </Row>
-            <Row style={{ marginBottom: 15 }}>
-              <Col span={8}>Address:</Col>
-              <Col span={16}>{borrowBook?.patron.address}</Col>
-            </Row>
-            <Row style={{ marginBottom: 15 }}>
-              <Col span={8}>Phone:</Col>
-              <Col span={16}>{borrowBook?.patron.phone}</Col>
-            </Row>
-
+          <Col span={11} offset={1} style={{ paddingLeft: 10 }}>
+            <Divider orientation='left'>Patron Informaton</Divider>
+            <Descriptions column={2}>
+              <Descriptions.Item label="Name">{borrowBook?.patron.name}</Descriptions.Item>
+              <Descriptions.Item label="Email">{borrowBook?.patron.email}</Descriptions.Item>
+              <Descriptions.Item label="Address" span={2}>
+                {borrowBook?.patron.address}
+              </Descriptions.Item>
+              <Descriptions.Item label="Phone">{borrowBook?.patron.phone}</Descriptions.Item>
+            </Descriptions>
             <Form onFinish={(value) => this.handelConfirm(value)}>
-              <Form.Item
-                name="date"
-                label="Borrow Day: "
-                initialValue={moment()}
-                style={{ marginBottom: 15 }}
+              <Divider orientation="left" style={{ marginTop: 0 }}>
+                Detail
+              </Divider>
+              <Space
+                direction="horizontal"
+                style={{ width: '100%', justifyContent: 'space-between', fontSize: 16 }}
               >
-                <DatePicker onChange={() => {}} style={{ marginLeft: 77 }} disabled />
-              </Form.Item>
-              <Form.Item
-                name="returnDate"
-                label="Return Day: "
-                initialValue={moment()}
-                style={{ marginBottom: 5 }}
+                <p style={{ marginBottom: 0 }}>Borrow Day: </p>
+                <p style={{ marginBottom: 0 }}>
+                  {moment(borrowBook?.startTime).format('DD/MM/YYYY')}
+                </p>
+              </Space>
+              <Space
+                direction="horizontal"
+                style={{
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  fontSize: 16,
+                  margin: '5px 0',
+                }}
               >
-                <DatePicker onChange={() => {}} style={{ marginLeft: 80 }} />
-              </Form.Item>
-
+                <p style={{ marginBottom: 0 }}>Correct payday: </p>
+                <p style={{ marginBottom: 0 }}>
+                  {moment(borrowBook?.endTime).format('DD/MM/YYYY')}
+                </p>
+              </Space>
+              <Space
+                direction="horizontal"
+                style={{
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: 16,
+                  marginBottom: '5px',
+                }}
+              >
+                <p style={{ marginBottom: 0 }}>Return Day: </p>
+                <Space style={{ margin: 0 }}>
+                  {moment().diff(borrowBook.endTime, 'days') > 0 ? (
+                    <Tag color={'#f50'}>
+                      Late {moment().diff(borrowBook.endTime, 'days') + 1} days
+                    </Tag>
+                  ) : (
+                    <></>
+                  )}
+                  <p style={{ marginBottom: 0 }}>{moment().format('DD/MM/YYYY')}</p>
+                </Space>
+              </Space>
+              <Space
+                direction="horizontal"
+                style={{ width: '100%', justifyContent: 'space-between', fontSize: 16 }}
+              >
+                <p style={{ marginBottom: 0 }}>Quantity: </p>
+                <p style={{ marginBottom: 0 }}>{borrowBook.borrowDetail.length} books</p>
+              </Space>
+              <Space
+                direction="horizontal"
+                style={{
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  fontSize: 16,
+                  margin: '5px 0',
+                }}
+              >
+                <p style={{ marginBottom: 0 }}>Fee: </p>
+                <p style={{ marginBottom: 0 }}>+ {this.handelFee()} $</p>
+              </Space>
+              <Space
+                direction="horizontal"
+                style={{ width: '100%', justifyContent: 'space-between', fontSize: 16 }}
+              >
+                <p style={{ marginBottom: 0 }}>Punsish Fee: </p>
+                <p style={{ marginBottom: 0 }}>+ {this.handelPunishFee()} $</p>
+              </Space>
+              <Divider />
+              <Space
+                direction="horizontal"
+                style={{
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  fontSize: 22,
+                  marginBottom: 20,
+                }}
+              >
+                <p style={{ marginBottom: 0 }}>Total: </p>
+                <p style={{ marginBottom: 0 }}>{this.handelFee() + this.handelPunishFee()}$</p>
+              </Space>
               <Row justify={'end'}>
                 <Space align={'end'}>
                   <Button type="primary" htmlType={'submit'}>
@@ -102,30 +163,30 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
       </>
     );
   }
+  rerender() {
+    this.setState({});
+  }
   handelConfirm(value: any) {
     var { user, dispatch, borrowBook } = this.props;
     console.log('borrowBook', borrowBook);
 
     var tmp: any = [];
     borrowBook.borrowDetail.forEach((book: any) => {
-      console.log(book);
-      if (book.isReturn) {
+      console.log('BOOK', book);
+      if (!book.isReturn && book.isReturnToday) {
         tmp.push({
-          isLate: false,
           punishFee: book.punishFee,
-          bookId: book.id,
+          bookId: book.bookId,
           fee: book.fee,
-          isDeleted: false,
         });
       }
     });
 
     var msgToServer: any = {
       patronId: borrowBook?.patron.id,
-      returnTime: value?.returnDate,
+      returnTime: moment(),
       borrowId: borrowBook?.id,
       staffId: user.currentUser.id,
-      isDeleted: false,
       returnDetail: tmp,
     };
 
@@ -140,6 +201,30 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
         payload: {},
       });
     }, 1000);
+  }
+  handelFee() {
+    const { borrowBook } = this.props;
+    var diffDate = moment(borrowBook.endTime).diff(borrowBook.startTime, 'days');
+    if (diffDate == 0) diffDate = 1;
+    else diffDate += 1;
+    var fee = 0;
+    borrowBook.borrowDetail.forEach((borrow: any) => {
+      if (!borrow.isReturn && borrow.isReturnToday) fee += borrow.fee * diffDate;
+    });
+    return fee;
+  }
+  handelPunishFee() {
+    const { borrowBook } = this.props;
+
+    var diffDate = moment().diff(borrowBook.endTime, 'days');
+    diffDate += 1;
+    var punishFee = 0;
+    if (diffDate > 0) {
+      borrowBook.borrowDetail.forEach((borrow: any) => {
+        if (!borrow.isReturn && borrow.isReturnToday) punishFee += borrow.punishFee * diffDate;
+      });
+    }
+    return punishFee;
   }
 }
 

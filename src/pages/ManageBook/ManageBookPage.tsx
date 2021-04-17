@@ -165,11 +165,12 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
             />
           </Col>
         </Row>
-       
         <Drawer
           width={700}
           placement="right"
           closable={false}
+          mask={true}
+          
           onClose={this.hideViewDrawer}
           visible={managebook.viewBookVisible}
           className={styles.viewBookGroupForm}
@@ -177,7 +178,6 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
         >
           <ViewForm bookGroup={managebook.choiceBook} />
         </Drawer>
-
         <Drawer
           title={
             managebook.choiceBook.id != undefined ? 'Edit book detail' : 'Create a new book group'
@@ -232,7 +232,6 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
             </Col>
           </Row>
         </Drawer>
-
         <Modal
           visible={managebook.categoriesModalVisible}
           title="Manage Categories"

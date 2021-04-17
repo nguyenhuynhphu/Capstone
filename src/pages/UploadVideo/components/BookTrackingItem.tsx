@@ -1,4 +1,5 @@
 import { Dispatch } from '@/.umi/plugin-dva/connect';
+import sendNotification from '@/utils/Notification';
 import {
   CheckCircleOutlined,
   CheckOutlined,
@@ -74,6 +75,7 @@ class BookTrackingItem extends React.Component<BookTrackingItemProps> {
     } else {
       dispatch({ type: 'trackingdetail/updateErrorUndefined', payload: record });
     }
+    sendNotification("Confirm error success !", "", "success")
   }
   handelReject() {
     const { record, dispatch } = this.props;
@@ -84,6 +86,7 @@ class BookTrackingItem extends React.Component<BookTrackingItemProps> {
     } else {
       dispatch({ type: 'trackingdetail/updateErrorUndefined', payload: record });
     }
+    sendNotification("Reject error success !", "", "success")
   }
 
   handelIcon(typeError: any) {

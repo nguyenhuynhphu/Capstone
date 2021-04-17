@@ -7,18 +7,16 @@ import { connect, Dispatch } from 'umi';
 import Description from './Description';
 import BookTrackingItem from './BookTrackingItem';
 import {
-  AndroidOutlined,
-  AppleOutlined,
+
   CheckOutlined,
   CloseOutlined,
   QuestionOutlined,
 } from '@ant-design/icons';
-import LoadingDrone from '@/components/CustomDesign/LoadingDrone';
 
 interface TrackingDetailProps {
   dispatch: Dispatch;
   record: any;
-  model: any;
+  trackingdetail?: any;
 }
 interface TrackingDetailState {
   visible: boolean;
@@ -67,15 +65,15 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
           <Col span={16} style={{ borderLeft: '1px solid rgba(0, 0, 0, .1)' }}>
             <Row style={{ textAlign: 'left', height: '100%' }}>
               <Col span={24} style={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
-                {this.props.model.isLoading ? (
+                {this.props.trackingdetail.isLoading ? (
                   <Spin spinning />
                 ) : (
                   <>
-                    {this.props.model.data.length != 0 ? (
+                    {this.props.trackingdetail.data.length != 0 ? (
                       <Table
                         columns={columns}
-                        loading={this.props.model.isLoading}
-                        dataSource={this.props.model.data}
+                        loading={this.props.trackingdetail.isLoading}
+                        dataSource={this.props.trackingdetail.data}
                         bordered
                         onRow={(record) => {
                           return {
@@ -142,7 +140,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                       }
                       key="1"
                       style={
-                        this.props.model.isLoading
+                        this.props.trackingdetail.isLoading
                           ? {
                               height: 400,
                               width: '100%',
@@ -153,9 +151,9 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                           : {}
                       }
                     >
-                      {!this.props.model.isLoading ? (
-                        this.props.model.listError.length != 0 ? (
-                          this.props.model.listError.map((record: any) =>
+                      {!this.props.trackingdetail.isLoading ? (
+                        this.props.trackingdetail.listError.length != 0 ? (
+                          this.props.trackingdetail.listError.map((record: any) =>
                             !record.isConfirm && !record.isRejected ? (
                               <BookTrackingItem record={record} />
                             ) : (
@@ -166,8 +164,6 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                           <Result
                             status="success"
                             title="No error found !"
-                            //subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
-                            
                           />
                         )
                       ) : (
@@ -183,7 +179,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                       }
                       key="2"
                     >
-                      {this.props.model.listError.map((record: any) =>
+                      {this.props.trackingdetail.listError.map((record: any) =>
                         record.isConfirm ? <BookTrackingItem record={record} /> : <></>,
                       )}
                     </Tabs.TabPane>
@@ -196,7 +192,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                       }
                       key="3"
                     >
-                      {this.props.model.listError.map((record: any) =>
+                      {this.props.trackingdetail.listError.map((record: any) =>
                         record.isRejected ? <BookTrackingItem record={record} /> : <></>,
                       )}
                     </Tabs.TabPane>
