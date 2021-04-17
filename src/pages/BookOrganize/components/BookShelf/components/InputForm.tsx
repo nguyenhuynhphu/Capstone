@@ -67,10 +67,11 @@ const InputForm = (props: any) => {
               ({ getFieldValue }) => ({
                 validator(rule, value) {
                   if (value != undefined) {
-                    return Promise.resolve();
-                  } else {
-                    return Promise.reject(`Name must no empty`);
+                    if (value.trim().length != 0) {
+                      return Promise.resolve();
+                    }
                   }
+                  return Promise.reject(`Name must no empty`);
                 },
               }),
             ]}
@@ -89,15 +90,22 @@ const InputForm = (props: any) => {
               ({ getFieldValue }) => ({
                 validator(rule, value) {
                   if (value != undefined) {
-                    return Promise.resolve();
-                  } else {
-                    return Promise.reject(`Row must no empty`);
+                    if (value.trim().length != 0) {
+                      return Promise.resolve();
+                    }
                   }
+
+                  return Promise.reject(`Row must no empty`);
                 },
               }),
             ]}
           >
-            <InputNumber style={{ width: '100%' }} min={1} max={30} placeholder="Please input row number" />
+            <InputNumber
+              style={{ width: '100%' }}
+              min={1}
+              max={30}
+              placeholder="Please input row number"
+            />
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -109,10 +117,11 @@ const InputForm = (props: any) => {
               ({ getFieldValue }) => ({
                 validator(rule, value) {
                   if (value != undefined) {
-                    return Promise.resolve();
-                  } else {
-                    return Promise.reject(`Column must no empty`);
+                    if (value.trim().length != 0) {
+                      return Promise.resolve();
+                    }
                   }
+                  return Promise.reject(`Column must no empty`);
                 },
               }),
             ]}
@@ -136,10 +145,11 @@ const InputForm = (props: any) => {
               ({ getFieldValue }) => ({
                 validator(rule, value) {
                   if (value != undefined) {
-                    return Promise.resolve();
-                  } else {
-                    return Promise.reject(`Location must be choice`);
+                    if (value.trim().length != 0) {
+                      return Promise.resolve();
+                    }
                   }
+                  return Promise.reject(`Location must be choice`);
                 },
               }),
             ]}
