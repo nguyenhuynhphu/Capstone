@@ -54,13 +54,29 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
                 <Descriptions.Item label="BarCode" span={2}>
                   {borrowItem.selectedBook.barCode}
                 </Descriptions.Item>
-                <Descriptions.Item label="Bookshelf" span={2}>
-                  {borrowItem.selectedBook.bookShelfName}
-                </Descriptions.Item>
-
-                <Descriptions.Item label="Drawer">
-                  {borrowItem.selectedBook.drawerName}
-                </Descriptions.Item>
+                {borrowItem.selectedBook?.bookShelfName != undefined ? (
+                  <>
+                    <Descriptions.Item label="Bookshelf" span={2}>
+                      {borrowItem.selectedBook.bookShelfName}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Drawer">
+                      {borrowItem.selectedBook.drawerId}
+                    </Descriptions.Item>
+                  </>
+                ) : (
+                  <>
+                    <p
+                      style={{
+                        backgroundColor: '#F6FFED',
+                        border: '1px solid rgb(183, 235, 143)',
+                        padding: '7px 10px',
+                        fontWeight: 400,
+                      }}
+                    >
+                      Not in drawer yet
+                    </p>
+                  </>
+                )}
               </Descriptions>
             ) : (
               this.handelStorage(borrowItem)
@@ -74,14 +90,14 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
                 <>
                   <p>Choice Book:</p>
                   <Select
-                    placeholder="Select drawer"
+                    placeholder="Select Book"
                     style={{ width: 150 }}
                     value={borrowItem.selectedBook ? borrowItem.selectedBook.id : null}
                     onChange={(bookId: any) => {
                       console.log(borrowItem);
                       var tmp = borrowItem.drawer?.find((book: any) => book.bookId == bookId);
-                      console.log("TMP", tmp);
-                      
+                      console.log('TMP', tmp);
+
                       borrowItem.selectedBook = {
                         barCode: tmp.barcode?.trim(),
                         bookShelfName: tmp.bookShelfName,
@@ -110,7 +126,7 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
       </>
     );
   }
-  
+
   handelStorage(borrowItem: any) {
     if (borrowItem.drawer) {
       if (borrowItem.drawer.length == 0) {
@@ -125,7 +141,7 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
         );
       }
     } else {
-      return <></>;
+      return <Alert style={{ width: 'fit-content' }} message="Book In Storage" type="warning" />;
     }
   }
 }

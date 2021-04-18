@@ -52,6 +52,7 @@ import _ from 'lodash';
 import BorrowItem from './components/BorrowItem';
 import Search from 'antd/lib/input/Search';
 import BorrowBookSection from './components/BorrowBookSection';
+import sendNotification from '@/utils/Notification';
 
 // import moment from 'moment';
 const { Step } = Steps;
@@ -709,33 +710,42 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
 
   onConfirm(dateValue: any) {
     const { manageborrow, user, dispatch } = this.props;
-
+    var error = true;
     var tmp: any = [];
     console.log(manageborrow.scanId);
-    manageborrow.scanId.forEach((book: any) => {
-      console.log(book);
-
-      tmp.push({
-        bookId: book.selectedBook.id,
+    try {
+      manageborrow.scanId.forEach((book: any) => {
+        console.log(book);
+        tmp.push({
+          bookId: book.selectedBook.id,
+        });
       });
-    });
+    } catch (e) {
+      sendNotification(
+        'Please get book in storage and rescan to make sure exactl book for borrow',
+        '',
+        'error',
+      );
+      error = false;
+    }
+    if (error) {
+      var msgToServer: any = {
+        patronId: manageborrow.patron.id,
+        patronName: manageborrow.patron.name,
+        startTime: dateValue.date,
+        endTime: dateValue.returnDate,
+        quantity: manageborrow.scanId.length,
+        staffId: user.currentUser.id,
+        borrowDetail: tmp,
+      };
 
-    var msgToServer: any = {
-      patronId: manageborrow.patron.id,
-      patronName: manageborrow.patron.name,
-      startTime: dateValue.date,
-      endTime: dateValue.returnDate,
-      quantity: manageborrow.scanId.length,
-      staffId: user.currentUser.id,
-      borrowDetail: tmp,
-    };
-
-    dispatch({
-      type: 'manageborrow/confirmBorrow',
-      payload: msgToServer,
-    }).then(() => {
-      dispatch({ type: 'manageborrow/changeProcess', payload: 2 });
-    });
+      dispatch({
+        type: 'manageborrow/confirmBorrow',
+        payload: msgToServer,
+      }).then(() => {
+        dispatch({ type: 'manageborrow/changeProcess', payload: 2 });
+      });
+    }
   }
 }
 

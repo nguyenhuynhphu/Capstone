@@ -159,7 +159,7 @@ const ManageBorrowModel: ManageBorrowType = {
             tmp.selectedBook = book.selectedBook;
             payloadRemoveList.push(book);
           } else {
-            if (tmp.drawer.length != 0) {
+            if (tmp.drawer?.length != 0) {
               book.drawer = tmp.drawer;
             }
             scanIdRemoveList.push(tmp);
