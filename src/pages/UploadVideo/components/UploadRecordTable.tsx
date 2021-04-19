@@ -19,7 +19,7 @@ const columns = [
     dataIndex: 'id',
     key: 'id',
     align: 'center',
-    width: 55,
+    width: 80,
     render: (text) => <p>{text}</p>,
   },
   {

@@ -21,6 +21,7 @@ import { deleteBook } from '@/services/book';
 interface ListBookProps {
   dispatch: Dispatch;
   listbooks?: any;
+  user?: any;
 }
 interface ListBookState {}
 
@@ -101,7 +102,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                 onConfirm={() => this.deleteBook(item)}
                                 okText="Yes"
                                 cancelText="No"
-                                placement='left'
+                                placement="left"
                               >
                                 <Button type="primary" size="small" icon={<DeleteOutlined />}>
                                   Remove
@@ -172,17 +173,21 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                   Not Available
                                 </Tag>
                               )}
-                              <Popconfirm
-                                title="Are you sure to delete this book?"
-                                onConfirm={() => this.deleteBook(item)}
-                                okText="Yes"
-                                cancelText="No"
-                                placement='left'
-                              >
-                                <Button type="primary" size="small" icon={<DeleteOutlined />}>
-                                  Remove
-                                </Button>
-                              </Popconfirm>
+                              {this.props.user.currentUser == 1 ? (
+                                <Popconfirm
+                                  title="Are you sure to delete this book?"
+                                  onConfirm={() => this.deleteBook(item)}
+                                  okText="Yes"
+                                  cancelText="No"
+                                  placement="left"
+                                >
+                                  <Button type="primary" size="small" icon={<DeleteOutlined />}>
+                                    Remove
+                                  </Button>
+                                </Popconfirm>
+                              ) : (
+                                <></>
+                              )}
                             </Space>
                           }
                           type="warning"
@@ -200,14 +205,14 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
     );
   }
 
-  async deleteBook(book: any){
+  async deleteBook(book: any) {
     await deleteBook(book.id).finally(() => {
-      sendNotification("Delete book success !", "", "success");
+      sendNotification('Delete book success !', '', 'success');
       this.props.dispatch({
         type: 'listbooks/fetchData',
         payload: book.bookGroupId,
-      })
-    })
+      });
+    });
   }
 }
 

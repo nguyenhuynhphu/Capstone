@@ -19,6 +19,7 @@ interface BookTrackingItemProps {
   dispatch: Dispatch;
   record: any;
   trackingdetail?: any;
+  user?: any;
 }
 
 class BookTrackingItem extends React.Component<BookTrackingItemProps> {
@@ -55,7 +56,7 @@ class BookTrackingItem extends React.Component<BookTrackingItemProps> {
               ) : (
                 <Alert message={this.props.record.errorMessage} type="error" />
               )}
-              {this.handelAlert()}
+              {this.props.user.currentUser.roleId != 1 ? this.handelAlert() : <></>}
             </Space>
           </Col>
           <Col span={2} offset={2}>

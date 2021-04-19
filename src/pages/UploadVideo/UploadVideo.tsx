@@ -252,21 +252,26 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
                 <Space style={{ width: '100%', justifyContent: 'space-between', marginBottom: 10 }}>
                   <TableHeader title="List Detection" description="All dectection in system" />
                   <Space direction="vertical" style={{ alignItems: 'flex-end' }}>
-                    <Button
-                      type={'primary'}
-                      icon={<UploadOutlined />}
-                      onClick={() => {
-                        if (this.state.isUpload && this.state.isHidding) {
-                          notification.close(key);
-                        }
-                        this.props.dispatch({
-                          type: 'uploadvideo/renderModel',
-                          payload: true,
-                        });
-                      }}
-                    >
-                      Upload Video
-                    </Button>
+                    {this.props.user.currentUser.roleId != 1 ? (
+                      <Button
+                        type={'primary'}
+                        icon={<UploadOutlined />}
+                        onClick={() => {
+                          if (this.state.isUpload && this.state.isHidding) {
+                            notification.close(key);
+                          }
+                          this.props.dispatch({
+                            type: 'uploadvideo/renderModel',
+                            payload: true,
+                          });
+                        }}
+                      >
+                        Upload Video
+                      </Button>
+                    ) : (
+                      <></>
+                    )}
+
                     <Space direction="horizontal">
                       <RangePicker onChange={(value) => this.setState({ filterRecord: value })} />
                       <Button
@@ -444,9 +449,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
         </>
       );
     } else {
-      return (
-        <TrackingDetail record={this.state.selectedRecord} />
-      );
+      return <TrackingDetail record={this.state.selectedRecord} />;
     }
   }
 

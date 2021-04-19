@@ -6,12 +6,7 @@ import styles from '../UploadVideo.less';
 import { connect, Dispatch } from 'umi';
 import Description from './Description';
 import BookTrackingItem from './BookTrackingItem';
-import {
-
-  CheckOutlined,
-  CloseOutlined,
-  QuestionOutlined,
-} from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, QuestionOutlined } from '@ant-design/icons';
 
 interface TrackingDetailProps {
   dispatch: Dispatch;
@@ -24,14 +19,19 @@ interface TrackingDetailState {
 
 const columns = [
   {
-    title: 'Drawer Barcode',
-    dataIndex: 'drawerBarcode',
-    key: 'drawerBarcode',
-  },
-  {
     title: 'Drawer Id',
     dataIndex: 'drawerId',
     key: 'drawerId',
+  },
+  {
+    title: 'Drawer Name',
+    dataIndex: 'drawerName',
+    key: 'drawerName',
+  },
+  {
+    title: 'Drawer Barcode',
+    dataIndex: 'drawerBarcode',
+    key: 'drawerBarcode',
   },
 ];
 class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetailState> {
@@ -65,46 +65,40 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
           <Col span={16} style={{ borderLeft: '1px solid rgba(0, 0, 0, .1)' }}>
             <Row style={{ textAlign: 'left', height: '100%' }}>
               <Col span={24} style={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
-                {this.props.trackingdetail.isLoading ? (
-                  <Spin spinning />
+                {this.props.trackingdetail.data.length != 0 ? (
+                  <Table
+                    columns={columns}
+                    loading={this.props.trackingdetail.isLoading}
+                    dataSource={this.props.trackingdetail.data}
+                    bordered
+                    onRow={(record) => {
+                      return {
+                        onDoubleClick: () => {
+                          this.onSelectRow(record);
+                          this.props.dispatch({
+                            type: 'trackingdetail/fetchError',
+                            payload: record.id,
+                          });
+                        }, // double click row,
+                      };
+                    }}
+                    className={styles.tablelDrawer}
+                    scroll={{ x: 0, y: 485 }}
+                    pagination={false}
+                    style={{ height: '100%', marginLeft: 5, borderLeft: 'none' }}
+                  />
                 ) : (
-                  <>
-                    {this.props.trackingdetail.data.length != 0 ? (
-                      <Table
-                        columns={columns}
-                        loading={this.props.trackingdetail.isLoading}
-                        dataSource={this.props.trackingdetail.data}
-                        bordered
-                        onRow={(record) => {
-                          return {
-                            onDoubleClick: () => {
-                              this.onSelectRow(record);
-                              this.props.dispatch({
-                                type: 'trackingdetail/fetchError',
-                                payload: record.id,
-                              });
-                            }, // double click row,
-                          };
-                        }}
-                        className={styles.tablelDrawer}
-                        scroll={{ x: 0, y: 485 }}
-                        pagination={false}
-                        style={{ height: '100%', marginLeft: 5, borderLeft: 'none' }}
-                      />
-                    ) : (
-                      <Result
-                        style={{
-                          height: '100%',
-                          justifyContent: 'center',
-                          flexDirection: 'column',
-                          display: 'flex',
-                        }}
-                        status="warning"
-                        title="No Drawer Was Found !"
-                        subTitle="There are something wrong, please recheck video that you was uploaded !"
-                      />
-                    )}
-                  </>
+                  <Result
+                    style={{
+                      height: '100%',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+                      display: 'flex',
+                    }}
+                    status="warning"
+                    title="No Drawer Was Found !"
+                    subTitle="There are something wrong, please recheck video that you was uploaded !"
+                  />
                 )}
 
                 <Drawer
@@ -152,20 +146,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                       }
                     >
                       {!this.props.trackingdetail.isLoading ? (
-                        this.props.trackingdetail.listError.length != 0 ? (
-                          this.props.trackingdetail.listError.map((record: any) =>
-                            !record.isConfirm && !record.isRejected ? (
-                              <BookTrackingItem record={record} />
-                            ) : (
-                              <></>
-                            ),
-                          )
-                        ) : (
-                          <Result
-                            status="success"
-                            title="No error found !"
-                          />
-                        )
+                        this.renderUnverifyError()
                       ) : (
                         <Spin spinning />
                       )}
@@ -179,9 +160,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                       }
                       key="2"
                     >
-                      {this.props.trackingdetail.listError.map((record: any) =>
-                        record.isConfirm ? <BookTrackingItem record={record} /> : <></>,
-                      )}
+                      {this.renderConfirmError()}
                     </Tabs.TabPane>
                     <Tabs.TabPane
                       tab={
@@ -192,9 +171,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                       }
                       key="3"
                     >
-                      {this.props.trackingdetail.listError.map((record: any) =>
-                        record.isRejected ? <BookTrackingItem record={record} /> : <></>,
-                      )}
+                      {this.renderRejectError()}
                     </Tabs.TabPane>
                   </Tabs>
                 </Drawer>
@@ -204,6 +181,52 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
         </Row>
       </>
     );
+  }
+
+  renderUnverifyError() {
+    const { trackingdetail } = this.props;
+    var tmp: any = [];
+    if (trackingdetail.listError.length != 0) {
+      this.props.trackingdetail.listError.map((record: any) => {
+        if (!record.isConfirm && !record.isRejected) {
+          tmp.push(<BookTrackingItem record={record} />);
+        }
+      });
+      if (tmp.length != 0) {
+        return tmp;
+      }
+    }
+    return <Result style={{ margin: '100px 0px' }} status="success" title="No error found !" />;
+  }
+  renderConfirmError() {
+    const { trackingdetail } = this.props;
+    var tmp: any = [];
+    if (trackingdetail.listError.length != 0) {
+      this.props.trackingdetail.listError.map((record: any) => {
+        if (record.isConfirm) {
+          tmp.push(<BookTrackingItem record={record} />);
+        }
+      });
+      if (tmp.length != 0) {
+        return tmp;
+      }
+    }
+    return <Result style={{ margin: '100px 0px' }} status="success" title="No error found !" />;
+  }
+  renderRejectError() {
+    const { trackingdetail } = this.props;
+    var tmp: any = [];
+    if (trackingdetail.listError.length != 0) {
+      this.props.trackingdetail.listError.map((record: any) => {
+        if (record.isRejected) {
+          tmp.push(<BookTrackingItem record={record} />);
+        }
+      });
+      if (tmp.length != 0) {
+        return tmp;
+      }
+    }
+    return <Result style={{ margin: '100px 0px' }} status="success" title="No error found !" />;
   }
 
   showDrawer = () => {
