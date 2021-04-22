@@ -186,7 +186,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
           columns={columns}
           loading={bookgrouptable.isLoading}
           className={styles.bookTable}
-          scroll={{ y: 500 }}
+          scroll={{ y: 550 }}
           pagination={{ ...bookgrouptable.pagination, showSizeChanger: false }}
           dataSource={bookgrouptable.data}
           size={'small'}

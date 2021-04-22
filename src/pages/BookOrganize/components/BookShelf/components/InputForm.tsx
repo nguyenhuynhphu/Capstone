@@ -90,11 +90,10 @@ const InputForm = (props: any) => {
               ({ getFieldValue }) => ({
                 validator(rule, value) {
                   if (value != undefined) {
-                    if (value.trim().length != 0) {
+                    if (value != 0) {
                       return Promise.resolve();
                     }
                   }
-
                   return Promise.reject(`Row must no empty`);
                 },
               }),
@@ -117,7 +116,7 @@ const InputForm = (props: any) => {
               ({ getFieldValue }) => ({
                 validator(rule, value) {
                   if (value != undefined) {
-                    if (value.trim().length != 0) {
+                    if (value != 0) {
                       return Promise.resolve();
                     }
                   }

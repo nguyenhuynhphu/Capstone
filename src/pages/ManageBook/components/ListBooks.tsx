@@ -572,7 +572,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
   }
 
   async deleteBook(book: any) {
-    var reason: string = '';
+    var reason: string = '';    
     Modal.confirm({
       title: 'Warning',
       icon: <ExclamationCircleOutlined />,
@@ -580,6 +580,17 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
       content: (
         <>
           <div>
+            {this.state.borrowBook.patronImage ? (
+              <Space direction="horizontal">
+                <Avatar src={this.state.borrowBook?.patronImage}></Avatar>
+                <Space direction="vertical">
+                  <Text>{this.state.borrowBook?.patronName}</Text>
+                  <Text>Borrow ID: {this.state.borrowBook?.borrowId}</Text>
+                </Space>
+              </Space>
+            ) : (
+              <Spin spinning />
+            )}
             <Text>Please enter reason why book is delete:</Text>
             <Input
               bordered={false}

@@ -25,7 +25,6 @@ import ListBooks from './ListBooks';
 import { formatDate } from '@/utils/utils';
 import Column from 'antd/lib/table/Column';
 import Pdf from 'react-to-pdf';
-import { faSleigh } from '@fortawesome/free-solid-svg-icons';
 import { insertBook } from '@/services/book';
 import sendNotification from '@/utils/Notification';
 

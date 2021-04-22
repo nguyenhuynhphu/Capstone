@@ -1,13 +1,9 @@
 import {
-  Affix,
   Alert,
-  Anchor,
-  Avatar,
   Button,
   Col,
   ConfigProvider,
   Drawer,
-  List,
   Result,
   Row,
   Space,
@@ -22,18 +18,14 @@ import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import ReactPlayer from 'react-player';
 import styles from '../UploadVideo.less';
-import { connect, Dispatch, Link } from 'umi';
+import { connect, Dispatch } from 'umi';
 import Description from './Description';
 import BookTrackingItem from './BookTrackingItem';
 import {
   CheckOutlined,
   CloseOutlined,
-  ExclamationOutlined,
   QuestionOutlined,
-  SmileOutlined,
 } from '@ant-design/icons';
-import BookItem from './BookItem';
-import DrawerItem from './DrawerItem';
 import sendNotification from '@/utils/Notification';
 const { Text } = Typography;
 interface TrackingDetailProps {

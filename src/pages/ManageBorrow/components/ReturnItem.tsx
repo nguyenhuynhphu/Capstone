@@ -103,7 +103,7 @@ class ReturnItem extends React.Component<ReturnItemrops, {}> {
   handelFee() {
     const { returnItem } = this.props;
 
-    var diffDate = moment(returnItem.returnTime).diff(returnItem.startTime, 'days');
+    var diffDate = moment().diff(returnItem.startTime, 'days');
     if (diffDate == 0) diffDate = 1;
     else diffDate += 1;
     var fee = 0;

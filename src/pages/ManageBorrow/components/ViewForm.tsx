@@ -1,9 +1,8 @@
 import { BookOutlined, EuroCircleOutlined, EuroOutlined } from '@ant-design/icons';
-import { Badge, Button, Descriptions, Drawer, Image, List, Space } from 'antd';
+import { Badge, Button, Descriptions, Image, List, Space } from 'antd';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
 import { history } from 'umi';
-import { browserHistory } from 'react-router';
 
 interface ViewFormProps {
   dispatch: Dispatch;

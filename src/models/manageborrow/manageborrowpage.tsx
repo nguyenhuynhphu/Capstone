@@ -1,4 +1,4 @@
-import { fetchBorrowDetail } from '@/services/manageborrow';
+import { fetchBorrowDetail, fetchReturnDetail } from '@/services/manageborrow';
 import { Effect, Reducer } from 'umi';
 
 export interface ManageBorrowPageState {
@@ -67,7 +67,7 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
         type: 'displayScrollBar',
         payload: false,
       });
-      const data = yield call(fetchBorrowDetail, payload.id)
+      const data = yield call(fetchReturnDetail, payload.id)
       payload.borrowDetail = data.data;
       yield put({
         type: 'displayViewReturn',

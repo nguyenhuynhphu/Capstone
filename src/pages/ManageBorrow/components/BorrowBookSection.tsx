@@ -204,7 +204,7 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
   }
   handelFee() {
     const { borrowBook } = this.props;
-    var diffDate = moment(borrowBook.endTime).diff(borrowBook.startTime, 'days');
+    var diffDate = moment().diff(borrowBook.startTime, 'days');
     if (diffDate == 0) diffDate = 1;
     else diffDate += 1;
     var fee = 0;

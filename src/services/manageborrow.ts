@@ -37,7 +37,10 @@ export async function confirmReturn(value: any): Promise<any> {
   });
 }
 
-
+//
+export async function fetchReturnDetail(returnId: number): Promise<any> {
+  return request(`/api/ReturnDetail?ReturnId=${returnId}`);
+}
 
 export async function fetchBorrowDetail(borrowId: number): Promise<any> {
   return request(`/api/BorrowDetail?BorrowId=${borrowId}`);
