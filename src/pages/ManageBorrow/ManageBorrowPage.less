@@ -10,32 +10,37 @@
   overflow: auto;
 }
 
-.wishlistCol::-webkit-scrollbar {
-  width: 3px;
-  height: 5px;
-}
-.wishlistCol::-webkit-scrollbar-thumb {
-  background: #888;
-}
 .borrowTable {
   :global {
     .ant-table-thead > tr > th {
-      height: 60px !important;
-      background-color: rgba(64, 169, 255, 0.2);
+      background-color: transparent;
     }
     .ant-table-body {
       height: 600px;
+    }
+    .ant-table-body::-webkit-scrollbar {
+      width: 3px;
+      height: 5px;
+    }
+    .ant-table-body::-webkit-scrollbar-thumb {
+      background: #888;
     }
   }
 }
 .returnTable {
   :global {
     .ant-table-thead > tr > th {
-      height: 60px !important;
-      background-color: rgba(64, 169, 255, 0.2);
+      background-color: transparent;
     }
     .ant-table-body {
-      height: 600px;
+      height: 600px !important;
+    }
+    .ant-table-body::-webkit-scrollbar {
+      width: 3px;
+      height: 5px;
+    }
+    .ant-table-body::-webkit-scrollbar-thumb {
+      background: #888;
     }
   }
 }

@@ -1,9 +1,10 @@
 import { DeleteOutlined, EditOutlined, MoreOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Popconfirm, Popover, Space, Table } from 'antd';
+import { Avatar, Popconfirm, Popover, Space, Table, Tooltip, Typography } from 'antd';
 import Column from 'antd/lib/table/Column';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
 import styles from '../LibarianPage.less';
+const { Text } = Typography;
 
 interface LibarianPageProps {
   dispatch: Dispatch;
@@ -37,6 +38,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
             payload: { filterName: libariantable.filterName, pagination: pagination.current },
           });
         }}
+        scroll={{ y: 350 }}
         onRow={(record, rowIndex) => {
           return {
             onDoubleClick: (event) => {
@@ -50,10 +52,11 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
       >
         <Column
           key="deco"
+          width={20}
           render={(text: any, record: any) => (
             <>
               <div
-                style={{ width: 4, height: 80, backgroundColor: '#40A9FF', borderRadius: '10px' }}
+                style={{ width: 3, height: 35, backgroundColor: '#40A9FF', borderRadius: '10px' }}
               ></div>
             </>
           )}
@@ -62,6 +65,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
           title={'#'}
           dataIndex={'id'}
           key={'id'}
+          width={50}
           render={(text: any, record: any) => (
             <>
               <p style={{ marginBottom: '0px' }}>#{text}</p>
@@ -76,7 +80,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
           render={(text: any, record: any) => (
             <>
               <Space>
-                <Avatar size={50} src={record.image} />
+                <Avatar size={'small'} src={record.image} />
                 <p style={{ marginBottom: '0px' }}>{text}</p>
               </Space>
             </>
@@ -97,7 +101,19 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
             </>
           )}
         />
-        <Column title="Address" dataIndex="address" key="address" />
+        <Column
+          title="Address"
+          dataIndex="address"
+          key="address"
+          width={200}
+          render={(text: any, record: any) => (
+            <Tooltip title={text}>
+              <Text style={{ width: 200 }} ellipsis={true}>
+                {text}
+              </Text>
+            </Tooltip>
+          )}
+        />
         <Column
           key="action"
           align="center"

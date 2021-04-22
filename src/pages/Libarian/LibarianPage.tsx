@@ -2,12 +2,9 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Button, Col, Drawer, Row, Space } from 'antd';
 import React from 'react';
 import LibarianTable from './components/LibarianTable';
-import styles from './LibarianPage.less';
 import Search from 'antd/lib/input/Search';
 import {
-  PlusOutlined,
   UserAddOutlined,
-  UsergroupAddOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 
@@ -19,7 +16,6 @@ import { FormInstance } from 'antd/lib/form';
 import TableHeader from '@/components/CustomDesign/TableHeader';
 import { storage } from '@/firebase/Firebase';
 import UpdateForm from './components/UpdateForm';
-import moment from 'moment';
 
 interface LibarianPageProps {
   dispatch: Dispatch;
@@ -208,7 +204,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
       .ref()
       .child(`${libarian.name}/${libarian.image.uid}_${libarian.image.name}`)
       .put(libarian.image, { contentType: libarian.image.type });
-
+   
     task.on(
       'state_changed',
       function progress(snapshot) {},
@@ -216,6 +212,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
       async () => {
         const loadUrl = await task.snapshot.ref.getDownloadURL();
         libarian.image = loadUrl;
+        libarian.roleId = 3;
         dispatch({
           type: 'libarianpage/insertLibarian',
           payload: libarian,

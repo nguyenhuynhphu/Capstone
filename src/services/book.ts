@@ -4,6 +4,9 @@ import request from '@/utils/request';
 export async function fetchAllBook(bookGroupId: number, count: number): Promise<any> {
   return request(`/api/Book?BookGroupId=${bookGroupId}&PageSize=1000`);
 }
+export async function fetchBookById(bookId: number): Promise<any> {
+  return request(`/api/Book/${bookId}`);
+}
 
 export async function insertBook(values: any) {
   console.log(JSON.stringify(values));
@@ -14,8 +17,14 @@ export async function insertBook(values: any) {
   });
 }
 
-export async function deleteBook(bookId: number) {
-  return request(`/api/Book?id=${bookId}`, {
-    method: 'DELETE',
+export async function deleteBook(book: any) {
+  console.log(JSON.stringify(book));
+  book.isDeleted = true;
+  book.note = book.note;
+  return request(`/api/Book`, {
+    method: 'POST',
+    body: JSON.stringify([book]),
   });
+
 }
+//

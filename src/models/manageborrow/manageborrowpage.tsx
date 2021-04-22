@@ -4,8 +4,10 @@ import { Effect, Reducer } from 'umi';
 export interface ManageBorrowPageState {
   viewBorrowVisible: boolean;
   choiceBorrow: any;
-
   borrowDetail: any;
+
+  viewReturnVisible: boolean;
+  choiceReturn: any;
 }
 
 export interface ManageBorrowPageType {
@@ -14,12 +16,15 @@ export interface ManageBorrowPageType {
   effects: {
     showViewBorrow: Effect;
     hideViewBorrow: Effect;
+
+    showViewReturn: Effect;
+    hideViewReturn: Effect;
   };
   reducers: {
     displayScrollBar: Reducer;
     displayViewBorrow: Reducer;
 
-
+    displayViewReturn: Reducer;
   };
 }
 
@@ -28,7 +33,10 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
   state: {
     viewBorrowVisible: false,
     choiceBorrow: {},
-    borrowDetail: {}
+    borrowDetail: {},
+
+    viewReturnVisible: false,
+    choiceReturn: {}
   },
   effects: {
     //===================================
@@ -53,8 +61,28 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
         type: 'displayViewBorrow',
         payload: {visible: false, record: {}},
       });
-      
-    
+    },
+    *showViewReturn({ payload }, { put, call }) {
+      yield put({
+        type: 'displayScrollBar',
+        payload: false,
+      });
+      const data = yield call(fetchBorrowDetail, payload.id)
+      payload.borrowDetail = data.data;
+      yield put({
+        type: 'displayViewReturn',
+        payload: {visible: true, record: payload},
+      });
+    },
+    *hideViewReturn(_, { put }) {
+      yield put({
+        type: 'displayScrollBar',
+        payload: true,
+      });
+      yield put({
+        type: 'displayViewReturn',
+        payload: {visible: false, record: {}},
+      });
     }
   },
   reducers: {
@@ -76,6 +104,14 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
         ...state,
         viewBorrowVisible: visible,
         choiceBorrow: record
+      };
+    },
+    displayViewReturn(state, {payload}) {
+      const {visible, record} = payload;
+      return {
+        ...state,
+        viewReturnVisible: visible,
+        choiceReturn: record
       };
     },
   },

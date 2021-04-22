@@ -6,7 +6,7 @@ import Search from 'antd/lib/input/Search';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
-import styles from '@/pages/BookOrganize/BookOrganizePage.less';
+import styles from './BookShelfTable.less';
 import sendNotification from '@/utils/Notification';
 const { Column } = Table;
 
@@ -90,8 +90,8 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
           dataSource={bookshelftable.data}
           pagination={bookshelftable.pagination}
           loading={bookshelftable.isLoading}
-          size={'middle'}
-          scroll={{ y: 400 }}
+          size={'small'}
+          scroll={{ y: 450 }}
           onRow={(record) => {
             return {
               onDoubleClick: () => {}, // double click row,

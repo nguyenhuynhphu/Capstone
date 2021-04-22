@@ -9,7 +9,7 @@ export async function fetchDrawer(bookShelfId: number): Promise<any> {
 }
 
 export async function fetchBookInDrawer(drawerId: number): Promise<any> {
-  return request(`/api/Book?DrawerId=${drawerId}&PageSize=200`);
+  return request(`/api/Book?DrawerId=${drawerId}&PageSize=1000`);
 }
 
 export async function checkingPosition(bookBarcode: number): Promise<any> {
@@ -38,11 +38,11 @@ export async function fetchRecord(payload: any): Promise<any> {
           'YYYY-MM-DD',
         )}&EndTime=${payload.filterRecord[1].format('YYYY-MM-DD')}&PageNumber=${
           payload.pagination
-        }`,
+        }&PageSize=20`,
       );
     }
   }
-  return request(`/api/Detection?StartTime=&EndTime=&PageNumber=${payload.pagination}`);
+  return request(`/api/Detection?StartTime=&EndTime=&PageNumber=${payload.pagination}&PageSize=20`);
 }
 export async function fetchTrackingDetail(detectionId: number): Promise<any> {
   return request(`/api/DrawerDetection?DetectionId=${detectionId}`);
@@ -71,4 +71,15 @@ export async function updateUndefined(undefinedError: any): Promise<any> {
 }
 export async function fetchNewestDetect(): Promise<any> {
   return request(`/api/Detection?PageSize=1`);
+}
+
+export async function fetchDetectionByBookShelfName(bookShelfName: string): Promise<any> {
+  return request(`/api/Detection?BookShelfName=${bookShelfName}`);
+}
+
+export async function fetchAllBookShelf(): Promise<any> {
+  return request(`/api/BookShelf`);
+}
+export async function getBookById(bookId: number): Promise<any> {
+  return request(`/api/Book/${bookId}`);
 }

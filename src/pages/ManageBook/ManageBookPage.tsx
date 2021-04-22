@@ -1,6 +1,6 @@
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-import { Row, Col, Button, Drawer, Modal, Space, Spin } from 'antd';
+import { Row, Col, Button, Drawer, Modal, Space, Spin, Layout } from 'antd';
 import React from 'react';
 
 import styles from './ManageBookPage.less';
@@ -16,6 +16,7 @@ import TableHeader from '@/components/CustomDesign/TableHeader';
 import NewBookInSystem from './components/NewBookInSystem';
 import { RedoOutlined } from '@ant-design/icons';
 import CategoriesChart from './components/CategoriesChart';
+import { Content } from 'antd/lib/layout/layout';
 
 interface ManageBookPageProps {
   dispatch: Dispatch;
@@ -24,6 +25,7 @@ interface ManageBookPageProps {
   bookgrouptable?: any;
   user?: any;
   categorieschart?: any;
+  location?: any;
 }
 
 interface ManageBookPageState {
@@ -31,7 +33,7 @@ interface ManageBookPageState {
   deleteDrawerVisible: boolean;
   viewDrawerVisible: boolean;
   updateDrawerVisible: boolean;
-
+  filterBook: number;
   isLoadingTable: boolean;
   tableDataSource: any;
   pagination: any;
@@ -50,7 +52,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
       deleteDrawerVisible: false,
       viewDrawerVisible: false,
       updateDrawerVisible: false,
-
+      filterBook: 0,
       isLoadingTable: false,
       tableDataSource: [],
       pagination: {
@@ -89,8 +91,23 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   render() {
     const { managebook, categorieschart } = this.props;
+    
+    if (this.props.location.state) {
+      var bookGroupId = this.props.location.state.bookGroupId;
+      var filterBook = this.props.location.state.filterBook;
+      this.setState({filterBook: filterBook});
+      console.log('props.location.state', this.props.location.state);
+      this.props.dispatch({
+        type: 'managebook/showViewBook',
+        payload: bookGroupId,
+      }).then(() => {
+        document.getElementById('view-book')?.click();
+      });
+      this.props.location.state = undefined;
+    }
+
     return (
-      <>
+      <Layout>
         <PageHeaderWrapper style={{ marginBottom: '20px' }}></PageHeaderWrapper>
         <Row gutter={16} style={{ margin: '10px 0' }}>
           <Col
@@ -170,13 +187,12 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           placement="right"
           closable={false}
           mask={true}
-          
           onClose={this.hideViewDrawer}
           visible={managebook.viewBookVisible}
           className={styles.viewBookGroupForm}
           style={{ zIndex: 999 }}
         >
-          <ViewForm bookGroup={managebook.choiceBook} />
+          <ViewForm bookGroup={managebook.choiceBook} filterBook={this.state.filterBook} />
         </Drawer>
         <Drawer
           title={
@@ -184,6 +200,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           }
           width={750}
           onClose={() => this.hideInputBook()}
+          mask={true}
           visible={managebook.inputBookVisible}
           bodyStyle={{ paddingBottom: 80 }}
           style={{ zIndex: 9999 }}
@@ -212,7 +229,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
         </Drawer>
         <Drawer
           placement={'bottom'}
-          mask={false}
+          //mask={false}
           visible={managebook.deleteBookVisible}
           key={'bottom'}
           closeIcon={null}
@@ -244,7 +261,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
         >
           <ListCategories />
         </Modal>
-      </>
+      </Layout>
     );
   }
 
@@ -491,6 +508,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           payload: {},
         }),
       );
+      this.setState({filterBook: 0})
   }
 
   hideInputBook() {

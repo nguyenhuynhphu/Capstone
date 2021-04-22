@@ -6,7 +6,7 @@ import { ResponsiveBar } from '@nivo/bar';
 const { Text } = Typography;
 
 interface CategoriesChartProps {
-  dispatch: Dispatch;
+  dispatch?: Dispatch;
   categorieschart?: any;
 }
 const data = [

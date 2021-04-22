@@ -1,20 +1,9 @@
 import { BookOutlined, EuroCircleOutlined, EuroOutlined } from '@ant-design/icons';
-import {
-  Avatar,
-  Badge,
-  Button,
-  Col,
-  Descriptions,
-  Image,
-  List,
-  Row,
-  Space,
-  Typography,
-} from 'antd';
-import Title from 'antd/lib/typography/Title';
+import { Badge, Button, Descriptions, Drawer, Image, List, Space } from 'antd';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
-import styles from '../ManageBorrowPage.less';
+import { history } from 'umi';
+import { browserHistory } from 'react-router';
 
 interface ViewFormProps {
   dispatch: Dispatch;
@@ -65,10 +54,27 @@ class ViewForm extends React.Component<ViewFormProps> {
                   <Space direction="vertical">
                     <p style={{ marginBottom: 0 }}>{item.bookName}</p>
                     <Space direction="horizontal">
-                      <p style={{ marginBottom: 0 }}>Fee: {item.fee} <EuroCircleOutlined style={{color: 'rgb(238, 187, 51)'}} /></p>
-                      <p style={{ marginBottom: 0, marginLeft: 25 }}>Punish Fee: {item.punishFee} <EuroCircleOutlined style={{color: '#FF4D4F'}}/></p>
+                      <p style={{ marginBottom: 0 }}>
+                        Fee: {item.fee}{' '}
+                        <EuroCircleOutlined style={{ color: 'rgb(238, 187, 51)' }} />
+                      </p>
+                      <p style={{ marginBottom: 0, marginLeft: 25 }}>
+                        Punish Fee: {item.punishFee}{' '}
+                        <EuroCircleOutlined style={{ color: '#FF4D4F' }} />
+                      </p>
                     </Space>
                   </Space>
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      history.push(`/book/manage-book`, {
+                        bookGroupId: item.bookGroupId,
+                        filterBook: item.bookId
+                      });
+                    }}
+                  >
+                    Book Detail
+                  </Button>
                 </Space>
               </List.Item>
             )}

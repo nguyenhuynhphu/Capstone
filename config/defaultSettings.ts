@@ -13,7 +13,7 @@ const proSettings: DefaultSettings = {
   fixSiderbar: true,
   colorWeak: false,
   title: 'PAPV System',
-  pwa: false,
+  pwa: true,
   iconfontUrl: '',
 };
 

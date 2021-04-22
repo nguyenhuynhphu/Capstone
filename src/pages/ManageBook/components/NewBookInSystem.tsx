@@ -8,7 +8,7 @@ import styles from '../ManageBookPage.less';
 const { Paragraph, Text } = Typography;
 
 interface NewBookInSystemProps {
-  dispatch: Dispatch;
+  dispatch?: Dispatch;
   newbooklist?: any;
 }
 

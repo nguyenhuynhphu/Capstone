@@ -57,6 +57,7 @@
                   {
                     path: '/book/manage-book',
                     name: 'Manage Book',
+                    bookGroupId: 0,
                     component: './ManageBook/ManageBookPage',
                     authority: ['user', 'admin'],
                   },

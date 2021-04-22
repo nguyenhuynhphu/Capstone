@@ -41,6 +41,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       currentUser = {
         avatar: '',
         name: '',
+        role: 0
       },
       menu,
     } = this.props;
@@ -57,6 +58,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
         <span className={`${styles.action} ${styles.account}`}>
           <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
           <span className={`${styles.name} anticon`}>{currentUser.name}</span>
+          <span className={`${styles.role}`}>{currentUser.role == 1 ? 'Administrator' : 'Librarian'}</span>
         </span>
       </HeaderDropdown>
     ) : (

@@ -44,26 +44,23 @@
 .spinningCustom::-webkit-scrollbar-thumb {
   background: #888 !important;
 }
-.bookShelfTable {
-  :global {
-    .ant-table-thead > tr > th {
-      // height: 60px !important;
-      background-color: rgba(64, 169, 255, 0.2);
-    }
-    .ant-table-body{
-      height: 400px;
-    }
-  }
-}
+
+
 
 .locationTable {
   :global {
     .ant-table-thead > tr > th {
-      // height: 60px !important;
-      background-color: rgba(64, 169, 255, 0.2);
+      background-color: transparent;
     }
     .ant-table-body{
-      height: 400px;
+      height: 450px;
+    }
+    .ant-table-body::-webkit-scrollbar {
+      width: 5px !important;
+      height: 8px !important;
+    }
+    .ant-table-body::-webkit-scrollbar-thumb {
+      background: #888 !important;
     }
   }
 }

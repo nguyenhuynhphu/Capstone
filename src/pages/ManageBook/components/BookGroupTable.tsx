@@ -3,24 +3,19 @@ import {
   BookOutlined,
   EditOutlined,
   EuroCircleOutlined,
-  ExclamationOutlined,
-  PayCircleOutlined,
   PlusOutlined,
   StarFilled,
-  TagOutlined,
-  WarningOutlined,
 } from '@ant-design/icons';
-import { Button, Col, Popover, Rate, Row, Space, Table, Tag } from 'antd';
+import { Button, Col, Row, Space, Table, Tooltip } from 'antd';
 import Search from 'antd/lib/input/Search';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
 import { Typography, Image } from 'antd';
 import styles from '../ManageBookPage.less';
 import 'antd/dist/antd.css';
-import LoadingDrone from '@/components/CustomDesign/LoadingDrone';
 const { Text } = Typography;
 
-const columns = [
+const columns: any = [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -28,81 +23,41 @@ const columns = [
     render: (text: String, record: any) => (
       <Space>
         <Image
-          width={50}
-          height={77}
+          width={20}
+          height={35}
           src={record.image.length != 0 ? record.image[0]?.url : null}
         />
-        <p style={{ marginBottom: 0 }}>{text}</p>
+        <Tooltip title={text}>
+          <Text style={{ width: 250 }} ellipsis={true}>
+            {text}
+          </Text>
+        </Tooltip>
       </Space>
     ),
   },
   {
-    title: 'Categories',
-    dataIndex: 'category',
-    align: 'left',
-    render: (text: string, record: any) => {
-      if (record.category != undefined) {
-        var tmp: any = [];
-        if (record.category.length >= 2) {
-          return (
-            <Popover
-              content={
-                <div style={{ width: 50 }}>
-                  {record.category.map((cate: any, index: number) => (
-                    <Tag icon={<TagOutlined />} color="#2db7f5">
-                      {cate.name}
-                    </Tag>
-                  ))}
-                </div>
-              }
-              title="All Categories"
-              trigger="hover"
-            >
-              {record.category.map((cate: any, index: number) =>
-                index <= 1 ? (
-                  <Tag icon={<TagOutlined />} color="#2db7f5">
-                    {cate.name}
-                  </Tag>
-                ) : (
-                  <></>
-                ),
-              )}
-              <p
-                style={{
-                  fontSize: 14,
-                  marginBottom: 0,
-                  width: '100%',
-                  textAlign: 'center',
-                  color: '#2db7f5',
-                }}
-              >
-                ...
-              </p>
-            </Popover>
-          );
-        } else {
-          record.category.map((cate: any) =>
-            tmp.push(
-              <Tag key={cate.id} icon={<TagOutlined />} color="#2db7f5">
-                {cate.name}
-              </Tag>,
-            ),
-          );
-        }
-
-        return tmp;
-      } else {
-        return (
-          <Tag icon={<WarningOutlined />} color="#cd201f">
-            No category
-          </Tag>
-        );
-      }
-    },
+    title: 'Quantity',
+    dataIndex: 'quantity',
+    align: 'center',
+    width: 90,
+  },
+  {
+    title: 'Author',
+    dataIndex: 'author',
+    render: (text: String, record: any) => (
+      <Space>
+        <Tooltip title={text}>
+          <Text style={{ width: 150 }} ellipsis={true}>
+            {text}
+          </Text>
+        </Tooltip>
+      </Space>
+    ),
   },
   {
     title: 'Rate',
     dataIndex: 'ratingAverage',
+    width: 100,
     render: (text: string, record: any) => (
       <Space direction="horizontal">
         <p style={{ marginBottom: 0 }}>
@@ -113,8 +68,10 @@ const columns = [
     ),
   },
   {
-    title: 'Author',
-    dataIndex: 'author',
+    title: 'Created Date',
+    dataIndex: 'createdDate',
+    align: 'right',
+    render: (date: any) => <Text>{date?.split('T')[0]}</Text>,
   },
   {
     title: 'Fee',
@@ -147,11 +104,8 @@ const columns = [
 ];
 interface BookGroupTableProps {
   dispatch: Dispatch;
-
   rowSelection: any;
-
   handleRowSelect: Function;
-
   bookgrouptable?: any;
   user?: any;
 }
@@ -172,7 +126,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
     dispatch({
       type: 'bookgrouptable/fetchData',
       payload: { filterName: '', pagination: 1 },
-    });
+    })
   }
 
   render() {
@@ -247,7 +201,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
               onDoubleClick: () => {
                 this.props.dispatch({
                   type: 'managebook/showViewBook',
-                  payload: { ...record },
+                  payload: record.id,
                 });
               }, // double click row
             };

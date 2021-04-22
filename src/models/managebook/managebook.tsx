@@ -2,6 +2,7 @@ import {
   deleteBookGroup,
   deleteCategory,
   editBookGroup,
+  fetchBookById,
   fetchCategories,
   insertBookGroup,
   insertCategory,
@@ -84,10 +85,12 @@ const ManageBookModel: ManageBookType = {
         type: 'displayScrollBar',
         payload: false,
       });
-
+      const response = yield call(fetchBookById, payload);
+      console.log("response", response);
+      
       yield put({
         type: 'displayViewBook',
-        payload: { visible: true, record: payload },
+        payload: { visible: true, record: response.data },
       });
     },
     *hideViewBook(_, { call, put }) {
@@ -206,6 +209,8 @@ const ManageBookModel: ManageBookType = {
   reducers: {
     //#region Forms
     displayViewBook(state, { payload }) {
+      console.log("payload", payload);
+      
       return {
         ...state,
         viewBookVisible: payload.visible,

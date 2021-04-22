@@ -1,16 +1,15 @@
 import {
-  confirmError,
-  confirmErrorUndefined,
+  fetchBookInDrawer,
+  fetchDrawer,
   fetchError,
   fetchRecord,
   fetchTrackingDetail,
   fetchUndifileError,
   findBookShelf,
-  insertRecord,
+  getBookById,
   updateError,
   updateUndefined,
 } from '@/services/upload';
-import { response } from 'express';
 import _ from 'lodash';
 import { Effect, Reducer } from 'umi';
 
@@ -50,12 +49,88 @@ const TrackingDetailModel: TrackingDetailType = {
       yield put({
         type: 'isLoading',
       });
-      console.log("FETCH DATA");
-      
-      const response = yield call(fetchTrackingDetail, payload);
+
+      const detectDrawer = yield call(fetchTrackingDetail, payload);
+      if (detectDrawer.length != 0) {
+        const tmp = yield call(findBookShelf, detectDrawer[0].bookShelfName);
+        console.log('detectDrawer', detectDrawer);
+        var bookshelf = tmp.data[0];
+        const drawers = yield call(fetchDrawer, bookshelf.id);
+
+        for (let j = 0; j < detectDrawer.length; j++) {
+          const drawer = detectDrawer[j];
+          console.log('drawer', drawer);
+
+          const error = yield call(fetchError, drawer.id);
+          const undifileError = yield call(fetchUndifileError, drawer.id);
+          var tmp2 = _.concat(error, undifileError);
+          drawer.error = tmp2;
+        }
+
+        for (let i = 0; i < drawers.length; i++) {
+          var drawer = drawers[i];
+          var check = detectDrawer.find((detectDrawer: any) => detectDrawer.drawerId == drawer.id);
+          if (check) {
+            var tmpBook = yield call(fetchBookInDrawer, drawer.id);
+            for (let k = 0; k < tmpBook.data.length; k++) {
+              const loadBook = tmpBook.data[k];
+              loadBook.key = loadBook.id;
+              var errorBook = check.error.find((book: any) => book.bookId == loadBook.id);
+              if (errorBook) {
+                loadBook.error = errorBook;
+              }
+            }
+
+            var errorBook = check.error.filter(
+              (book: any) => book.typeError == 2 || book.typeError == 1,
+            );
+            if (errorBook != undefined) {
+              var coverError: any = [];
+              errorBook.forEach((errorTmp: any) => {
+                var tmp: any = {};
+                if (errorTmp.bookId != undefined) {
+                  tmp = {
+                    barCode: errorTmp.bookBarcode,
+                    bookGroupId: errorTmp.bookGroupId,
+                    bookName: errorTmp.bookName,
+                    bookShelfName: errorTmp.bookShelfName,
+                    drawerId: errorTmp.drawerId,
+                    drawerName: errorTmp.drawerName,
+                    error: errorTmp,
+                    id: errorTmp.bookId,
+                    isAvailable: errorTmp.isAvailable,
+                    isDeleted: errorTmp.isDeleted,
+                    key: errorTmp.bookId,
+                    locationName: 'Red',
+                  };
+                } else {
+                  tmp = {
+                    barCode: '',
+                    bookGroupId: '',
+                    bookName: '',
+                    bookShelfName: '',
+                    drawerId: '',
+                    drawerName: '',
+                    error: errorTmp,
+                    id: 'Strange Barcode',
+                    isAvailable: true,
+                    isDeleted: false,
+                    key: 1232123123,
+                    locationName: '',
+                  };
+                }
+
+                coverError.push(tmp);
+              });
+              _.merge(tmpBook.data, coverError);
+            }
+            check.books = tmpBook.data;
+          }
+        }
+      }
       yield put({
         type: 'loadData',
-        payload: response,
+        payload: detectDrawer,
       });
     },
 
@@ -80,7 +155,6 @@ const TrackingDetailModel: TrackingDetailType = {
     *updateErrorUndefined({ payload }, { put, call }) {
       yield call(updateUndefined, payload);
     },
-
   },
   reducers: {
     resetState(state, {}) {

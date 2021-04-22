@@ -95,8 +95,8 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
           loading={locationtable.isLoading}
           pagination={locationtable.pagination}
          
-          scroll={{ y: 480 }}
-          size={'middle'}
+          scroll={{ y: 450 }}
+          size={'small'}
           onChange={(pagination) => {
             this.props.dispatch({
               type: 'locationtable/fetchData',

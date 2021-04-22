@@ -53,6 +53,7 @@ import BorrowItem from './components/BorrowItem';
 import Search from 'antd/lib/input/Search';
 import BorrowBookSection from './components/BorrowBookSection';
 import sendNotification from '@/utils/Notification';
+import ViewReturnForm from './components/ViewReturnForm';
 
 // import moment from 'moment';
 const { Step } = Steps;
@@ -86,9 +87,11 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     };
 
     this.hideViewBorrow = this.hideViewBorrow.bind(this);
+    this.hideViewReturn = this.hideViewReturn.bind(this);
     this.searchPatron = this.searchPatron.bind(this);
   }
   componentDidMount() {
+    
     this.props.dispatch({ type: 'returnfeechart/fetchData' });
     this.props.dispatch({ type: 'manageborrowstatistic/fetchData' });
   }
@@ -317,6 +320,16 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
               <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
                 <Col span={24}>
                   <ReturnBookTable />
+                  <Drawer
+                    title={'Return Detail'}
+                    width={700}
+                    placement="right"
+                    closable={false}
+                    onClose={this.hideViewReturn}
+                    visible={manageborrowpage.viewReturnVisible}
+                  >
+                    <ViewReturnForm />
+                  </Drawer>
                 </Col>
               </Row>
             </Col>
@@ -698,6 +711,12 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
   hideViewBorrow() {
     this.props.dispatch({
       type: 'manageborrowpage/hideViewBorrow',
+      payload: {},
+    });
+  }
+  hideViewReturn(){
+    this.props.dispatch({
+      type: 'manageborrowpage/hideViewReturn',
       payload: {},
     });
   }

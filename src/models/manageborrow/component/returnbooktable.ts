@@ -6,7 +6,6 @@ export interface ReturnBookTableState {
   pagination: any;
   filterName: string;
   isLoading: boolean;
-  selectedRowKeys: any;
 }
 
 export interface ReturnBookTableType {
@@ -19,7 +18,6 @@ export interface ReturnBookTableType {
   reducers: {
     isLoading: Reducer;
     loadData: Reducer;
-    selected: Reducer;
   };
 }
 
@@ -33,7 +31,6 @@ const ReturnBookTableModel: ReturnBookTableType = {
     },
     filterName: '',
     isLoading: false,
-    selectedRowKeys: [],
   },
   effects: {
     *fetchData({ payload }, { call, put }) {
@@ -84,12 +81,6 @@ const ReturnBookTableModel: ReturnBookTableType = {
           ...state,
         };
       }
-    },
-    selected(state, { payload }) {
-      return {
-        ...state,
-        selectedRowKeys: payload,
-      };
     },
   },
 };

@@ -30,6 +30,7 @@ const ManageBorrowTableModel: ManageBorrowTableType = {
     pagination: {
       current: 1,
       total: 0,
+      showSizeChanger: false
     },
     filterName: '',
     isLoading: false,
@@ -76,6 +77,7 @@ const ManageBorrowTableModel: ManageBorrowTableType = {
           pagination: {
             current: filter.pagination,
             total: response.meta.totalCount,
+            showSizeChanger: false
           },
           isLoading: false,
         };

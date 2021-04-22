@@ -38,6 +38,7 @@ interface ViewFormProps {
   bookGroup: any;
   user?: any;
   listbooks?: any;
+  filterBook?: any;
 }
 interface ViewFormState {
   viewBookQuantity: boolean;
@@ -212,7 +213,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                 </Row>
               </Col>
               <Col span={12}>
-                <Link href="#" onClick={this.showChildrenDrawer}>
+                <Link id={'view-book'} href="#" onClick={this.showChildrenDrawer}>
                   More detail <RightOutlined style={{ fontSize: 12 }} />
                 </Link>
               </Col>
@@ -288,7 +289,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
           )}
 
           <Divider />
-          <ListBooks />
+          <ListBooks filterBook={this.props.filterBook}/>
         </Drawer>
         <Drawer
           title="Show Feedbacks"
@@ -356,19 +357,13 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
               }}
             >
               {({ toPdf }: any) => (
-                <Button key="submit" type="primary" onClick={toPdf}>
+                <Button key="submit" type="primary" onClick={this.state.exportSelected.length != 0 ? toPdf : null}>
                   Export
                 </Button>
               )}
             </Pdf>,
           ]}
         >
-          {/* <Title level={5}>{bookGroup.name}</Title>
-          <div style={{ height: 300, overflow: 'auto', overflowY: 'auto' }}>
-            {this.state.exportSelected.map((book: any) => (
-              <Barcode value={book} />
-            ))}
-          </div> */}
           {this.state.exportSelected.length != 0 ? (
             <div
               ref={pdfRef}

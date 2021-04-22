@@ -1,19 +1,81 @@
 import TableHeader from '@/components/CustomDesign/TableHeader';
 import { UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Col, Popconfirm, Row, Space, Table } from 'antd';
+import { Avatar, Button, Col, Popconfirm, Row, Space, Table, Tooltip, Typography } from 'antd';
 import Search from 'antd/lib/input/Search';
 import Title from 'antd/lib/typography/Title';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
 import styles from '../PatronPage.less';
+const { Text } = Typography;
 
 interface PatronPageProps {
   dispatch: Dispatch;
   patrontable?: any;
 }
-interface PatronPageState {}
-
-class PatronTable extends React.Component<PatronPageProps, PatronPageState> {
+const column: any = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    width: 250,
+    render: (text: any, record: any) => (
+      <>
+        <Space>
+          <Avatar size={'small'} src={record.image} />
+          <p style={{ marginBottom: '0px' }}>{text}</p>
+        </Space>
+      </>
+    ),
+  },
+  {
+    title: 'Username',
+    dataIndex: 'username',
+    key: 'username',
+    align: 'left',
+  },
+  {
+    title: 'Gender',
+    dataIndex: 'gender',
+    key: 'address',
+    align: 'center',
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address',
+    render: (text: any, record: any) => (
+      <Tooltip title={text}>
+        <Text style={{ width: 130 }} ellipsis={true}>
+          {text}
+        </Text>
+      </Tooltip>
+    ),
+  },
+  {
+    title: 'Created Time',
+    dataIndex: 'createdTime',
+    key: 'createdTime',
+    render: (text: any, record: any) => (
+      <>
+        <p style={{ marginBottom: '0px' }}>{text.split('T')[0]}</p>
+      </>
+    ),
+  },
+  {
+    title: 'Email',
+    dataIndex: 'email',
+    key: 'email',
+  },
+  {
+    title: 'Phone',
+    dataIndex: 'phone',
+    key: 'phone',
+  },
+];
+class PatronTable extends React.Component<PatronPageProps, {}> {
+  constructor(props: any) {
+    super(props);
+  }
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -24,47 +86,6 @@ class PatronTable extends React.Component<PatronPageProps, PatronPageState> {
 
   render() {
     const { patrontable } = this.props;
-    const column = [
-      {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        width: 250,
-        render: (text: any, record: any) => (
-          <>
-            <Space>
-              <Avatar size={50} src={record.image} />
-              <p style={{ marginBottom: '0px' }}>{text}</p>
-            </Space>
-          </>
-        ),
-      },
-      {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-      },
-      {
-        title: 'Created Time',
-        dataIndex: 'createdTime',
-        key: 'createdTime',
-        render: (text: any, record: any) => (
-          <>
-            <p style={{ marginBottom: '0px' }}>{text.split('T')[0]}</p>
-          </>
-        ),
-      },
-      {
-        title: 'Email',
-        dataIndex: 'email',
-        key: 'email',
-      },
-      {
-        title: 'Phone',
-        dataIndex: 'phone',
-        key: 'phone',
-      },
-    ];
 
     return (
       <>
@@ -98,6 +119,7 @@ class PatronTable extends React.Component<PatronPageProps, PatronPageState> {
           dataSource={patrontable.data}
           loading={patrontable.isLoading}
           pagination={patrontable.pagination}
+          size="small"
           onRow={(record, rowIndex) => {
             return {
               onDoubleClick: (event) => {

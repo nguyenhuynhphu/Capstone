@@ -86,6 +86,7 @@ export async function addBookToDrawer(values: any): Promise<any> {
 export async function removeBooksFromDrawer(values: any): Promise<any> {
   console.log(JSON.stringify(values),);
   
+  
   return request(`/api/Book`, {
     method: 'POST',
     body: JSON.stringify(values),

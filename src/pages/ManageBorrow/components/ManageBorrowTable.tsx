@@ -35,7 +35,7 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
 
         render: (text: string, record: any) => (
           <Space>
-            <Avatar size={50} src={record.image} />
+            <Avatar size='small' src={record.image} />
             <p style={{ marginBottom: '0px' }}>{text}</p>
           </Space>
         ),
@@ -45,6 +45,7 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
         dataIndex: 'startTime',
         key: 'startTime',
         width: 130,
+        
         render: (text: any) => <p style={{ marginBottom: 0 }}>{text.split('T')[0]}</p>,
       },
       {
@@ -52,7 +53,7 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
         dataIndex: 'endTime',
         key: 'endTime',
         width: 130,
-
+        align: 'center',
         render: (text: any, record: any) =>
           isLate(record.endTime) ? (
             <Popover
@@ -147,7 +148,8 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
         </Space>
         <Table
           columns={column}
-          scroll={{ y: 600 }}
+          scroll={{ y: 450 }}
+          size={'small'}
           dataSource={manageborrowtable.data}
           loading={manageborrowtable.isLoading}
           pagination={manageborrowtable.pagination}

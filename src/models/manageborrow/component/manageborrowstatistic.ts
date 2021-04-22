@@ -1,5 +1,6 @@
 import { fetchAllBookGroup, fetchBookByCategory, fetchCategories } from '@/services/bookgroup';
 import { fetchBookAvailable, fetchEarnByMonth, fetchLateReturn, fetchTotalBorrow, fetchTotalReturn } from '@/services/manageborrow';
+import moment from 'moment';
 import { Effect, Reducer } from 'umi';
 
 export interface ManageBorrowStatisticState {
@@ -49,9 +50,12 @@ const ManageBorrowStatisticModel: ManageBorrowStatisticType = {
 
       const earnByMonth = yield call(fetchEarnByMonth, false);
       var value = 0;
-      if(earnByMonth.data[4] != undefined){
-        value = earnByMonth.data[4].fee;
-      }
+      earnByMonth.data.forEach((earing: any) => {
+        if(moment(earing.returnTime).diff(moment(), 'months') == 0){
+          value = earing.fee;
+        }
+      });
+   
       tmp.earnByMonth = value;
       const totalReturn = yield call(fetchTotalReturn, false);
       tmp.totalReturn = totalReturn.meta.totalCount;

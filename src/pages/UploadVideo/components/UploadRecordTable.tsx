@@ -3,7 +3,7 @@ import React from 'react';
 import { connect, Dispatch } from 'umi';
 
 import { Space, Table, Button } from 'antd';
-
+import styles from '../UploadVideo.less';
 import _ from 'lodash';
 
 interface UploadRecordTableProps {
@@ -20,7 +20,7 @@ const columns = [
     key: 'id',
     align: 'center',
     width: 80,
-    render: (text) => <p>{text}</p>,
+    render: (text: string) => <p style={{marginBottom: 0}}>{text}</p>,
   },
   {
     title: 'Book Shelf',
@@ -39,7 +39,7 @@ const columns = [
     title: 'Date Uploaded',
     dataIndex: 'time',
     key: 'time',
-    align: 'right',
+    align: 'left',
     render: (text: string) => <p>{text.split('T')[0]}</p>,
   },
 ];
@@ -65,7 +65,7 @@ class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRe
           dataSource={uploadrecordtable.data}
           pagination={uploadrecordtable.pagination}
           loading={uploadrecordtable.isLoading}
-          bordered
+          size='small'
           onChange={(pagination) => {
             dispatch({
               type: 'uploadrecordtable/fetchData',
@@ -73,6 +73,7 @@ class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRe
             });
           }}
           scroll={{y: 500}}
+          className={styles.uploadVideo}
           onRow={(record) => {
             return {
               onDoubleClick: () => this.props.trackingDetail(record), // double click row,

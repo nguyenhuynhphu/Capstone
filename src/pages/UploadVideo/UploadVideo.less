@@ -13,24 +13,89 @@
     }
   }
 }
-.tablelDrawer{
+.collapseBook{
   :global{
-    .ant-table-thead>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td, 
-    .ant-table-tbody>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td, 
-    .ant-table-thead>tr:hover:not(.ant-table-expanded-row)>td, 
-    .ant-table-tbody>tr:hover:not(.ant-table-expanded-row)>td {
-        background: unset; //Change the existing color to `unset`
-        cursor: pointer;
+    .ant-collapse-header{
+      padding: 10px 10px !important;
+      background-color: white;
     }
+  }
+}
+.listErrorCustom {
+  :global {
     .ant-table-body{
+      height: 450px;
+      padding-right: 15px;
+    }
+    .ant-table-thead > tr > th {
+      background-color: transparent;
+    }
+    .ant-table-body::-webkit-scrollbar {
+      width: 5px;
+      height: 8px;
+    }
+    .ant-table-body::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.4);
+    }
+    .ant-table-expanded-row:hover{
+      background-color: white;
+    }
+    .ant-table-cell:hover{
+      background-color: white;
+    }
+    .ant-table-expanded-row{
+      background-color: white;
+    }
+    .ant-table-cell{
+      background-color: white;
+    }
+  }
+}
+.listDrawer{
+  :global{
+    .ant-list-item{
+      padding: 0px;
+    }
+  }
+}
+.spinn {
+  height: 100%;
+}
+.uploadVideo {
+  :global {
+    .ant-table-body {
+      height: 500px !important;
+    }
+    .ant-table-thead > tr > th {
+      background-color: transparent;
+    }
+    .ant-table-body::-webkit-scrollbar {
+      width: 5px;
+      height: 8px;
+    }
+    .ant-table-body::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.4);
+    }
+  }
+}
+.tablelDrawer {
+  :global {
+    .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row) > td,
+    .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row) > td,
+    .ant-table-thead > tr:hover:not(.ant-table-expanded-row) > td,
+    .ant-table-tbody > tr:hover:not(.ant-table-expanded-row) > td {
+      background: unset; //Change the existing color to `unset`
+      cursor: pointer;
+    }
+    .ant-table-body {
       height: 485px !important;
       overflow: scroll;
     }
-    .ant-table-container{
+    .ant-table-container {
       border-left: none !important;
       border-top: none !important;
     }
-    .ant-table-title{
+    .ant-table-title {
       border-left: none !important;
     }
 
@@ -39,11 +104,11 @@
       height: 8px;
     }
     .ant-table-body::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, .4);
+      background: rgba(0, 0, 0, 0.4);
     }
   }
 }
-.active{
-  background-color: #1890FF;
+.active {
+  background-color: #1890ff;
   color: white;
 }

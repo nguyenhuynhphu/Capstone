@@ -34,7 +34,7 @@ class ReturnBookTable extends React.Component<ReturnBookTableProps> {
         width: 200,
         render: (text: string, record: any) => (
           <Space>
-            <Avatar size={50} src={record.image} />
+            <Avatar size='small' src={record.image} />
             <p style={{ marginBottom: '0px' }}>{record.patronName}</p>
           </Space>
         ),
@@ -87,8 +87,9 @@ class ReturnBookTable extends React.Component<ReturnBookTableProps> {
           columns={column}
           dataSource={returnbooktable.data}
           loading={returnbooktable.isLoading}
+          size='small'
           pagination={returnbooktable.pagination}
-          scroll={{ y: 800 }}
+          scroll={{ y: 450 }}
           className={styles.returnTable}
           onChange={(pagination: any) => {
             this.props.dispatch({
@@ -99,9 +100,8 @@ class ReturnBookTable extends React.Component<ReturnBookTableProps> {
           onRow={(record, rowIndex) => {
             return {
               onDoubleClick: (event) => {
-                alert("CLICK")
                 this.props.dispatch({
-                  type: 'returnbooktable/showViewBorrow',
+                  type: 'manageborrowpage/showViewReturn',
                   payload: { ...record },
                 });
               },

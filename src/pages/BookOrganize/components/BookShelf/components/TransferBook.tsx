@@ -1,6 +1,6 @@
 import TableHeader from '@/components/CustomDesign/TableHeader';
-import { AppstoreAddOutlined, CloseOutlined, CloseSquareOutlined } from '@ant-design/icons';
-import { Transfer, Button, Space, Spin, Table, Row, Col, Result, Tooltip, Typography } from 'antd';
+import { AppstoreAddOutlined, CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Button, Space, Spin, Table, Result, Tooltip, Typography, Modal } from 'antd';
 import Search from 'antd/lib/input/Search';
 
 import React from 'react';
@@ -186,7 +186,9 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
                 <Table
                   size={'small'}
                   columns={columns}
-                  rowSelection={this.props.user.currentUser.role != 1 ? rowBooksDrawerSelection : undefined}
+                  rowSelection={
+                    this.props.user.currentUser.role != 1 ? rowBooksDrawerSelection : undefined
+                  }
                   loading={transferbook.isLoadingDrawer}
                   dataSource={transferbook.bookInDrawer}
                   pagination={transferbook.paginationDrawer}
@@ -284,49 +286,105 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
   }
   handelTransfer() {
     const { transferbook, dispatch, drawergrid } = this.props;
-    var promises: any = [];
-    promises.push(
-      dispatch({
-        type: 'transferbook/insertBookToDrawer',
-        payload: { data: transferbook.selectedBooks, drawerId: drawergrid.selectDrawer.id },
-      }),
-    );
-    promises.push(
-      dispatch({
-        type: 'transferbook/changeLoadingState',
-        payload: {},
-      }),
-    );
-    Promise.all(promises).then(() => {
-      promises = [];
+    if ((transferbook.paginationDrawer.total + transferbook.selectedBooks.length) > 100) {
+      Modal.confirm({
+        title: 'Warning',
+        icon: <ExclamationCircleOutlined />,
+        centered: true,
+        content: `Adding ${transferbook.selectedBooks.length} books,Your drawer already have ${transferbook.paginationDrawer.total} books (Maximum size usually 100 books), Are you sure your drawer have enough space for more books?`,
+        okText: 'Add',
+        cancelText: 'Cancel',
+        onOk: () => {
+          var promises: any = [];
+          promises.push(
+            dispatch({
+              type: 'transferbook/insertBookToDrawer',
+              payload: { data: transferbook.selectedBooks, drawerId: drawergrid.selectDrawer.id },
+            }),
+          );
+          promises.push(
+            dispatch({
+              type: 'transferbook/changeLoadingState',
+              payload: {},
+            }),
+          );
+          Promise.all(promises).then(() => {
+            promises = [];
+            promises.push(
+              dispatch({
+                type: 'transferbook/fetchData',
+                payload: {
+                  bookGroupId: '',
+                  drawerId: '',
+                  isInDrawer: false,
+                  pageNumber: transferbook.paginationBook.current,
+                  filterName: '',
+                  pagination: transferbook.paginationBook.current,
+                },
+              }),
+            );
+            promises.push(
+              dispatch({
+                type: 'transferbook/fetchBooksInDrawer',
+                payload: {
+                  bookGroupId: '',
+                  drawerId: drawergrid.selectDrawer.id,
+                  isInDrawer: true,
+                  pageNumber: transferbook.paginationDrawer.current,
+                  filterName: '',
+                  pagination: transferbook.paginationDrawer.current,
+                },
+              }),
+            );
+          });
+          Promise.all(promises);
+        },
+      });
+    } else {
+      var promises: any = [];
       promises.push(
         dispatch({
-          type: 'transferbook/fetchData',
-          payload: {
-            bookGroupId: '',
-            drawerId: '',
-            isInDrawer: false,
-            pageNumber: transferbook.paginationBook.current,
-            filterName: '',
-            pagination: transferbook.paginationBook.current,
-          },
+          type: 'transferbook/insertBookToDrawer',
+          payload: { data: transferbook.selectedBooks, drawerId: drawergrid.selectDrawer.id },
         }),
       );
       promises.push(
         dispatch({
-          type: 'transferbook/fetchBooksInDrawer',
-          payload: {
-            bookGroupId: '',
-            drawerId: drawergrid.selectDrawer.id,
-            isInDrawer: true,
-            pageNumber: transferbook.paginationDrawer.current,
-            filterName: '',
-            pagination: transferbook.paginationDrawer.current,
-          },
+          type: 'transferbook/changeLoadingState',
+          payload: {},
         }),
       );
-    });
-    Promise.all(promises);
+      Promise.all(promises).then(() => {
+        promises = [];
+        promises.push(
+          dispatch({
+            type: 'transferbook/fetchData',
+            payload: {
+              bookGroupId: '',
+              drawerId: '',
+              isInDrawer: false,
+              pageNumber: transferbook.paginationBook.current,
+              filterName: '',
+              pagination: transferbook.paginationBook.current,
+            },
+          }),
+        );
+        promises.push(
+          dispatch({
+            type: 'transferbook/fetchBooksInDrawer',
+            payload: {
+              bookGroupId: '',
+              drawerId: drawergrid.selectDrawer.id,
+              isInDrawer: true,
+              pageNumber: transferbook.paginationDrawer.current,
+              filterName: '',
+              pagination: transferbook.paginationDrawer.current,
+            },
+          }),
+        );
+      });
+      Promise.all(promises);
+    }
   }
 
   displayBookDrawer() {
