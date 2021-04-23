@@ -144,7 +144,7 @@ const InputForm = (props: any) => {
               ({ getFieldValue }) => ({
                 validator(rule, value) {
                   if (value != undefined) {
-                    if (value.trim().length != 0) {
+                    if (value.length != 0) {
                       return Promise.resolve();
                     }
                   }
