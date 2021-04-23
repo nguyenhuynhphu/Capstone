@@ -11,6 +11,7 @@ import {
   Modal,
   Table,
   InputNumber,
+  Descriptions,
 } from 'antd';
 import styles from './ComponentsStyle.less';
 import React from 'react';
@@ -27,6 +28,7 @@ import Column from 'antd/lib/table/Column';
 import Pdf from 'react-to-pdf';
 import { insertBook } from '@/services/book';
 import sendNotification from '@/utils/Notification';
+import Description from '@/pages/UploadVideo/components/Description';
 
 var Barcode = require('react-barcode');
 
@@ -37,6 +39,7 @@ interface ViewFormProps {
   bookGroup: any;
   user?: any;
   listbooks?: any;
+  disablebook?: any;
   filterBook?: any;
 }
 interface ViewFormState {
@@ -48,6 +51,7 @@ interface ViewFormState {
   booksListHasMore: boolean;
   isModalVisible: boolean;
   isPreviewVisible: boolean;
+  isDisabelBookVisible: boolean;
   isCreateBookVisible: boolean;
   inputBooks: number;
   exportSelected: any;
@@ -64,6 +68,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
       exportSelected: [],
       bookInGroup: [],
       inputBooks: 0,
+      isDisabelBookVisible: false,
       isPreviewVisible: false,
       booksListLoading: false,
       booksListHasMore: true,
@@ -147,118 +152,54 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
             <Carousel dots={true}>{this.imageHandel()}</Carousel>
           </Col>
           <Col span={14}>
-            <Row className={styles.row}>
-              <Col span={6}>
-                <Text className={styles.title}>Book Name: </Text>
-              </Col>
-              <Col span={18}>
-                <Text>{bookGroup.name}</Text>
-              </Col>
-            </Row>
-            <Row className={styles.row}>
-              <Col span={6}>
-                <Text className={styles.title}>Book Author: </Text>
-              </Col>
-              <Col span={18}>
-                <Text>{bookGroup.author}</Text>
-              </Col>
-            </Row>
-            <Row className={styles.row}>
-              <Col span={6}>
-                <Text className={styles.title}>Category: </Text>
-              </Col>
-              <Col span={18}>
-                <Paragraph
-                  style={{ marginBottom: 0 }}
-                  ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}
-                >
-                  {this.handelCategory()}
-                </Paragraph>
-              </Col>
-            </Row>
-            <Row className={styles.row}>
-              <Col span={11}>
-                <Row>
-                  <Col span={13}>
-                    <Text className={styles.title}>Page Number: </Text>
-                  </Col>
-                  <Col span={9} offset={1}>
-                    <Text>{bookGroup.pageNumber}</Text>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={12}>
-                <Row>
-                  <Col span={5}>
-                    <Text className={styles.title}>Size: </Text>
-                  </Col>
-                  <Col span={18}>
-                    <Text>{`${bookGroup.width ? bookGroup.width : ''}${
-                      bookGroup.height ? `x${bookGroup.height}` : ''
-                    }`}</Text>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-            <Row className={styles.row}>
-              <Col span={11}>
-                <Row>
-                  <Col span={13}>
-                    <Text className={styles.title}>Quantity: </Text>
-                  </Col>
-                  <Col span={9}>
-                    <Text>{bookGroup.quantity}</Text>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={12}>
+            <Descriptions column={2} size="small">
+              <Descriptions.Item label="Name" span={2} labelStyle={{ fontWeight: 500 }}>
+                {bookGroup.name}
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Author" span={2}>
+                {bookGroup.author}
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Categories" span={2}>
+                {this.handelCategory()}
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Page Count">
+                {bookGroup.pageNumber}
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Size">
+                {`${bookGroup.width ? bookGroup.width : ''}${
+                  bookGroup.height ? `x${bookGroup.height}` : ''
+                }`}
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Quantity">
+                {bookGroup.quantity}
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="">
                 <Link id={'view-book'} href="#" onClick={this.showChildrenDrawer}>
                   More detail <RightOutlined style={{ fontSize: 12 }} />
                 </Link>
-              </Col>
-              <Col span={12}></Col>
-            </Row>
-            <Row className={styles.row}>
-              <Col span={11}>
-                <Text className={styles.title}>Publishing Company: </Text>
-              </Col>
-              <Col span={12}>
-                <Text>{bookGroup.publishCompany}</Text>
-              </Col>
-            </Row>
-            <Row className={styles.row}>
-              <Col span={11}>
-                <Text className={styles.title}>Publish date: </Text>
-              </Col>
-              <Col span={12}>
-                <Text>{formatDate(bookGroup.publishDate)}</Text>
-              </Col>
-            </Row>
-            <Row className={styles.row}>
-              <Col span={11}>
-                <Text className={styles.title}>Edition: </Text>
-              </Col>
-              <Col span={12}>
-                <Text>{bookGroup.edition}</Text>
-              </Col>
-            </Row>
-            <Row className={styles.row}>
-              <Col span={11}>
-                <Text className={styles.title}>Publishing Place: </Text>
-              </Col>
-              <Col span={12}>
-                <Text>{bookGroup.publishPlace}</Text>
-              </Col>
-            </Row>
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Publish Company" span={2}>
+                {bookGroup.publishCompany}
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Publish Date" span={2}>
+                {formatDate(bookGroup.publishDate)}
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Edition" span={2}>
+                <Text >{bookGroup.edition}</Text>
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Publishing Place" span={2}>
+                <Text className={styles.title}>{bookGroup.publishPlace}</Text>
+              </Descriptions.Item>
+            </Descriptions>
           </Col>
         </Row>
         <Divider orientation="left">Description</Divider>
-        <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}>
+        <Paragraph ellipsis={{ rows: 5, expandable: true, symbol: 'more' }}>
           {bookGroup.description}
         </Paragraph>
 
         <Drawer
-          width={500}
+          width={600}
           closable={false}
           onClose={this.onChildrenDrawerClose}
           visible={this.state.viewBookQuantity}
@@ -276,6 +217,18 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                 <Button type="ghost" onClick={() => this.setState({ isModalVisible: true })}>
                   Export PDF
                 </Button>
+                <Button
+                  type="ghost"
+                  onClick={() => {
+                    this.props.dispatch({
+                      type: 'disablebook/fetchData',
+                      payload: bookGroup.id,
+                    });
+                    this.setState({ isDisabelBookVisible: true });
+                  }}
+                >
+                  Disable Book
+                </Button>
                 <Button type="primary" onClick={() => this.setState({ isCreateBookVisible: true })}>
                   Create Books
                 </Button>
@@ -288,7 +241,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
           )}
 
           <Divider />
-          <ListBooks filterBook={this.props.filterBook}/>
+          <ListBooks filterBook={this.props.filterBook} />
         </Drawer>
         <Drawer
           title="Show Feedbacks"
@@ -299,6 +252,29 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
         >
           <ListComment bookGroup={bookGroup} />
         </Drawer>
+        <Modal
+          title="Disable Book"
+          visible={this.state.isDisabelBookVisible}
+          //className={styles.exportSection}
+          centered
+          bodyStyle={{ paddingTop: 10, paddingBottom: 10 }}
+          onCancel={() => this.setState({ isDisabelBookVisible: false })}
+          footer={[
+            <Button key="back" onClick={() => this.setState({ isDisabelBookVisible: false })}>
+              Close
+            </Button>,
+          ]}
+        >
+          <Table
+            loading={this.props.disablebook.isLoading}
+            dataSource={this.props.disablebook.data}
+            pagination={false}
+            scroll={{ y: 500 }}
+          >
+            <Column title="Book ID" dataIndex="id" />
+            <Column title="Note" dataIndex="note" key="name" />
+          </Table>
+        </Modal>
         <Modal
           title="Choice books"
           visible={this.state.isModalVisible}
@@ -356,7 +332,11 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
               }}
             >
               {({ toPdf }: any) => (
-                <Button key="submit" type="primary" onClick={this.state.exportSelected.length != 0 ? toPdf : null}>
+                <Button
+                  key="submit"
+                  type="primary"
+                  onClick={this.state.exportSelected.length != 0 ? toPdf : null}
+                >
                   Export
                 </Button>
               )}

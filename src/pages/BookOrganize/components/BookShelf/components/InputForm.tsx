@@ -61,7 +61,7 @@ const InputForm = (props: any) => {
         <Col span={24}>
           <Form.Item
             name="name"
-            label="Book Shelf Name"
+            label="Bookshelf Name"
             required
             rules={[
               ({ getFieldValue }) => ({
@@ -71,12 +71,12 @@ const InputForm = (props: any) => {
                       return Promise.resolve();
                     }
                   }
-                  return Promise.reject(`Name must no empty`);
+                  return Promise.reject(`Bookshelf Name must no empty`);
                 },
               }),
             ]}
           >
-            <Input placeholder="Please enter book shelf name" />
+            <Input placeholder="Please enter bookshelf name" />
           </Form.Item>
         </Col>
       </Row>

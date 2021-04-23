@@ -50,13 +50,13 @@
               },
               {
                 path: '/book',
-                name: 'Book',
+                name: 'Book Group',
                 icon: 'book',
                 authority: ['user', 'admin'],
                 routes: [
                   {
                     path: '/book/manage-book',
-                    name: 'Manage Book',
+                    name: 'Manage Book Group',
                     bookGroupId: 0,
                     component: './ManageBook/ManageBookPage',
                     authority: ['user', 'admin'],
@@ -78,7 +78,7 @@
               },
               {
                 path: '/upload',
-                name: 'Detect',
+                name: 'Detection',
                 icon: 'upload',
                 component: './UploadVideo/UploadVideo',
                 authority: ['admin', 'user'],

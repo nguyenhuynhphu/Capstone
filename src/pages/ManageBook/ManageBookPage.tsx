@@ -119,7 +119,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
               height: 491,
             }}
           >
-            <TableHeader title={'Book by Category'} description={''} />
+            <TableHeader title={'Book Group by Category'} description={''} />
             <div
               style={{
                 width: '100%',
@@ -154,8 +154,8 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
               style={{ width: '100%', justifyContent: 'space-between' }}
             >
               <TableHeader
-                title={'New books'}
-                description={'The newest books have just been added to the system'}
+                title={'New book group'}
+                description={'The newest book group have just been added to the system'}
               />
               <Button
                 type="primary"
@@ -175,7 +175,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
         </Row>
         <Row style={{ backgroundColor: 'white', borderRadius: '15px', padding: '20px 25px' }}>
           <Col span={24}>
-            <TableHeader title={'List books'} description={'All books in system'} />
+            <TableHeader title={'List Book Group'} description={'All book group in system'} />
             <BookGroupTable
               rowSelection={this.state.selectedRowKeys}
               handleRowSelect={this.handleRowSelect}

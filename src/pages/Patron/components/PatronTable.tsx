@@ -97,7 +97,7 @@ class PatronTable extends React.Component<PatronPageProps, {}> {
             justifyContent: 'space-between',
           }}
         >
-          <TableHeader title={'List Patrons'} description="List of all patron in system !" />
+          <TableHeader title={'List Patron'} description="List of all patrons in system " />
 
           <Search
             placeholder="Search by name"

@@ -85,7 +85,7 @@ const columns: any = [
     ),
   },
   {
-    title: 'PunishFee',
+    title: 'Punish Fee',
     dataIndex: 'punishFee',
     align: 'right',
     render: (fee: any) => (
@@ -143,7 +143,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
         <Row style={{ margin: '10px 0px' }}>
           <Col span={10}>
             <Search
-              placeholder="Type book name"
+              placeholder="Type book group name"
               enterButton="Search"
               style={{ width: 350 }}
               suffix={<BookOutlined style={{ color: '#40A9FF' }} />}
@@ -186,7 +186,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
           columns={columns}
           loading={bookgrouptable.isLoading}
           className={styles.bookTable}
-          scroll={{ y: 550 }}
+        
           pagination={{ ...bookgrouptable.pagination, showSizeChanger: false }}
           dataSource={bookgrouptable.data}
           size={'small'}

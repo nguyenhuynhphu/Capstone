@@ -52,7 +52,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
       <>
         <div style={{ marginBottom: 10, marginTop: 12 }}>
           <Space direction="horizontal" style={{ width: '100%', justifyContent: 'space-between' }}>
-            <TableHeader title="Book Shelf" description="List all bookshelves in system" />
+            <TableHeader title="List Bookshelf" description="List all bookshelf in system" />
             <Space direction="horizontal">
               <Search
                 placeholder="Search by name"

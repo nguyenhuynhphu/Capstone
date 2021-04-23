@@ -38,7 +38,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
             payload: { filterName: libariantable.filterName, pagination: pagination.current },
           });
         }}
-        scroll={{ y: 350 }}
+
         onRow={(record, rowIndex) => {
           return {
             onDoubleClick: (event) => {

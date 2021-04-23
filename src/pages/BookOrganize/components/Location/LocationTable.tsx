@@ -53,7 +53,7 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
       <>
         <div style={{ marginBottom: 10, marginTop: 12 }}>
           <Space direction="horizontal" style={{ width: '100%', justifyContent: 'space-between' }}>
-            <TableHeader title="Location" description="List locations" />
+            <TableHeader title="Locations" description="List location" />
             <Space direction="horizontal">
               <Search
                 placeholder="Search by name"

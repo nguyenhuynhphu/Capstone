@@ -65,6 +65,8 @@ export async function deleteBookGroup(bookGroupIds: any) {
   });
 }
 export async function insertBookGroup(values: any) {
+  console.log(JSON.stringify(values));
+  
   return request('/api/BookGroup', {
     method: 'POST',
     body: JSON.stringify(values),

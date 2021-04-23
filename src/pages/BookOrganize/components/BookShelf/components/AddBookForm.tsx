@@ -80,7 +80,7 @@ class AddBookForm extends React.Component<AddBookFormProps, AddBookFormState> {
             <Row>
               <Col span={24}>
                 <Descriptions column={2}>
-                  <Descriptions.Item label="Book Shelf Name" span={2}>{organizebook.choiceBookShelf.name.trim()}</Descriptions.Item>
+                  <Descriptions.Item label="Bookshelf Name" span={2}>{organizebook.choiceBookShelf.name.trim()}</Descriptions.Item>
                   <Descriptions.Item label="Row">{organizebook.choiceBookShelf.row}</Descriptions.Item>
                   <Descriptions.Item label="Column">{organizebook.choiceBookShelf.col}</Descriptions.Item>
                   <Descriptions.Item label="Location">{organizebook.choiceBookShelf.locationName}</Descriptions.Item>

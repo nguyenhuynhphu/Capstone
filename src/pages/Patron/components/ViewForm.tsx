@@ -43,7 +43,7 @@ class ViewForm extends React.Component<ViewFormProps> {
 
         <Descriptions column={1} bordered>
           <Descriptions.Item label="Gender">{choicePatron.gender}</Descriptions.Item>
-          <Descriptions.Item label="User Name">{choicePatron.username}</Descriptions.Item>
+          <Descriptions.Item label="Username">{choicePatron.username}</Descriptions.Item>
           <Descriptions.Item label="Email">{choicePatron.email}</Descriptions.Item>
           <Descriptions.Item label="Date Of Birth">
             {choicePatron.doB?.split('T')[0]}

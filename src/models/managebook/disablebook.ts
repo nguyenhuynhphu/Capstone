@@ -1,26 +1,26 @@
+import { fetchDisableBook } from '@/services/book';
 import { fetchBooks } from '@/services/bookgroup';
 import { Effect, Reducer } from 'umi';
 
-export interface ListBooksState {
+export interface DisableBookState {
   data: any;
   isLoading: boolean;
 }
 
-export interface ListBooksType {
+export interface DisableBookType {
   namespace: string;
-  state: ListBooksState;
+  state: DisableBookState;
   effects: {
     fetchData: Effect;
   };
   reducers: {
     isLoading: Reducer;
     loadData: Reducer;
-    resetData: Reducer;
   };
 }
 
-const ListBooksModel: ListBooksType = {
-  namespace: 'listbooks',
+const DisableBookModel: DisableBookType = {
+  namespace: 'disablebook',
   state: {
     data: [],
     isLoading: false,
@@ -32,7 +32,7 @@ const ListBooksModel: ListBooksType = {
         payload: {},
       });
 
-      const response = yield call(fetchBooks, payload);
+      const response = yield call(fetchDisableBook, payload);
       
       yield put({
         type: 'loadData',
@@ -41,12 +41,6 @@ const ListBooksModel: ListBooksType = {
     },
   },
   reducers: {
-    resetData(state, {}) {
-      return {
-        data: [],
-        isLoading: false,
-      };
-    },
     isLoading(state, {}) {
       return {
         ...state,
@@ -67,4 +61,4 @@ const ListBooksModel: ListBooksType = {
   },
 };
 
-export default ListBooksModel;
+export default DisableBookModel;

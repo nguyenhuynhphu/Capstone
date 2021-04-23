@@ -55,7 +55,7 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
           <Col span={24}>
             <Row style={{ marginBottom: 15 }}>
               <Col span={14}>
-                <TableHeader title={'List Librarian'} description={'Current librarian in system'} />
+                <TableHeader title={'List Librarian'} description={'Current librarians in system'} />
               </Col>
               <Col
                 span={10}

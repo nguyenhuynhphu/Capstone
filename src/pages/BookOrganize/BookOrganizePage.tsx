@@ -121,7 +121,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
           </Col>
         </Row>
         <Drawer
-          title="Create book shelf"
+          title="Create Bookshelf"
           width={400}
           closable={false}
           onClose={this.hideCreateBookShelf}

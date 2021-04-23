@@ -16,7 +16,10 @@ export async function insertBook(values: any) {
     body: JSON.stringify(values),
   });
 }
-
+//fetchDisableBook
+export async function fetchDisableBook(bookGroupId: number, count: number): Promise<any> {
+  return request(`/api/Book?BookGroupId=${bookGroupId}&PageSize=1000&IsDeleted=true`);
+}
 export async function deleteBook(book: any) {
   console.log(JSON.stringify(book));
   book.isDeleted = true;

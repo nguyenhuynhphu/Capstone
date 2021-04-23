@@ -23,7 +23,7 @@ const columns = [
     render: (text: string) => <p style={{marginBottom: 0}}>{text}</p>,
   },
   {
-    title: 'Book Shelf',
+    title: 'Bookshelf',
     dataIndex: 'bookShelfName',
     key: 'bookShelfName',
     align: 'left',

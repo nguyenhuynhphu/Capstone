@@ -64,22 +64,20 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
           if (managebook.choiceBook != undefined) {
             value.id = managebook.choiceBook.id;
           }
-          if(this.state.fileList.length != 0){
-            value.images = this.state.fileList
+          if (this.state.fileList.length != 0) {
+            value.images = this.state.fileList;
             this.props.handelSubmit(value);
-          }else{
-            this.setState({errorFile: 'Book image is required'})
+          } else {
+            this.setState({ errorFile: 'Book image is required' });
           }
-         
         }}
         onFinishFailed={(value: any) => {
           if (managebook.choiceBook != undefined) {
             value.id = managebook.choiceBook.id;
           }
-          if(this.state.fileList.length == 0){
-            this.setState({errorFile: 'Book image is required'})
+          if (this.state.fileList.length == 0) {
+            this.setState({ errorFile: 'Book image is required' });
           }
-         
         }}
       >
         <Row gutter={16}>
@@ -193,7 +191,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                     }),
                   ]}
                 >
-                  <InputNumber min={1} placeholder="Please enter Fee" style={{ width: '100%' }} />
+                  <InputNumber min={0.5} placeholder="Please enter Fee" style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
               <Col span={6}>
@@ -240,7 +238,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                     }),
                   ]}
                 >
-                  <InputNumber min={1} placeholder="Please enter Fee" style={{ width: '100%' }} />
+                  <InputNumber min={0.5} placeholder="Please enter Fee" style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -272,6 +270,9 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         </Row>
         <Row gutter={16}>
           <Col span={12}>
+            <Form.Item name="price" label="Book Price" required>
+              <Input placeholder="Please enter book price" />
+            </Form.Item>
             <Form.Item
               name="category"
               label="Category"
@@ -301,11 +302,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item
-              name="images"
-              label=""
-              required
-            >
+            <Form.Item name="images" label="" required>
               <Upload
                 onChange={this.handelFile}
                 listType={'picture'}
