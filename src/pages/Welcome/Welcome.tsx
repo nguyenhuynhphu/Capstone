@@ -109,13 +109,15 @@ class Welcome extends React.Component<WelcomeProps> {
             }}
           >
             Tracking
-            <Col span={24} style={{height: 300}}>
+            <Col span={24} style={{ height: 300 }}>
               <PeriorChart />
             </Col>
           </Row>
         </PageContainer>
+        
       </>
     );
   }
+ 
 }
 export default connect((state) => ({ ...state }))(Welcome);

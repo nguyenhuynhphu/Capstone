@@ -91,7 +91,6 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
     this.searchPatron = this.searchPatron.bind(this);
   }
   componentDidMount() {
-    
     this.props.dispatch({ type: 'returnfeechart/fetchData' });
     this.props.dispatch({ type: 'manageborrowstatistic/fetchData' });
   }
@@ -357,6 +356,8 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
   }
 
   handelStep(step: number) {
+    console.log('handelStep', this.props.manageborrow.scanId);
+
     switch (step) {
       case 0:
         return (
@@ -393,7 +394,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                 renderItem={(item: any) => (
                   <List.Item style={{ position: 'relative' }}>
                     <Popconfirm
-                      title="Title"
+                      title="Are you sure?"
                       trigger="click"
                       onConfirm={() => {
                         this.props.dispatch({
@@ -478,7 +479,11 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                       initialValue={moment().add(7, 'days')}
                       style={{ marginBottom: 25 }}
                     >
-                      <DatePicker onChange={() => {}} style={{ marginLeft: 30 }} disabled />
+                      <DatePicker
+                        onChange={() => {}}
+                        disabledDate={this.disabledDate}
+                        style={{ marginLeft: 30 }}
+                      />
                     </Form.Item>
 
                     <Row justify={'end'}>
@@ -585,7 +590,10 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
         );
     }
   }
-
+  disabledDate(current: any) {
+    // Can not select days before today and today
+    return current && current < moment().endOf('day');
+  }
   openConnection() {
     const { dispatch, manageborrow } = this.props;
     this.setState({ isGetReturnPatron: true });
@@ -605,13 +613,13 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
               if (book.data[0] != undefined) {
                 var bookGroup = await fetchBooks(book.data[0].bookGroupId); // get BookGroup infor
                 bookGroup.data.selectedBook = book.data[0]; // choice book in BookGroup
+                bookGroup.data.isInStorage = false;
                 dispatch({
                   type: 'manageborrow/addToScanId',
                   payload: [bookGroup.data],
                 });
                 dispatch({ type: 'manageborrow/renderWishList', payload: manageborrow.scanId });
                 dispatch({ type: 'manageborrow/changeProcess', payload: 1 });
-                // this.fetchBookInDrawer(undefined);
               }
             }
           });
@@ -650,19 +658,10 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
           connection.on('ReceiveMessageToReturnBook', async (value) => {
             if (value.staffId !== this.props.user.currentUser.id) {
               console.log('manageborrow.borrowDetail', manageborrow.borrowDetail);
-
-              if (manageborrow.borrowDetail.id == undefined) {
-                console.log('No');
-                var listBorrow = await fetchBorrowDetailByBarcode(value.barcode);
-                var tmp = listBorrow.data?.find((x: any) => x.barcode == value.barcode);
-                if (tmp != undefined) {
-                  tmp.isReturnToday = true;
-                  dispatch({
-                    type: 'manageborrow/fetchBorrowDetail',
-                    payload: listBorrow,
-                  });
-                }
-              }
+              dispatch({
+                type: 'manageborrow/fetchBorrowDetail',
+                payload: value,
+              });
             }
           });
         })
@@ -686,17 +685,21 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
 
     for (let i = 0; i < manageborrow.scanId.length; i++) {
       const book = manageborrow.scanId[i];
-      if (book.selectedBook == undefined) {
-        book.drawer = undefined;
-        var drawer = await fecthDrawer(book.id);
-        if (drawer.length != 0) {
-          let tmpDrawer: any = [];
-          drawer.forEach((book: any) => {
-            if (book == null) tmpDrawer.push(book);
-          });
-          _.pullAll(drawer, tmpDrawer);
-          book.drawer = drawer;
-        }
+
+      book.drawer = undefined;
+
+      var drawer = await fecthDrawer(book.id);
+      let tmpDrawer: any = [];
+      drawer.forEach((book: any) => {
+        if (book == null) tmpDrawer.push(book);
+      });
+      _.pullAll(drawer, tmpDrawer);
+
+      if (drawer.length != 0) {
+        book.drawer = drawer;
+        book.isInStorage = false;
+      } else {
+        book.isInStorage = true;
       }
     }
     console.log('manageborrow.scanId', manageborrow.scanId);
@@ -714,7 +717,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
       payload: {},
     });
   }
-  hideViewReturn(){
+  hideViewReturn() {
     this.props.dispatch({
       type: 'manageborrowpage/hideViewReturn',
       payload: {},
@@ -729,25 +732,20 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
 
   onConfirm(dateValue: any) {
     const { manageborrow, user, dispatch } = this.props;
-    var error = true;
     var tmp: any = [];
     console.log(manageborrow.scanId);
-    try {
-      manageborrow.scanId.forEach((book: any) => {
-        console.log(book);
-        tmp.push({
-          bookId: book.selectedBook.id,
-        });
-      });
-    } catch (e) {
-      sendNotification(
-        'Please get book in storage and rescan to make sure exactl book for borrow',
-        '',
-        'error',
-      );
-      error = false;
-    }
-    if (error) {
+
+    manageborrow.scanId.forEach((book: any) => {
+      if (book.selectedBook) {
+        if (book.selectedBook.isDeleted == false && book.selectedBook.isAvailable == true) {
+          tmp.push({
+            bookId: book.selectedBook.id,
+          });
+        }
+      }
+    });
+
+    if (tmp.length == manageborrow.scanId.length) {
       var msgToServer: any = {
         patronId: manageborrow.patron.id,
         patronName: manageborrow.patron.name,
@@ -764,6 +762,13 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
       }).then(() => {
         dispatch({ type: 'manageborrow/changeProcess', payload: 2 });
       });
+    } else {
+      console.log('ERROR DO');
+      sendNotification(
+        'Confirm Borrow Fail',
+        'Please check status of borrow items, there all should be available',
+        'error',
+      );
     }
   }
 }

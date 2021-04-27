@@ -97,15 +97,17 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                     <Rate
                       allowHalf
                       allowClear={false}
-                      value={bookGroup.ratingAverage != undefined ? bookGroup.ratingAverage : 0}
+                      value={bookGroup?.ratingAverage != 'NaN'
+                      ? bookGroup?.ratingAverage?.toFixed(2)
+                      : 0}
                       defaultValue={0}
                       disabled
                     />
                   </Col>
                   <Col span={7} offset={1}>
                     <Title style={{ margin: 0, marginTop: 5 }} level={4}>
-                      {bookGroup.ratingAverage != undefined
-                        ? bookGroup.ratingAverage.toFixed(2)
+                      {bookGroup?.ratingAverage != 'NaN'
+                        ? bookGroup?.ratingAverage?.toFixed(2)
                         : 0}
                     </Title>
                   </Col>

@@ -92,11 +92,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
           loading={bookshelftable.isLoading}
           size={'small'}
           scroll={{ y: 450 }}
-          onRow={(record) => {
-            return {
-              onDoubleClick: () => {}, // double click row,
-            };
-          }}
+          
           onChange={(pagination) => {
             this.props.dispatch({
               type: 'bookshelftable/fetchData',

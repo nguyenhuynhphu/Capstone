@@ -2,6 +2,7 @@ import {
   confirmBorrow,
   confirmReturn,
   fetchBorrowBook,
+  fetchBorrowDetailByBarcode,
   fetchPatron,
 } from '@/services/manageborrow';
 import _ from 'lodash';
@@ -75,19 +76,20 @@ const ManageBorrowModel: ManageBorrowType = {
     returnList: {},
   },
   effects: {
-    *changeScreen({ payload }, { call, put }) {
+    //#region maintning
+    *changeScreen(_, { put }) {
       yield put({
         type: 'renderScreen',
         payload: {},
       });
     },
-    *changeProcess({ payload }, { call, put }) {
+    *changeProcess({ payload }, { put }) {
       yield put({
         type: 'renderStep',
         payload: payload,
       });
     },
-    *loadWishlist({ payload }, { call, put }) {
+    *loadWishlist({ payload }, { put }) {
       yield put({
         type: 'loadWishlist',
         payload: payload,
@@ -100,26 +102,68 @@ const ManageBorrowModel: ManageBorrowType = {
         payload: response.data,
       });
     },
-    *confirmBorrow({ payload }, { call, put }) {
+    *confirmBorrow({ payload }, { call }) {
       yield call(confirmBorrow, payload);
     },
-    *confirmReturn({ payload }, { call, put }) {
+    *confirmReturn({ payload }, { call }) {
       yield call(confirmReturn, payload);
     },
-    *fetchBorrowDetail({ payload }, { call, put }) {
-      const response = yield call(fetchBorrowBook, payload.data[0].borrowId);
-      const patron = yield call(fetchPatron, response.data.patronId);
+    //#endregion
+    *fetchBorrowDetail({ payload }, { call, put, select }) {
+      var borrowDetail = yield select((state: any) => state.manageborrow?.borrowDetail);
 
-      response.data.patron = patron.data;
-      response.data.borrowDetail = payload.data;
-      response.endTime = payload.data[0].endTime;
-      yield put({
-        type: 'loadBorrowDetail',
-        payload: response.data,
-      });
+      if (borrowDetail.borrowDetail != undefined) {
+        console.log('CHANGE STATUS');
+
+        yield put({
+          type: 'addToReturnBorrow',
+          payload: payload.barcode,
+        });
+      } else {
+        console.log('NEW ORDER');
+
+        var listBorrow = yield call(fetchBorrowDetailByBarcode, payload.barcode);
+        var tmp = listBorrow.data?.find((x: any) => x.barcode == payload.barcode);
+
+        if (tmp != undefined) {
+          tmp.isReturnToday = true;
+        }
+        console.log('listBorrow', listBorrow);
+        if (listBorrow.data.length != 0) {
+          const response = yield call(fetchBorrowBook, listBorrow.data[0].borrowId);
+          const patron = yield call(fetchPatron, response.data.patronId);
+          console.log('listBorrow', listBorrow);
+
+          response.data.patron = patron.data;
+          response.data.borrowDetail = listBorrow.data;
+
+          console.log('response', response);
+          yield put({
+            type: 'loadBorrowDetail',
+            payload: response.data,
+          });
+        }
+      }
     },
   },
   reducers: {
+    addToReturnBorrow(state, { payload }) {
+      var tmp = state.borrowDetail.borrowDetail.find((x: any) => x.barcode == payload);
+      if (tmp != undefined) tmp.isReturnToday = true;
+      return {
+        ...state,
+        borrowDetail: state.borrowDetail,
+      };
+    },
+    loadBorrowDetail(state, { payload }) {
+      return {
+        ...state,
+        borrowDetail: payload,
+      };
+    },
+
+    //#region Maintaining
+
     resetState(state) {
       return {
         ...state,
@@ -147,6 +191,7 @@ const ManageBorrowModel: ManageBorrowType = {
         processStep: payload,
       };
     },
+
     addToScanId(state, { payload }) {
       var tmp;
       var payloadRemoveList: any = [];
@@ -155,32 +200,27 @@ const ManageBorrowModel: ManageBorrowType = {
       payload.forEach((book: any) => {
         tmp = state.scanId?.find((x: any) => x.id == book.id);
         if (tmp != undefined) {
-          if (tmp.selectedBook != undefined) {
-            tmp.selectedBook = book.selectedBook;
-            payloadRemoveList.push(book);
-          } else {
-            if (tmp.drawer?.length != 0) {
-              book.drawer = tmp.drawer;
-            }
-            scanIdRemoveList.push(tmp);
-          }
+          scanIdRemoveList.push(tmp);
+          // if (tmp.selectedBook != undefined) {
+          //   tmp.selectedBook = book.selectedBook;
+          //   payloadRemoveList.push(book);
+          // } else {
+          //   if (tmp.drawer?.length != 0) {
+          //     book.drawer = tmp.drawer;
+          //   }
+          //   scanIdRemoveList.push(tmp);
+          // }
         }
       });
+
       _.pullAll(payload, payloadRemoveList);
       _.pullAll(state.scanId, scanIdRemoveList);
+      console.log('scanId', state.scanId);
       console.log('payload', payload);
-      console.log('state.scanId', state.scanId);
+
       return {
         ...state,
         scanId: _.concat(state.scanId, payload),
-      };
-    },
-    addToReturnBorrow(state, { payload }) {
-      var tmp = state.borrowDetail.borrowDetail.find((x: any) => x.barcode == payload);
-      if (tmp != undefined) tmp.isReturn = true;
-      return {
-        ...state,
-        borrowDetail: state.borrowDetail,
       };
     },
     removeFromScanId(state, { payload }) {
@@ -224,12 +264,6 @@ const ManageBorrowModel: ManageBorrowType = {
         patron: payload,
       };
     },
-    loadBorrowDetail(state, { payload }) {
-      return {
-        ...state,
-        borrowDetail: payload,
-      };
-    },
 
     anotherBorrowRequest(state, { payload }) {
       return {
@@ -243,6 +277,7 @@ const ManageBorrowModel: ManageBorrowType = {
         patron: {},
       };
     },
+    //#endregion
   },
 };
 

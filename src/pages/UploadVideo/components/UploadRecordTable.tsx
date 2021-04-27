@@ -76,7 +76,7 @@ class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRe
           className={styles.uploadVideo}
           onRow={(record) => {
             return {
-              onDoubleClick: () => this.props.trackingDetail(record), // double click row,
+              onClick: () => this.props.trackingDetail(record), // double click row,
             };
           }}
         />

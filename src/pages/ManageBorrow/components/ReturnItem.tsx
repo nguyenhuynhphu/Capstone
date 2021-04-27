@@ -1,4 +1,5 @@
-import { Space, Image, Typography, Alert, Button, Popconfirm, Tag } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import { Space, Image, Typography, Alert, Button, Popconfirm, Tag, Popover } from 'antd';
 import moment from 'moment';
 
 import React from 'react';
@@ -29,7 +30,7 @@ class ReturnItem extends React.Component<ReturnItemrops, {}> {
           <Image width={80} height={120} style={{ borderRadius: 5 }} src={returnItem.image} />
           <Space
             direction="horizontal"
-            style={{ width: 'calc(100% -80px)', justifyContent: 'space-between' }}
+            style={{ width: 'calc(100% - 50px)', justifyContent: 'space-between' }}
           >
             <div style={{ width: 300 }}>
               <p style={{ marginBottom: 0 }}>
@@ -66,49 +67,72 @@ class ReturnItem extends React.Component<ReturnItemrops, {}> {
                 <></>
               )}
             </div>
-            {!returnItem.isReturn ? (
-              <Space direction="horizontal">
-                {moment().diff(returnItem.returnTime, 'days') > 0 ? (
-                  <Tag color={'#f50'}>
-                    Late {moment().diff(returnItem.returnTime, 'days') + 1} days
-                  </Tag>
-                ) : (
-                  <></>
-                )}
-                {returnItem.isReturnToday ? (
-                  <Alert showIcon message="Return" type="success" />
-                ) : (
-                  <Popconfirm
-                    title="Are you sure to confirm this?"
-                    onConfirm={() => {
-                      returnItem.isReturnToday = true;
-                      this.props.renderParent();
-                      this.setState({});
-                    }}
-                  >
-                    <Button>Return</Button>
-                  </Popconfirm>
-                )}
-              </Space>
-            ) : (
-              <Tag color={'#87d068'} style={{ marginLeft: 100, cursor: 'pointer' }}>
-                Returned
-              </Tag>
-            )}
+            {this.handelStatus()}
           </Space>
         </Space>
       </>
     );
   }
+  handelStatus() {
+    const { returnItem } = this.props;
+    if (returnItem.isDeleted) {
+      return (
+        <Popover content={<div>{returnItem.note}</div>} trigger="click">
+          <Tag
+            style={{ cursor: 'pointer' }}
+            icon={<DeleteOutlined />}
+            color="default"
+            onClick={() => {}}
+          >
+            Removed
+          </Tag>
+        </Popover>
+      );
+    } else {
+      if (returnItem.isReturn) {
+        return (
+          <Tag color={'#87d068'} style={{ cursor: 'pointer' }}>
+            Returned
+          </Tag>
+        );
+      } else {
+        return (
+          <Space direction="horizontal" style={{ justifyContent: 'space-between' }}>
+            {moment().diff(returnItem.returnTime, 'days') > 0 ? (
+              <Tag color={'#f50'}>Late {moment().diff(returnItem.returnTime, 'days')} days</Tag>
+            ) : (
+              <></>
+            )}
+            {returnItem.isReturnToday ? (
+              <Alert showIcon message="Check" type="success" />
+            ) : (
+              <Popconfirm
+                title="Are you sure to confirm this?"
+                onConfirm={() => {
+                  returnItem.isReturnToday = true;
+                  this.props.renderParent();
+                  this.setState({});
+                }}
+              >
+                <Button>Return</Button>
+              </Popconfirm>
+            )}
+          </Space>
+        );
+      }
+    }
+  }
   handelFee() {
     const { returnItem } = this.props;
 
-    var diffDate = moment().diff(returnItem.startTime, 'days');
+    var diffDate = moment(returnItem.returnTime).diff(returnItem.startTime, 'days');
+    console.log("returnItem", returnItem);
+    
     if (diffDate == 0) diffDate = 1;
     else diffDate += 1;
     var fee = 0;
     fee += returnItem.fee * diffDate;
-    
+
     return fee;
   }
   handelPunishFee() {
@@ -118,7 +142,7 @@ class ReturnItem extends React.Component<ReturnItemrops, {}> {
 
     var punishFee = 0;
     if (diffDate > 0) {
-      punishFee += returnItem.punishFee * (diffDate + 1);
+      punishFee += returnItem.punishFee * (diffDate);
     }
     return punishFee;
   }

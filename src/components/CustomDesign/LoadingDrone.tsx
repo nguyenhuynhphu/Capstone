@@ -11,7 +11,6 @@ const LoadingDrone = (props: LoadingDroneProps) => (
       style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}
     >
       <Image src={logo} width={180} />
-      <p>Loading</p>
     </Space>
   </>
 );

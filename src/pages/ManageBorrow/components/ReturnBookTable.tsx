@@ -99,7 +99,7 @@ class ReturnBookTable extends React.Component<ReturnBookTableProps> {
           }}
           onRow={(record, rowIndex) => {
             return {
-              onDoubleClick: (event) => {
+              onClick: (event) => {
                 this.props.dispatch({
                   type: 'manageborrowpage/showViewReturn',
                   payload: { ...record },

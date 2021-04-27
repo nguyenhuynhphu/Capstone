@@ -23,7 +23,7 @@ const columns: any = [
     render: (text: String, record: any) => (
       <Space>
         <Image
-          width={20}
+          width={23}
           height={35}
           src={record.image.length != 0 ? record.image[0]?.url : null}
         />
@@ -39,7 +39,7 @@ const columns: any = [
     title: 'Quantity',
     dataIndex: 'quantity',
     align: 'center',
-    width: 90,
+    width: 88,
   },
   {
     title: 'Author',
@@ -61,22 +61,22 @@ const columns: any = [
     render: (text: string, record: any) => (
       <Space direction="horizontal">
         <p style={{ marginBottom: 0 }}>
-          {record.ratingAverage != undefined ? parseFloat(text).toFixed(2) : 0}
+          {record.ratingAverage != undefined ? parseFloat((text != 'NaN' ? text : '0')).toFixed(2) : 0}
         </p>
-        <StarFilled style={{ color: 'yellowgreen' }} />
+        <StarFilled style={{ color: 'gold' }} />
       </Space>
     ),
   },
   {
     title: 'Created Date',
     dataIndex: 'createdDate',
-    align: 'right',
+    align: 'center',
     render: (date: any) => <Text>{date?.split('T')[0]}</Text>,
   },
   {
     title: 'Fee',
     dataIndex: 'fee',
-    align: 'right',
+    align: 'center',
     render: (fee: any) => (
       <Space>
         <Text>{fee}</Text>
@@ -87,7 +87,7 @@ const columns: any = [
   {
     title: 'Punish Fee',
     dataIndex: 'punishFee',
-    align: 'right',
+    align: 'center',
     render: (fee: any) => (
       <Space>
         <Text>{fee}</Text>
@@ -162,7 +162,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
                     })
                   }
                 >
-                  <PlusOutlined /> New Book
+                  <PlusOutlined /> New Book 
                 </Button>
                 <Button
                   type="primary"
@@ -198,7 +198,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
           }}
           onRow={(record) => {
             return {
-              onDoubleClick: () => {
+              onClick: () => {
                 this.props.dispatch({
                   type: 'managebook/showViewBook',
                   payload: record.id,

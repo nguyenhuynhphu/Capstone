@@ -103,7 +103,7 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
                 <Space style={{ margin: 0 }}>
                   {moment().diff(borrowBook.endTime, 'days') > 0 ? (
                     <Tag color={'#f50'}>
-                      Late {moment().diff(borrowBook.endTime, 'days') + 1} days
+                      Late {moment().diff(borrowBook.endTime, 'days')} days
                     </Tag>
                   ) : (
                     <></>
@@ -175,9 +175,9 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
       console.log('BOOK', book);
       if (!book.isReturn && book.isReturnToday) {
         tmp.push({
-          punishFee: book.punishFee,
+        
           bookId: book.bookId,
-          fee: book.fee,
+    
         });
       }
     });
@@ -189,6 +189,8 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
       staffId: user.currentUser.id,
       returnDetail: tmp,
     };
+    console.log("msgToServer", msgToServer);
+    
 
     dispatch({
       type: 'manageborrow/confirmReturn',
@@ -204,7 +206,9 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
   }
   handelFee() {
     const { borrowBook } = this.props;
-    var diffDate = moment().diff(borrowBook.startTime, 'days');
+    console.log("borrowBook.startTime", borrowBook);
+    
+    var diffDate = moment(borrowBook.endTime).diff(borrowBook.startTime, 'days');
     if (diffDate == 0) diffDate = 1;
     else diffDate += 1;
     var fee = 0;
@@ -217,7 +221,6 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
     const { borrowBook } = this.props;
 
     var diffDate = moment().diff(borrowBook.endTime, 'days');
-    diffDate += 1;
     var punishFee = 0;
     if (diffDate > 0) {
       borrowBook.borrowDetail.forEach((borrow: any) => {

@@ -1,4 +1,16 @@
-import { Space, Image, Select, Typography, Descriptions, Alert } from 'antd';
+import { CheckOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  Space,
+  Image,
+  Select,
+  Typography,
+  Descriptions,
+  Alert,
+  Tag,
+  Popconfirm,
+  Popover,
+} from 'antd';
+import Avatar from 'antd/lib/avatar/avatar';
 import moment from 'moment';
 
 import React from 'react';
@@ -18,7 +30,7 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
 
   render() {
     const { borrowItem } = this.props;
-    //console.log("borrowItem", borrowItem);
+    // console.log("borrowItem", borrowItem);
 
     return (
       <>
@@ -83,65 +95,102 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
             )}
           </div>
         </Space>
-        <div style={{ marginRight: 50 }}>
-          {borrowItem.drawer != undefined ? (
-            <>
-              {borrowItem.drawer.length != 0 ? (
-                <>
-                  <p>Choice Book:</p>
-                  <Select
-                    placeholder="Select Book"
-                    style={{ width: 150 }}
-                    value={borrowItem.selectedBook ? borrowItem.selectedBook.id : null}
-                    onChange={(bookId: any) => {
-                      console.log(borrowItem);
-                      var tmp = borrowItem.drawer?.find((book: any) => book.bookId == bookId);
-                      console.log('TMP', tmp);
-
-                      borrowItem.selectedBook = {
-                        barCode: tmp.barcode?.trim(),
-                        bookShelfName: tmp.bookShelfName,
-                        drawerId: tmp.id,
-                        id: tmp.bookId,
-                      };
-                      this.setState({});
-                      //borrowItem.choiceBook = bookId;
-                    }}
-                  >
-                    {borrowItem.drawer?.map((value: any) => (
-                      <Select.Option key={`${value?.bookId}`} value={value?.bookId}>
-                        {value.bookId}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
+        <div style={{ marginRight: 50 }}>{this.handelBookStatus()}</div>
       </>
     );
   }
-
-  handelStorage(borrowItem: any) {
-    if (borrowItem.drawer) {
-      if (borrowItem.drawer.length == 0) {
-        return <Alert style={{ width: 'fit-content' }} message="Book In Storage" type="warning" />;
+  handelBookStatus() {
+    const { borrowItem } = this.props;
+    if (!borrowItem.isInStorage) {
+      if (borrowItem.selectedBook) {
+        if (borrowItem.selectedBook.isDeleted) {
+          return (
+            <Popover content={<div>{borrowItem.selectedBook.note}</div>} trigger="click">
+              <Tag
+                style={{ cursor: 'pointer' }}
+                icon={<DeleteOutlined />}
+                color="default"
+                onClick={() => {}}
+              >
+                Removed
+              </Tag>
+            </Popover>
+          );
+        } else {
+          if (borrowItem.selectedBook.isAvailable) {
+            //oke duoc muon
+            return (
+              <Tag style={{ cursor: 'pointer' }} icon={<CheckOutlined />} color="#87d068">
+                Available
+              </Tag>
+            );
+          } else {
+            //dang trong don muon khac ma chua tra
+            return (
+              <Popover
+                content={
+                  <Space>
+                    <Avatar src={borrowItem.selectedBook?.patronImage} />
+                    <Text>{borrowItem.selectedBook?.patronName} borrowed !</Text>
+                  </Space>
+                }
+                trigger="click"
+              >
+                <Tag style={{ cursor: 'pointer' }} icon={<CloseOutlined />} color="#cd201f">
+                  Not Available
+                </Tag>
+              </Popover>
+            );
+          }
+        }
       } else {
         return (
-          <Alert
-            style={{ width: 'fit-content' }}
-            message="Please seleted book in drawer"
-            type="warning"
-          />
+          <>
+            <p>Choice Book:</p>
+            <Select
+              placeholder="Select Book"
+              style={{ width: 150 }}
+              value={borrowItem.selectedBook ? borrowItem.selectedBook.id : null}
+              onChange={(bookId: any) => {
+                var tmp = borrowItem.drawer?.find((book: any) => book.bookId == bookId);
+                borrowItem.selectedBook = {
+                  barCode: tmp.barcode?.trim(),
+                  bookShelfName: tmp.bookShelfName,
+                  drawerId: tmp.id,
+                  id: tmp.bookId,
+                };
+                this.setState({});
+                //borrowItem.choiceBook = bookId;
+              }}
+            >
+              {borrowItem.drawer?.map((value: any) => (
+                <Select.Option key={`${value?.bookId}`} value={value?.bookId}>
+                  {value.bookId}
+                </Select.Option>
+              ))}
+            </Select>
+          </>
         );
       }
-    } else {
+    }
+    return <></>;
+  }
+
+  handelRemoveBook() {
+    const { borrowItem } = this.props;
+  }
+
+  handelStorage(borrowItem: any) {
+    if (borrowItem.isInStorage) {
       return <Alert style={{ width: 'fit-content' }} message="Book In Storage" type="warning" />;
+    } else {
+      return (
+        <Alert
+          style={{ width: 'fit-content' }}
+          message="Please seleted book in drawer"
+          type="warning"
+        />
+      );
     }
   }
 }

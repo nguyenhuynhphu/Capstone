@@ -1,5 +1,5 @@
-import { BookOutlined, EuroCircleOutlined, EuroOutlined } from '@ant-design/icons';
-import { Badge, Button, Descriptions, Image, List, Space } from 'antd';
+import { BookOutlined, DeleteOutlined, EuroCircleOutlined, EuroOutlined } from '@ant-design/icons';
+import { Badge, Button, Descriptions, Image, List, Popover, Space, Tag } from 'antd';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
 import { history } from 'umi';
@@ -48,32 +48,55 @@ class ViewForm extends React.Component<ViewFormProps> {
             dataSource={choiceBorrow.borrowDetail}
             renderItem={(item: any) => (
               <List.Item>
-                <Space style={{ width: '100%' }}>
-                  <Image width={50} height={77} src={item.image != undefined ? item.image : null} />
-                  <Space direction="vertical">
-                    <p style={{ marginBottom: 0 }}>{item.bookName}</p>
-                    <Space direction="horizontal">
-                      <p style={{ marginBottom: 0 }}>
-                        Fee: {item.fee}{' '}
-                        <EuroCircleOutlined style={{ color: 'rgb(238, 187, 51)' }} />
-                      </p>
-                      <p style={{ marginBottom: 0, marginLeft: 25 }}>
-                        Punish Fee: {item.punishFee}{' '}
-                        <EuroCircleOutlined style={{ color: '#FF4D4F' }} />
-                      </p>
+                <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                  <Space>
+                    <Image
+                      width={50}
+                      height={77}
+                      src={item.image != undefined ? item.image : null}
+                    />
+                    <Space direction="vertical">
+                      <p style={{ marginBottom: 0 }}>{item.bookName}</p>
+                      <Space direction="horizontal">
+                        <p style={{ marginBottom: 0 }}>
+                          Fee: {item.fee}{' '}
+                          <EuroCircleOutlined style={{ color: 'rgb(238, 187, 51)' }} />
+                        </p>
+                        <p style={{ marginBottom: 0, marginLeft: 25 }}>
+                          Punish Fee: {item.punishFee}{' '}
+                          <EuroCircleOutlined style={{ color: '#FF4D4F' }} />
+                        </p>
+                      </Space>
                     </Space>
                   </Space>
-                  <Button
-                    type="link"
-                    onClick={() => {
-                      history.push(`/book/manage-book`, {
-                        bookGroupId: item.bookGroupId,
-                        filterBook: item.bookId
-                      });
-                    }}
-                  >
-                    Book Detail
-                  </Button>
+                  {item.isDeleted ? (
+                    <Popover content={<div>{item.note}</div>} trigger="click">
+                      <Tag
+                        style={{ cursor: 'pointer' }}
+                        icon={<DeleteOutlined />}
+                        color="default"
+                        onClick={() => {}}
+                      >
+                        Removed
+                      </Tag>
+                    </Popover>
+                  ) : (
+                    <Button
+                      type="link"
+                      onClick={() => {
+                        history.push(`/book/manage-book`, {
+                          bookGroupId: item.bookGroupId,
+                          filterBook: item.bookId,
+                        });
+                        this.props.dispatch({
+                          type: 'manageborrowpage/showViewBorrow',
+                          payload: { },
+                        });
+                      }}
+                    >
+                      Book Detail
+                    </Button>
+                  )}
                 </Space>
               </List.Item>
             )}

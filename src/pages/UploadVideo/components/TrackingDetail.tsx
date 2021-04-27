@@ -21,11 +21,7 @@ import styles from '../UploadVideo.less';
 import { connect, Dispatch } from 'umi';
 import Description from './Description';
 import BookTrackingItem from './BookTrackingItem';
-import {
-  CheckOutlined,
-  CloseOutlined,
-  QuestionOutlined,
-} from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, QuestionOutlined } from '@ant-design/icons';
 import sendNotification from '@/utils/Notification';
 const { Text } = Typography;
 interface TrackingDetailProps {
@@ -230,7 +226,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                         justifyContent: 'center',
                         flexDirection: 'column',
                         display: 'flex',
-                        margin: '80px 0'
+                        margin: '80px 0',
                       }}
                       status="warning"
                       title="No Drawer Was Found !"
@@ -320,58 +316,12 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                               },
                             }}
                           />
-                          {/* <List
-                          dataSource={record.books}
-                          className={styles.listDrawer}
-                          size="small"
-                          renderItem={(item) => (
-                            <List.Item>
-                              <BookItem book={item} />
-                            </List.Item>
-                          )}
-                        /> */}
                         </>
                       ),
                     }}
                     dataSource={this.props.trackingdetail.data}
                   />
                 </ConfigProvider>
-
-                {/* {this.props.trackingdetail.data.length != 0 ? (
-                    <Table
-                      columns={columns}
-                      loading={this.props.trackingdetail.isLoading}
-                      dataSource={this.props.trackingdetail.data}
-                      bordered
-                      onRow={(record) => {
-                        return {
-                          onDoubleClick: () => {
-                            this.onSelectRow(record);
-                            this.props.dispatch({
-                              type: 'trackingdetail/fetchError',
-                              payload: record.id,
-                            });
-                          }, // double click row,
-                        };
-                      }}
-                      className={styles.tablelDrawer}
-                      scroll={{ x: 0, y: 485 }}
-                      pagination={false}
-                      style={{ height: '100%', marginLeft: 5, borderLeft: 'none' }}
-                    />
-                  ) : (
-                    <Result
-                      style={{
-                        height: '100%',
-                        justifyContent: 'center',
-                        flexDirection: 'column',
-                        display: 'flex',
-                      }}
-                      status="warning"
-                      title="No Drawer Was Found !"
-                      subTitle="There are something wrong, please recheck video that you was uploaded !"
-                    />
-                  )} */}
 
                 <Drawer
                   placement="right"

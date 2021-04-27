@@ -122,7 +122,7 @@ class PatronTable extends React.Component<PatronPageProps, {}> {
           size="small"
           onRow={(record, rowIndex) => {
             return {
-              onDoubleClick: (event) => {
+              onClick: (event) => {
                 this.props.dispatch({
                   type: 'patronpage/showViewPatron',
                   payload: { ...record },

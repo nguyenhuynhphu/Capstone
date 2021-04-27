@@ -162,7 +162,7 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
           className={styles.borrowTable}
           onRow={(record, rowIndex) => {
             return {
-              onDoubleClick: (event) => {
+              onClick: (event) => {
                 this.props.dispatch({
                   type: 'manageborrowpage/showViewBorrow',
                   payload: { ...record },

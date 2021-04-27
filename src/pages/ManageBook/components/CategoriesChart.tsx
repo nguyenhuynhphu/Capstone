@@ -9,31 +9,14 @@ interface CategoriesChartProps {
   dispatch?: Dispatch;
   categorieschart?: any;
 }
-const data = [
-  {
-    category: 'Faster R-CNN',
-    total: 11,
-  },
-  {
-    category: 'R-FCN',
-    total: 6,
-  },
-  {
-    category: 'SSD',
-    total: 40.5,
-  },
-  {
-    category: 'YOLO',
-    total: 65.5,
-  },
-];
+
 class CategoriesChart extends React.Component<CategoriesChartProps, {}> {
   render() {
     const { categorieschart } = this.props;
     return (
       <ResponsiveBar
-        data={data}
-        //data={categorieschart.data}
+        //data={data}
+        data={categorieschart.data}
         keys={['total']}
         indexBy="category"
         margin={{ top: 30, right: 25, bottom: 60, left: 35 }}
