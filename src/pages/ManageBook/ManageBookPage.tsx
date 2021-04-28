@@ -91,18 +91,20 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   render() {
     const { managebook, categorieschart } = this.props;
-    
+
     if (this.props.location.state) {
       var bookGroupId = this.props.location.state.bookGroupId;
       var filterBook = this.props.location.state.filterBook;
-      this.setState({filterBook: filterBook});
+      this.setState({ filterBook: filterBook });
       console.log('props.location.state', this.props.location.state);
-      this.props.dispatch({
-        type: 'managebook/showViewBook',
-        payload: bookGroupId,
-      }).then(() => {
-        document.getElementById('view-book')?.click();
-      });
+      this.props
+        .dispatch({
+          type: 'managebook/showViewBook',
+          payload: bookGroupId,
+        })
+        .then(() => {
+          document.getElementById('view-book')?.click();
+        });
       this.props.location.state = undefined;
     }
 
@@ -198,6 +200,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           title={
             managebook.choiceBook.id != undefined ? 'Edit book detail' : 'Create a new book group'
           }
+          destroyOnClose
           width={750}
           onClose={() => this.hideInputBook()}
           mask={true}
@@ -229,25 +232,24 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
         </Drawer>
         <Drawer
           placement={'bottom'}
-          //mask={false}
           visible={managebook.deleteBookVisible}
+          mask={false}
           key={'bottom'}
           closeIcon={null}
           height={70}
         >
-          <Row align={'middle'} style={{ height: '100%', paddingLeft: 50 }}>
-            <Col span={8}>
+          <Space style={{ width: '100%', height: '100%', justifyContent: 'space-between' }}>
+          
               <p style={{ margin: 0, fontWeight: 'bold' }}>
                 Do you want to delete {this.state.selectedRowKeys.length} items ?
               </p>
-            </Col>
-            <Col span={3} offset={13}>
+    
+          
               <Button type="primary" danger onClick={this.handleDelete}>
                 Delete
               </Button>
-              <Button style={{ marginLeft: 15 }}>Cancel</Button>
-            </Col>
-          </Row>
+         
+          </Space>
         </Drawer>
         <Modal
           visible={managebook.categoriesModalVisible}
@@ -508,7 +510,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
           payload: {},
         }),
       );
-      this.setState({filterBook: 0})
+    this.setState({ filterBook: 0 });
   }
 
   hideInputBook() {

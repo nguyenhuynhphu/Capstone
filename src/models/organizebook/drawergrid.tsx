@@ -7,7 +7,6 @@ export interface DrawerGridState {
   isLoading: boolean;
   selectDrawer: any;
   drawerInfoVisible: boolean;
-  
 }
 
 export interface DrawerGridType {
@@ -18,10 +17,10 @@ export interface DrawerGridType {
     onSelectDrawer: Effect;
   };
   reducers: {
-    isLoading: Reducer<DrawerGridState>;
-    loadData: Reducer<DrawerGridState>;
-    loadDrawer: Reducer<DrawerGridState>;
-    hideDrawer: Reducer<DrawerGridState>;
+    isLoading: Reducer;
+    loadData: Reducer;
+    loadDrawer: Reducer;
+    hideDrawer: Reducer;
   };
 }
 
@@ -31,7 +30,7 @@ const DrawerGridModel: DrawerGridType = {
     selectDrawer: {},
     isLoading: false,
     data: [],
-    drawerInfoVisible: false
+    drawerInfoVisible: false,
   },
   effects: {
     *fetchData({ payload }, { call, put }) {
@@ -40,6 +39,7 @@ const DrawerGridModel: DrawerGridType = {
         payload: {},
       });
       const response = yield call(fetchDrawer, payload);
+     
       yield put({
         type: 'loadData',
         payload: { response: response },

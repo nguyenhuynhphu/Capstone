@@ -1,11 +1,8 @@
-import { Badge, Card, Space, Spin } from 'antd';
-import Title from 'antd/lib/typography/Title';
+import { Card } from 'antd';
 import React from 'react';
-import styles from '../BookShelfTable.less';
-import ScrollContainer from 'react-indiana-drag-scroll';
 import { connect, Dispatch } from 'umi';
 import DrawerItem from './DrawerItem';
-
+import '@/main.css';
 interface CustomBookShelfProps {
   dispatch: Dispatch;
   organizebook?: any;
@@ -24,23 +21,24 @@ class CustomBookShelf extends React.Component<CustomBookShelfProps, CustomBookSh
     };
   }
 
+ 
+
   renderGrid() {
     var { drawergrid } = this.props;
 
     var tmp: any = [];
     drawergrid.data.forEach((drawer: any, index: number) => {
-      
       tmp.push(
         <Card.Grid
           style={{
             width: 'calc(33.33333% - 10px)',
             padding: '5px 15px',
             cursor: 'pointer',
-            margin: '5px'
+            margin: '5px',
           }}
         >
           <div
-            onClick={() => {
+            onClick={(e: any) => {
               this.props
                 .dispatch({
                   type: 'drawergrid/onSelectDrawer',
@@ -61,6 +59,7 @@ class CustomBookShelf extends React.Component<CustomBookShelfProps, CustomBookSh
                 });
             }}
           >
+            
             <DrawerItem drawer={drawer} />
           </div>
         </Card.Grid>,
@@ -70,9 +69,7 @@ class CustomBookShelf extends React.Component<CustomBookShelfProps, CustomBookSh
   }
 
   render() {
-    return (
-      <Card style={{ border: 'none'}}>{this.renderGrid()}</Card>
-    );
+    return <Card style={{ border: 'none' }}>{this.renderGrid()}</Card>;
   }
 }
 export default connect((state) => ({ ...state }))(CustomBookShelf);

@@ -82,3 +82,6 @@ export async function fetchBorrowDetailByBarcode(barcode: string): Promise<any> 
 export async function fetchBorrowBook(borrowBookId: string): Promise<any> {
   return request(`/api/BorrowBook/${borrowBookId}`);
 }
+export async function fetchReturn(bookId: number): Promise<any> {
+  return request(`/api/ReturnDetail?BookId=${bookId}&PageSize=1`);
+}

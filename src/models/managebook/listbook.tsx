@@ -60,7 +60,7 @@ const ListBooksModel: ListBooksType = {
 
       return {
         ...state,
-        data: payload.data,
+        data: payload.data.filter((book: any) => book.isDeleted == false),
         isLoading: false,
       };
     },

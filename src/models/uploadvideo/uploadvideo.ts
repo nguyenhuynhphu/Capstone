@@ -121,11 +121,19 @@ const UploadVideoModel: UploadVideoType = {
               const book = drawer.wrongPosition[j];
               const wrongResponse = yield call(checkingPosition, book);
               if (wrongResponse.data.length != 0) {
-                errorMsg.push({
-                  errorMessage: `Sách nằm sai vị trí, bị trí thực sự ở: Bookshelf: ${wrongResponse.data[0].bookShelfName} Drawer: ${wrongResponse.data[0].drawerId} !`,
-                  bookId: wrongResponse.data[0].id,
-                  typeError: 2,
-                });
+                if (wrongResponse.data[0].bookShelfName == undefined) {
+                  errorMsg.push({
+                    errorMessage: `Sách này đã bị xóa khỏi hệ thống`,
+                    bookId: wrongResponse.data[0].id,
+                    typeError: 2,
+                  });
+                } else {
+                  errorMsg.push({
+                    errorMessage: `Sách nằm sai vị trí, bị trí thực sự ở: Bookshelf: ${wrongResponse.data[0].bookShelfName} Drawer: ${wrongResponse.data[0].drawerId} !`,
+                    bookId: wrongResponse.data[0].id,
+                    typeError: 2,
+                  });
+                }
               } else {
                 undefinedError.push({
                   errorMessage: `Phát hiện barcode lạ: "${book}"`,
@@ -173,7 +181,6 @@ const UploadVideoModel: UploadVideoType = {
           });
         }
         console.log('drawerDetection', drawerDetection);
-
       }
       Object.assign(msgToServer, {
         drawerDetection: drawerDetection,

@@ -147,6 +147,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
           title="Organize Book"
           width={'100vw'}
           height={'100vh'}
+          destroyOnClose
           closable={true}
           onClose={this.hideOrganizeBook}
           visible={organizebook.organizeBookVisible}
@@ -504,6 +505,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
   //#region Page Effect
 
   hideOrganizeBook() {
+   
     this.props
       .dispatch({
         type: 'organizebook/hideOrganizeBookShelf',

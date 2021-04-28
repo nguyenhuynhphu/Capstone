@@ -8,16 +8,12 @@ import {
   Upload,
   Select,
   InputNumber,
-  message,
-  notification,
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import React, { useReducer, useState } from 'react';
+import React from 'react';
 import moment from 'moment';
 import { connect, Dispatch } from 'umi';
-import { render } from 'react-dom';
 import { FormInstance } from 'antd/lib/form';
-import { fileList } from '@/pages/Libarian/components/InputForm';
 import _ from 'lodash';
 interface InputFormProps {
   dispatch: Dispatch;
@@ -378,7 +374,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         category: this.handelCate(managebook.choiceBook.category),
         images: { fileList: tmp },
         publishCompany: managebook.choiceBook.publishCompany,
-        publishDate: moment.utc(managebook.choiceBook.publishDate),
+        publishDate: managebook.choiceBook.publishDate ? moment.utc(managebook.choiceBook.publishDate) : null,
         edition: managebook.choiceBook.edition,
         publishPlace: managebook.choiceBook.publishPlace,
         description: managebook.choiceBook.description,

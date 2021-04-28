@@ -1,8 +1,4 @@
-import {
-  addBookToDrawer,
-  fetchBookInSystem,
-  removeBooksFromDrawer,
-} from '@/services/organizebook';
+import { addBookToDrawer, fetchBookInSystem, removeBooksFromDrawer } from '@/services/organizebook';
 import moment from 'moment';
 import { Effect, Reducer } from 'umi';
 
@@ -41,15 +37,15 @@ export interface TransferBookType {
     removeBookToDrawer: Effect;
   };
   reducers: {
-    displayAllBooks: Reducer<TransferBookState>;
+    displayAllBooks: Reducer;
 
-    isLoading: Reducer<TransferBookState>;
-    loadData: Reducer<TransferBookState>;
-    loadDataDrawer: Reducer<TransferBookState>;
+    isLoading: Reducer;
+    loadData: Reducer;
+    loadDataDrawer: Reducer;
 
-    loadSeletedBook: Reducer<TransferBookState>;
-    loadSeletedBookDrawer: Reducer<TransferBookState>;
-    refreshData: Reducer<TransferBookState>;
+    loadSeletedBook: Reducer;
+    loadSeletedBookDrawer: Reducer;
+    refreshData: Reducer;
   };
 }
 
@@ -58,7 +54,7 @@ const TransferModel: TransferBookType = {
   state: {
     isLoading: false,
     isLoadingDrawer: false,
-    allBooksVisible: "0px",
+    allBooksVisible: '0px',
     paginationDrawer: {
       current: 1,
       pageSize: 20,
@@ -85,7 +81,7 @@ const TransferModel: TransferBookType = {
     selectedBooksDrawer: [],
   },
   effects: {
-    *changeLoadingState(_, {put}){
+    *changeLoadingState(_, { put }) {
       yield put({
         type: 'isLoading',
         payload: {},
@@ -101,8 +97,9 @@ const TransferModel: TransferBookType = {
         type: 'isLoading',
         payload: {},
       });
-      
-      const response = yield call(fetchBookInSystem, payload);
+      console.log("payload", payload);
+      var response = yield call(fetchBookInSystem, payload);
+
       yield put({
         type: 'loadData',
         payload: { response: response, filter: payload },
@@ -115,6 +112,7 @@ const TransferModel: TransferBookType = {
         payload: {},
       });
       const response = yield call(fetchBookInSystem, payload);
+      response.data = response.data.filter((drawer: any) => drawer.isDeleted == false)
       yield put({
         type: 'loadDataDrawer',
         payload: { response: response, filter: payload },
@@ -149,9 +147,9 @@ const TransferModel: TransferBookType = {
         tmp.push({
           id: ele,
           drawerId: payload.drawerId,
-        })
+        });
       });
-     
+
       yield call(addBookToDrawer, tmp);
     },
 
@@ -159,12 +157,12 @@ const TransferModel: TransferBookType = {
       let arrayLength = payload.data;
       let tmp: any = [];
       console.log(payload);
-      
+
       arrayLength.forEach((ele: any) => {
         tmp.push({
           id: ele,
           drawerId: null,
-        })
+        });
       });
 
       yield call(removeBooksFromDrawer, tmp);
@@ -190,13 +188,8 @@ const TransferModel: TransferBookType = {
         isLoading: true,
       };
     },
-    isLoadingDrawer(state: any, {}: any) {
-      return {
-        ...state,
-        isLoadingDrawer: true,
-      };
-    },
-    displayAllBooks(state: any, {payload}: any) {
+
+    displayAllBooks(state: any, { payload }: any) {
       return {
         ...state,
         allBooksVisible: payload,
@@ -221,7 +214,7 @@ const TransferModel: TransferBookType = {
         },
         filterNameBook: filter.filterName,
         isLoading: false,
-        selectedBooks: []
+        selectedBooks: [],
       };
     },
     loadDataDrawer(state: any, { payload }: any) {
@@ -242,7 +235,7 @@ const TransferModel: TransferBookType = {
         },
         filterNameBookDrawer: filter.filterName,
         isLoadingDrawer: false,
-        selectedBooksDrawer: []
+        selectedBooksDrawer: [],
       };
     },
     loadSeletedBook(state: any, { payload }: any) {
@@ -257,7 +250,7 @@ const TransferModel: TransferBookType = {
         selectedBooksDrawer: payload,
       };
     },
-    refreshData(state: any, { }: any) {
+    refreshData(state: any, {}: any) {
       return {
         ...state,
         filterNameBookDrawer: '',

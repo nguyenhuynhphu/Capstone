@@ -18,8 +18,8 @@ export interface BookShelfTableType {
     fetchData: Effect;
   };
   reducers: {
-    isLoading: Reducer<BookShelfTableState>;
-    loadData: Reducer<BookShelfTableState>;
+    isLoading: Reducer;
+    loadData: Reducer;
   };
 }
 

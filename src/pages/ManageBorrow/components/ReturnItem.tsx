@@ -125,9 +125,13 @@ class ReturnItem extends React.Component<ReturnItemrops, {}> {
   handelFee() {
     const { returnItem } = this.props;
 
-    var diffDate = moment(returnItem.returnTime).diff(returnItem.startTime, 'days');
-    console.log("returnItem", returnItem);
-    
+    var diffDate = moment().diff(returnItem.returnTime, 'days');
+    console.log('returnItem', returnItem);
+    if (diffDate > 0) {
+      var diffDate = moment(returnItem.endTime).diff(returnItem.startTime, 'days');
+    } else {
+      var diffDate = moment().diff(returnItem.startTime, 'days');
+    }
     if (diffDate == 0) diffDate = 1;
     else diffDate += 1;
     var fee = 0;
@@ -142,7 +146,7 @@ class ReturnItem extends React.Component<ReturnItemrops, {}> {
 
     var punishFee = 0;
     if (diffDate > 0) {
-      punishFee += returnItem.punishFee * (diffDate);
+      punishFee += returnItem.punishFee * diffDate;
     }
     return punishFee;
   }
