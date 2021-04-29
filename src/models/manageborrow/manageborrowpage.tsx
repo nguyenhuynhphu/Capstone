@@ -1,4 +1,11 @@
-import { fetchBorrowDetail, fetchReturn, fetchReturnDetail } from '@/services/manageborrow';
+import {
+  fetchBorrowBook,
+  fetchBorrowDetail,
+  fetchReturn,
+  fetchReturnById,
+  fetchReturnDetail,
+} from '@/services/manageborrow';
+import _ from 'lodash';
 import { Effect, Reducer } from 'umi';
 
 export interface ManageBorrowPageState {
@@ -39,7 +46,7 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
     borrowLoading: false,
 
     viewReturnVisible: false,
-    choiceReturn: {}
+    choiceReturn: {},
   },
   effects: {
     //===================================
@@ -54,13 +61,13 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
       });
       yield put({
         type: 'displayViewBorrow',
-        payload: {visible: true, record: {}},
+        payload: { visible: true, record: {} },
       });
-      const data = yield call(fetchBorrowDetail, payload.id)
+      const data = yield call(fetchBorrowDetail, payload.id);
       var tmp = data.data;
       for (let i = 0; i < tmp.length; i++) {
-        const borrowDetail = tmp[i];   
-        if(borrowDetail.isReturn){
+        const borrowDetail = tmp[i];
+        if (borrowDetail.isReturn) {
           const response = yield call(fetchReturn, borrowDetail.bookId);
           borrowDetail.returnId = response.data[0].returnId;
           borrowDetail.returnTime = response.data[0].returnTime;
@@ -69,7 +76,7 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
       payload.borrowDetail = data.data;
       yield put({
         type: 'displayViewBorrow',
-        payload: {visible: true, record: payload},
+        payload: { visible: true, record: payload },
       });
       yield put({
         type: 'borrowLoading',
@@ -83,40 +90,73 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
       });
       yield put({
         type: 'displayViewBorrow',
-        payload: {visible: false, record: {}},
+        payload: { visible: false, record: {} },
       });
     },
+
     *showViewReturn({ payload }, { put, call }) {
       yield put({
         type: 'displayScrollBar',
         payload: false,
       });
-      const data = yield call(fetchReturnDetail, payload.id)
-      
-     
+      if (!payload.id) {
+        const tmp = yield call(fetchReturnById, payload);
+        payload = tmp.data;
+      }
+
+      const data = yield call(fetchReturnDetail, payload.id);
       payload.borrowDetail = data.data;
+      const refBorrow = yield call(fetchBorrowBook, payload.borrowId);
+      const refBorrowDetail = yield call(fetchBorrowDetail, payload.borrowId);
+
+      var removeData: any = [];
+      payload.borrowDetail.forEach((borrowDetail: any) => {
+        var tmp = refBorrowDetail.data.find(
+          (refBorr: any) => refBorr.bookId == borrowDetail.bookId,
+        );
+        if (tmp) {
+          borrowDetail.barcode = tmp.barcode
+          removeData.push(tmp);
+        }
+      });
+      _.pullAll(refBorrowDetail.data, removeData);
+      refBorrowDetail.data.forEach((book: any) => {
+        book.isMissing = true;
+      });
+      payload.borrowDetail = _.concat(payload.borrowDetail, refBorrowDetail.data);
+      payload.borrowInfo = refBorrow.data;
+      console.log('PAYLOAD', payload);
+
       yield put({
         type: 'displayViewReturn',
-        payload: {visible: true, record: payload},
+        payload: { visible: true, record: payload },
       });
     },
-    *hideViewReturn(_, { put }) {
-      yield put({
-        type: 'displayScrollBar',
-        payload: true,
-      });
+    *hideViewReturn(_, { put, select }) {
+      var viewBorrowVisible = yield select(
+        (state: any) => state.manageborrowpage?.viewBorrowVisible,
+      );
+      console.log('viewBorrowVisible', viewBorrowVisible);
+
+      if (!viewBorrowVisible) {
+        yield put({
+          type: 'displayScrollBar',
+          payload: true,
+        });
+      }
+
       yield put({
         type: 'displayViewReturn',
-        payload: {visible: false, record: {}},
+        payload: { visible: false, record: {} },
       });
-    }
+    },
   },
   reducers: {
-    borrowLoading(state, {payload}) {
+    borrowLoading(state, { payload }) {
       return {
         ...state,
-        borrowLoading: payload
-      }
+        borrowLoading: payload,
+      };
     },
     displayScrollBar(state, { payload }) {
       if (payload) {
@@ -130,20 +170,20 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
         ...state,
       };
     },
-    displayViewBorrow(state, {payload}) {
-      const {visible, record} = payload;
+    displayViewBorrow(state, { payload }) {
+      const { visible, record } = payload;
       return {
         ...state,
         viewBorrowVisible: visible,
         choiceBorrow: record,
       };
     },
-    displayViewReturn(state, {payload}) {
-      const {visible, record} = payload;
+    displayViewReturn(state, { payload }) {
+      const { visible, record } = payload;
       return {
         ...state,
         viewReturnVisible: visible,
-        choiceReturn: record
+        choiceReturn: record,
       };
     },
   },

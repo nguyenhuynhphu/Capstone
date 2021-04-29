@@ -322,7 +322,9 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                   <Drawer
                     title={'Return Detail'}
                     width={700}
+                    zIndex={99999}
                     placement="right"
+                    destroyOnClose
                     closable={false}
                     onClose={this.hideViewReturn}
                     visible={manageborrowpage.viewReturnVisible}
@@ -341,6 +343,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                     width={500}
                     placement="right"
                     closable={false}
+                    destroyOnClose
                     onClose={this.hideViewBorrow}
                     visible={manageborrowpage.viewBorrowVisible}
                   >

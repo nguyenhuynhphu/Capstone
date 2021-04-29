@@ -1,4 +1,6 @@
+import { insertBook } from '@/services/book';
 import { fetchBooks } from '@/services/bookgroup';
+import sendNotification from '@/utils/Notification';
 import { Effect, Reducer } from 'umi';
 
 export interface ListBooksState {
@@ -11,6 +13,7 @@ export interface ListBooksType {
   state: ListBooksState;
   effects: {
     fetchData: Effect;
+    createBook: Effect;
   };
   reducers: {
     isLoading: Reducer;
@@ -33,11 +36,28 @@ const ListBooksModel: ListBooksType = {
       });
 
       const response = yield call(fetchBooks, payload);
-      
+
       yield put({
         type: 'loadData',
         payload: response,
       });
+    },
+    *createBook({ payload }, { call, put }) {
+      const { bookGroupId, inputBooks } = payload;
+      var book: any = {
+        bookGroupId: bookGroupId,
+        barcode: '',
+        isDeleted: false,
+        isAvailable: true,
+        drawerId: null,
+      };
+      if (inputBooks == 0) {
+        sendNotification('Please input quantity upper than 0 to create book !', '', 'warning');
+      } else {
+        for (let i = 0; i < inputBooks; i++) {
+          yield call(insertBook, book);
+        }      
+      }
     },
   },
   reducers: {

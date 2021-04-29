@@ -70,7 +70,7 @@ class Welcome extends React.Component<WelcomeProps> {
                   <Descriptions.Item
                     label={
                       <>
-                        <MailOutlined style={{ marginRight: 5, color: '#40A9FF' }} /> Role
+                        <MailOutlined style={{ marginRight: 5, color: '#40A9FF' }} /> Email
                       </>
                     }
                   >
@@ -89,7 +89,7 @@ class Welcome extends React.Component<WelcomeProps> {
                   <Descriptions.Item
                     label={
                       <>
-                        <HomeOutlined style={{ marginRight: 5, color: '#40A9FF' }} /> Role
+                        <HomeOutlined style={{ marginRight: 5, color: '#40A9FF' }} /> Address
                       </>
                     }
                   >

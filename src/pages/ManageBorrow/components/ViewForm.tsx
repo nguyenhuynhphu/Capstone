@@ -106,7 +106,10 @@ class ViewForm extends React.Component<ViewFormProps> {
                                 style={{ cursor: 'pointer' }}
                                 icon={<CheckOutlined />}
                                 color="#87d068"
-                                onClick={() => {}}
+                                onClick={() =>  this.props.dispatch({
+                                  type: 'manageborrowpage/showViewReturn',
+                                  payload: item.returnId,
+                                })}
                               >
                                 Return at {item.returnTime?.split('T')[0]}
                               </Tag>

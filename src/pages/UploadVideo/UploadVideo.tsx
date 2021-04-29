@@ -282,7 +282,6 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
                 </Space>
 
                 <UploadRecordTable trackingDetail={this.trackingDetail} />
-               
               </Col>
             </Row>
           </Col>
@@ -502,6 +501,57 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
     const formData = new FormData();
 
     formData.append('files', fileList[0].originFileObj);
+    var videoCu = {
+      link:
+        'https://papv.blob.core.windows.net/videos/DJI_0502_1618185243.mp4?sv=2020-02-10&ss=bfqt&srt=sco&sp=rwdlacupx&se=2021-05-31T21%3A36%3A09Z&st=2021-04-10T13%3A36%3A09Z&spr=https&sig=te5dpk%2FASSegm2WRSVxQZEHX7HIB92MRFuPbv7E70Pg%3D',
+      list_code: [
+        {
+          drawer: 'KS002500',
+          books: [
+            'A002103',
+            'A002406',
+            'A003205',
+            'A003306',
+            'A003003',
+            'A002810',
+            'A001607',
+            'A002002',
+          ],
+        },
+        {
+          drawer: 'KS002600',
+          books: [
+            'A000404',
+            'A004307',
+            'A001910',
+            'A003508',
+            'A002204',
+            'A004509',
+            'A002911',
+            'A002608',
+            'A003407',
+            'A001304',
+            'A001708',
+            'A003912',
+            'A004004',
+            'A004206',
+          ],
+        },
+        {
+          drawer: 'KS002700',
+          books: [
+            'A002507',
+            'A003104',
+            'A003811',
+            'A002305',
+            'A002709',
+            'A003710',
+            'A004812',
+            'A003609',
+          ],
+        },
+      ],
+    };
     //this.uploadSuccess(responseDetect[0]);
     axios
       .post('http://127.0.0.1:5000/upload', formData, {

@@ -27,7 +27,7 @@ const UploadRecordTableModel: UploadRecordTableType = {
     pagination: {
       current: 1,
       total: 0,
-      pageSize: 20,
+      pageSize: 10,
       showSizeChanger: false
     },
     filterRecord: [
@@ -68,7 +68,7 @@ const UploadRecordTableModel: UploadRecordTableType = {
         data: response.data,
         pagination: {
           current: filter.pagination,
-          pageSize: 20,
+          pageSize: 10,
           total: response.meta.totalCount,
           showSizeChanger: false
         },

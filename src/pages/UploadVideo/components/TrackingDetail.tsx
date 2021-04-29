@@ -58,10 +58,16 @@ const columns: any = [
     key: 'issue',
     align: 'left',
     render: (text: string, record: any) => {
-      if (record.error.length == 0) {
+      let count = 0;
+      record.error.forEach((error: any) => {
+        if (error.typeError != 6) {
+          count++;
+        }
+      });
+      if (count == 0) {
         return <Tag color="#87d068">No issue</Tag>;
       } else {
-        return <Tag color="#cd201f">{record.error.length} issues</Tag>;
+        return <Tag color="#cd201f">{count} issues</Tag>;
       }
     },
   },
@@ -121,7 +127,7 @@ const columns2: any = [
   },
   {
     title: 'Book Barcode',
-    dataIndex: 'barCode',
+    dataIndex: 'bookBarcode',
     align: 'center',
     width: 200,
   },
@@ -133,15 +139,15 @@ const columns2: any = [
     render: (text: string, record: any) => {
       //console.log("RECRD", record);
 
-      if (!record.error) {
+      if (record.typeError == 6) {
         //no Error
         return <Tag color="#87d068">No issue</Tag>;
       } else {
         // Error
-        if (record.error.isConfirm) {
+        if (record.isConfirm) {
           // Confirm
           return <Tag color="blue">Confirm</Tag>;
-        } else if (record.error.isRejected) {
+        } else if (record.isRejected) {
           //Reject
           return <Tag color="red">Reject</Tag>;
         }
@@ -156,25 +162,28 @@ const columns2: any = [
     ],
     onFilter: (value: any, record: any) => {
       if (value == 'issue') {
-        if (record.error != undefined) {
-          if (!(record.error.isConfirm || record.error.isRejected)) {
-            return record;
-          }
+        if (!(record.isConfirm || record.isRejected) && record.typeError != 6) {
+          return record;
         }
       } else if (value == 'confirm') {
-        if (record.error != undefined) {
-          if (record.error.isConfirm) {
+        if (record != undefined) {
+          if (record.isConfirm  && record.typeError != 6) {
             return record;
           }
         }
       } else if (value == 'reject') {
-        if (record.error != undefined) {
-          if (record.error.isRejected) {
+        if (record != undefined) {
+          if (record.isRejected  && record.typeError != 6) {
             return record;
           }
         }
-      } else {
-        return record.error == undefined;
+      } else if(value == 'no-issue') {
+        if (record.typeError == 6) {
+          return record;
+        }
+       
+      }else{
+        return record;
       }
     },
   },
@@ -243,79 +252,93 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                     expandable={{
                       expandedRowRender: (record) => (
                         <>
-                          <Table
-                            columns={columns2}
-                            scroll={{ y: 400 }}
-                            dataSource={record.books}
-                            pagination={false}
-                            size="small"
-                            expandable={{
-                              expandedRowRender: (book) => {
-                                if (book.error.isConfirm) {
+                          <ConfigProvider
+                            renderEmpty={() => (
+                              <Result
+                                style={{
+                                  height: '100%',
+                                  justifyContent: 'center',
+                                  flexDirection: 'column',
+                                  display: 'flex',
+                                  margin: '80px 0',
+                                }}
+                                status="warning"
+                                title="No Error Message !"
+                              />
+                            )}
+                          >
+                            <Table
+                              columns={columns2}
+                              scroll={{ y: 400 }}
+                              dataSource={record.error}
+                              pagination={false}
+                              size="small"
+                              expandable={{
+                                expandedRowRender: (book) => {
+                                  if (book.isConfirm) {
+                                    return (
+                                      <Space
+                                        style={{ width: '100%', justifyContent: 'space-between' }}
+                                      >
+                                        <Alert
+                                          message={book.errorMessage}
+                                          type="error"
+                                          showIcon
+                                        />
+                                        <Tag color="blue">Confirm</Tag>
+                                      </Space>
+                                    );
+                                  } else if (book.isRejected) {
+                                    return (
+                                      <Space
+                                        style={{ width: '100%', justifyContent: 'space-between' }}
+                                      >
+                                        <Alert
+                                          message={book.errorMessage}
+                                          type="error"
+                                          showIcon
+                                        />
+                                        <Tag color="red">Reject</Tag>
+                                      </Space>
+                                    );
+                                  }
                                   return (
                                     <Space
                                       style={{ width: '100%', justifyContent: 'space-between' }}
                                     >
-                                      <Alert
-                                        message={book.error.errorMessage}
-                                        type="error"
-                                        showIcon
-                                      />
-                                      <Tag color="blue">Confirm</Tag>
+                                      <Alert message={book.errorMessage} type="error" showIcon />
+                                      <Space style={{ width: 125 }}>
+                                        <Tooltip title="Confirm Error">
+                                          <Button
+                                            shape="round"
+                                            type="primary"
+                                            size="small"
+                                            icon={<CheckOutlined />}
+                                            onClick={() => this.handelConfirm(book)}
+                                          ></Button>
+                                          {/* <Button type="primary" size="small" icon={<CheckOutlined />} onClick={() => {}} /> */}
+                                        </Tooltip>
+                                        <Tooltip title="Reject Error">
+                                          <Button
+                                            shape="round"
+                                            type="primary"
+                                            danger
+                                            size="small"
+                                            icon={<CloseOutlined />}
+                                            onClick={() => this.handelReject(book)}
+                                          ></Button>
+                                        </Tooltip>
+                                      </Space>
                                     </Space>
                                   );
-                                } else if (book.error.isRejected) {
-                                  return (
-                                    <Space
-                                      style={{ width: '100%', justifyContent: 'space-between' }}
-                                    >
-                                      <Alert
-                                        message={book.error.errorMessage}
-                                        type="error"
-                                        showIcon
-                                      />
-                                      <Tag color="red">Reject</Tag>
-                                    </Space>
-                                  );
-                                }
-                                return (
-                                  <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                                    <Alert
-                                      message={book.error.errorMessage}
-                                      type="error"
-                                      showIcon
-                                    />
-                                    <Space style={{ width: 125 }}>
-                                      <Tooltip title="Confirm Error">
-                                        <Button
-                                          shape="round"
-                                          type="primary"
-                                          size="small"
-                                          icon={<CheckOutlined />}
-                                          onClick={() => this.handelConfirm(book)}
-                                        ></Button>
-                                        {/* <Button type="primary" size="small" icon={<CheckOutlined />} onClick={() => {}} /> */}
-                                      </Tooltip>
-                                      <Tooltip title="Reject Error">
-                                        <Button
-                                          shape="round"
-                                          type="primary"
-                                          danger
-                                          size="small"
-                                          icon={<CloseOutlined />}
-                                          onClick={() => this.handelReject(book)}
-                                        ></Button>
-                                      </Tooltip>
-                                    </Space>
-                                  </Space>
-                                );
-                              },
-                              rowExpandable: (record) => {
-                                if (record.error) return true;
-                                return false;
-                              },
-                            }}
-                          />
+                                },
+                                rowExpandable: (record) => {
+                                  if (record.typeError != 6) return true;
+                                  return false;
+                                },
+                              }}
+                            />
+                          </ConfigProvider>
                         </>
                       ),
                     }}
@@ -485,30 +508,30 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
     console.log(record);
 
     const { dispatch } = this.props;
-    record.error.isConfirm = true;
-    record.error.isRejected = false;
-    if (record.error.typeError != 1) {
+    record.isConfirm = true;
+    record.isRejected = false;
+    if (record.typeError != 1) {
       console.log('DEFI');
       var tmp: any = {
-        id: record.error.id,
-        drawerDetectionId: record.error.drawerDetectionId,
-        errorMessage: record.error.errorMessage,
-        bookId: record.error.bookId,
-        isRejected: record.error.isRejected,
-        isConfirm: record.error.isConfirm,
-        typeError: record.error.typeError,
+        id: record.id,
+        drawerDetectionId: record.drawerDetectionId,
+        errorMessage: record.errorMessage,
+        bookId: record.bookId,
+        isRejected: record.isRejected,
+        isConfirm: record.isConfirm,
+        typeError: record.typeError,
         isDeleted: 0,
       };
       dispatch({ type: 'trackingdetail/updateError', payload: tmp });
     } else {
       console.log('UNDEFI');
       var tmp: any = {
-        id: record.error.id,
-        drawerDetectionId: record.error.drawerDetectionId,
-        errorMessage: record.error.errorMessage,
-        isRejected: record.error.isRejected,
-        isConfirm: record.error.isConfirm,
-        typeError: record.error.typeError,
+        id: record.id,
+        drawerDetectionId: record.drawerDetectionId,
+        errorMessage: record.errorMessage,
+        isRejected: record.isRejected,
+        isConfirm: record.isConfirm,
+        typeError: record.typeError,
         isDeleted: 0,
       };
       dispatch({ type: 'trackingdetail/updateErrorUndefined', payload: tmp });
@@ -517,30 +540,30 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
   }
   handelReject(record: any) {
     const { dispatch } = this.props;
-    record.error.isConfirm = false;
-    record.error.isRejected = true;
-    if (record.error.typeError != 1) {
+    record.isConfirm = false;
+    record.isRejected = true;
+    if (record.typeError != 1) {
       console.log('DEFI');
       var tmp: any = {
-        id: record.error.id,
-        drawerDetectionId: record.error.drawerDetectionId,
-        errorMessage: record.error.errorMessage,
-        bookId: record.error.bookId,
-        isRejected: record.error.isRejected,
-        isConfirm: record.error.isConfirm,
-        typeError: record.error.typeError,
+        id: record.id,
+        drawerDetectionId: record.drawerDetectionId,
+        errorMessage: record.errorMessage,
+        bookId: record.bookId,
+        isRejected: record.isRejected,
+        isConfirm: record.isConfirm,
+        typeError: record.typeError,
         isDeleted: 0,
       };
       dispatch({ type: 'trackingdetail/updateError', payload: tmp });
     } else {
       console.log('UNDEFI');
       var tmp: any = {
-        id: record.error.id,
-        drawerDetectionId: record.error.drawerDetectionId,
-        errorMessage: record.error.errorMessage,
-        isRejected: record.error.isRejected,
-        isConfirm: record.error.isConfirm,
-        typeError: record.error.typeError,
+        id: record.id,
+        drawerDetectionId: record.drawerDetectionId,
+        errorMessage: record.errorMessage,
+        isRejected: record.isRejected,
+        isConfirm: record.isConfirm,
+        typeError: record.typeError,
         isDeleted: 0,
       };
       dispatch({ type: 'trackingdetail/updateErrorUndefined', payload: tmp });

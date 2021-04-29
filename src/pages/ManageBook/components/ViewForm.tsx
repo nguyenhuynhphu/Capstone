@@ -41,6 +41,7 @@ interface ViewFormProps {
   listbooks?: any;
   disablebook?: any;
   filterBook?: any;
+  bookgrouptable?: any;
 }
 interface ViewFormState {
   viewBookQuantity: boolean;
@@ -97,18 +98,16 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                     <Rate
                       allowHalf
                       allowClear={false}
-                      value={bookGroup?.ratingAverage != 'NaN'
-                      ? bookGroup?.ratingAverage?.toFixed(2)
-                      : 0}
+                      value={
+                        bookGroup?.ratingAverage != 'NaN' ? bookGroup?.ratingAverage?.toFixed(2) : 0
+                      }
                       defaultValue={0}
                       disabled
                     />
                   </Col>
                   <Col span={7} offset={1}>
                     <Title style={{ margin: 0, marginTop: 5 }} level={4}>
-                      {bookGroup?.ratingAverage != 'NaN'
-                        ? bookGroup?.ratingAverage?.toFixed(2)
-                        : 0}
+                      {bookGroup?.ratingAverage != 'NaN' ? bookGroup?.ratingAverage?.toFixed(2) : 0}
                     </Title>
                   </Col>
                 </Row>
@@ -187,7 +186,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                 {formatDate(bookGroup.publishDate)}
               </Descriptions.Item>
               <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Edition" span={2}>
-                <Text >{bookGroup.edition}</Text>
+                <Text>{bookGroup.edition}</Text>
               </Descriptions.Item>
               <Descriptions.Item labelStyle={{ fontWeight: 500 }} label="Publishing Place" span={2}>
                 <Text className={styles.title}>{bookGroup.publishPlace}</Text>
@@ -258,6 +257,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
           title="Disable Book"
           visible={this.state.isDisabelBookVisible}
           //className={styles.exportSection}
+          
           centered
           bodyStyle={{ paddingTop: 10, paddingBottom: 10 }}
           onCancel={() => this.setState({ isDisabelBookVisible: false })}
@@ -401,31 +401,30 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
   }
   async createBooks() {
     const { inputBooks } = this.state;
-    const { bookGroup, dispatch } = this.props;
+    const { bookGroup, dispatch, bookgrouptable } = this.props;
     console.log('inputBooks', inputBooks);
-    var book: any = {
-      bookGroupId: bookGroup.id,
-      barcode: '',
-      isDeleted: false,
-      isAvailable: true,
-      drawerId: null,
-    };
-    let promiese: any = [];
-    if (inputBooks == 0) {
-      sendNotification('Please input quantity upper than 0 to create book !', '', 'warning');
-    } else {
-      for (let i = 0; i < inputBooks; i++) {
-        promiese.push(insertBook(book));
-      }
-      Promise.all(promiese).finally(() => {
-        sendNotification('Create books succecss !', '', 'success');
-        dispatch({
-          type: 'listbooks/fetchData',
-          payload: bookGroup.id,
-        });
-        this.setState({ isCreateBookVisible: false, inputBooks: 0 });
+    dispatch({
+      type: 'listbooks/createBook',
+      payload: { bookGroupId: bookGroup.id, inputBooks: inputBooks },
+    }).then(() => {
+      sendNotification('Create books succecss !', '', 'success');
+      dispatch({
+        type: 'listbooks/fetchData',
+        payload: bookGroup.id,
       });
-    }
+      dispatch({
+        type: 'managebook/showViewBook',
+        payload: bookGroup.id,
+      });
+      dispatch({
+        type: 'bookgrouptable/fetchData',
+        payload: {
+          filterName: bookgrouptable.filterName,
+          pagination: bookgrouptable.pagination.current,
+        },
+      });
+      this.setState({ isCreateBookVisible: false, inputBooks: 0 });
+    });
   }
 
   handelCategory() {

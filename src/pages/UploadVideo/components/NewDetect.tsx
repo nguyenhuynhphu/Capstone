@@ -75,7 +75,7 @@ class NewDetect extends React.Component<NewDetectProps, NewDetectState> {
           )}
           <Statistic
             title="Compare Last Scan"
-            value={data.compareLastTime}
+            value={data.compareLastTime > 0 ? data.compareLastTime: data.compareLastTime * -1}
             valueStyle={data.compareLastTime > 0 ? { color: '#f50' } : { color: '#3f8600' }}
             prefix={data.compareLastTime > 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
             suffix={'errors'}

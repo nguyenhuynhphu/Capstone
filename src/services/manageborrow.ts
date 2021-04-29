@@ -85,3 +85,9 @@ export async function fetchBorrowBook(borrowBookId: string): Promise<any> {
 export async function fetchReturn(bookId: number): Promise<any> {
   return request(`/api/ReturnDetail?BookId=${bookId}&PageSize=1`);
 }
+//fetchReturnById
+
+
+export async function fetchReturnById(returnId: number): Promise<any> {
+  return request(`/api/ReturnBook/${returnId}`);
+}

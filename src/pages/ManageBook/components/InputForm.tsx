@@ -371,6 +371,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         quantity: managebook.choiceBook.quantity,
         fee: managebook.choiceBook.fee,
         punishFee: managebook.choiceBook.punishFee,
+        price: managebook.choiceBook.price,
         category: this.handelCate(managebook.choiceBook.category),
         images: { fileList: tmp },
         publishCompany: managebook.choiceBook.publishCompany,

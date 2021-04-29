@@ -77,16 +77,18 @@ const UploadVideoModel: UploadVideoType = {
           }
         });
       });
-      console.log('FOUND >>>>', found);
+
       if (found.length != 0) {
+        var drawerDetection: any = [];
+        var drawerDetectionCorrect: any = [];
         for (let i = 0; i < found.length; i++) {
           const drawer = found[i];
           const response = yield call(fetchBookInDrawer, drawer.id);
           drawer.books = response.data;
         }
-        console.log('XXXX >>>>', found);
-
+ 
         found.forEach((drawer: any) => {
+          var correctMsg: any = [];
           // xác định vị trí cho những cuốn sai
           data.list_code.forEach((scanDrawer: any) => {
             //matching pair
@@ -97,6 +99,13 @@ const UploadVideoModel: UploadVideoType = {
                 drawer.books.map((orgBook: any) => {
                   scanDrawer.books.map((barcode: any) => {
                     if (orgBook.barCode != undefined && orgBook.barCode.trim() == barcode.trim()) {
+                      correctMsg.push({
+                        drawerId: drawer.id,
+                        errorMessage: ``,
+                        bookId: orgBook.id,
+                        typeError: 6,
+                      });
+
                       tmp.push(orgBook);
                       removeBarcode.push(barcode);
                     }
@@ -108,9 +117,11 @@ const UploadVideoModel: UploadVideoType = {
               }
             }
           });
+          drawerDetectionCorrect.push({
+            drawerId: drawer.id,
+            correctMsg: correctMsg,
+          });
         });
-
-        var drawerDetection: any = [];
 
         for (let i = 0; i < found.length; i++) {
           const drawer = found[i];
@@ -169,7 +180,7 @@ const UploadVideoModel: UploadVideoType = {
                 errorMsg.push({
                   errorMessage: `Sách mất. Sách chưa được trả bởi ${bookResponse.data.patronName}`,
                   bookId: bookResponse.data.id,
-                  isError: 5,
+                  typeError: 5,
                 });
               }
             }
@@ -179,8 +190,14 @@ const UploadVideoModel: UploadVideoType = {
             detectionError: errorMsg,
             undefinedError: undefinedError,
           });
+         
         }
-        console.log('drawerDetection', drawerDetection);
+        drawerDetection.forEach((drawerDetection: any) => {
+          var tmp = drawerDetectionCorrect.find((x: any) => x.drawerId == drawerDetection.drawerId);
+          if (tmp != undefined) {
+            drawerDetection.detectionError = _.concat(drawerDetection.detectionError, tmp.correctMsg);
+          } 
+        });
       }
       Object.assign(msgToServer, {
         drawerDetection: drawerDetection,
