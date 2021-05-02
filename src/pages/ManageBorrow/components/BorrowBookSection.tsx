@@ -29,6 +29,7 @@ interface BorrowBookSectionProps {
   dispatch: Dispatch;
   borrowBook: any;
   user?: any;
+  returnbooktable?: any;
 }
 
 class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
@@ -53,7 +54,7 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
             ))}
           </Col>
           <Col span={11} offset={1} style={{ paddingLeft: 10 }}>
-            <Divider orientation='left'>Patron Informaton</Divider>
+            <Divider orientation="left">Patron Informaton</Divider>
             <Descriptions column={2}>
               <Descriptions.Item label="Name">{borrowBook?.patron.name}</Descriptions.Item>
               <Descriptions.Item label="Email">{borrowBook?.patron.email}</Descriptions.Item>
@@ -102,9 +103,7 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
                 <p style={{ marginBottom: 0 }}>Return Day: </p>
                 <Space style={{ margin: 0 }}>
                   {moment().diff(borrowBook.endTime, 'days') > 0 ? (
-                    <Tag color={'#f50'}>
-                      Late {moment().diff(borrowBook.endTime, 'days')} days
-                    </Tag>
+                    <Tag color={'#f50'}>Late {moment().diff(borrowBook.endTime, 'days')} days</Tag>
                   ) : (
                     <></>
                   )}
@@ -175,9 +174,7 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
       console.log('BOOK', book);
       if (!book.isReturn && book.isReturnToday) {
         tmp.push({
-        
           bookId: book.bookId,
-    
         });
       }
     });
@@ -189,8 +186,7 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
       staffId: user.currentUser.id,
       returnDetail: tmp,
     };
-    console.log("msgToServer", msgToServer);
-    
+    console.log('msgToServer', msgToServer);
 
     dispatch({
       type: 'manageborrow/confirmReturn',
@@ -202,19 +198,26 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
         type: 'manageborrow/resetState',
         payload: {},
       });
+      dispatch({
+        type: 'returnbooktable/fetchData',
+        payload: {
+          filterName: this.props.returnbooktable.filterName,
+          pagination: this.props.returnbooktable.pagination.current,
+        },
+      });
     }, 1000);
   }
   handelFee() {
     const { borrowBook } = this.props;
-    console.log("borrowBook.startTime", borrowBook);
+    console.log('borrowBook.startTime', borrowBook);
     var diffDate = moment().diff(borrowBook.endTime, 'days');
- 
+
     if (diffDate > 0) {
       var diffDate = moment(borrowBook.endTime).diff(borrowBook.startTime, 'days');
-    }else{
+    } else {
       var diffDate = moment().diff(borrowBook.startTime, 'days');
     }
-   
+
     if (diffDate == 0) diffDate = 1;
     else diffDate += 1;
     var fee = 0;

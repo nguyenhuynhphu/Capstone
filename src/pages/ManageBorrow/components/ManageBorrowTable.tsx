@@ -140,7 +140,7 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
                 type: 'manageborrowtable/fetchData',
                 payload: {
                   filterName: value,
-                  pagination: manageborrowtable.pagination.current,
+                  pagination: 1,
                 },
               })
             }

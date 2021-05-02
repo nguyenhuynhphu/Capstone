@@ -1,7 +1,4 @@
-
-
 import {
-
   fetchDetectionByBookShelfName,
   fetchDrawer,
   fetchNewestDetect,
@@ -50,7 +47,9 @@ const NewDetectModel: NewDetectType = {
       var tmpError = 0;
       if (allDrawer.length != 0) {
         allDrawer.forEach((drawer: any) => {
-          totalError += drawer.count;
+          console.log("drawer", drawer);
+          
+          if (drawer.errorType != 6) totalError += drawer.count;
         });
       }
       if (compareError.length != 0) {

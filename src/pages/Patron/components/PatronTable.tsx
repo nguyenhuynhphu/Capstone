@@ -108,7 +108,7 @@ class PatronTable extends React.Component<PatronPageProps, {}> {
             onSearch={(value: any) => {
               this.props.dispatch({
                 type: 'patrontable/fetchData',
-                payload: { filterName: value, pagination: patrontable.pagination.current },
+                payload: { filterName: value, pagination: 1 },
               });
             }}
           />
@@ -120,6 +120,12 @@ class PatronTable extends React.Component<PatronPageProps, {}> {
           loading={patrontable.isLoading}
           pagination={patrontable.pagination}
           size="small"
+          onChange={(pagination: any) => {
+            this.props.dispatch({
+              type: 'patrontable/fetchData',
+              payload: { filterName: patrontable.filterName, pagination: pagination.current },
+            });
+          }}
           onRow={(record, rowIndex) => {
             return {
               onClick: (event) => {

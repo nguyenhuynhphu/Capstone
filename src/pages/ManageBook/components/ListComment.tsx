@@ -8,6 +8,7 @@ interface ListCommentProps {
   dispatch: Dispatch;
   listcomments?: any;
   bookGroup: any;
+  user?: any;
 }
 interface ListCommentState {}
 
@@ -29,29 +30,33 @@ class ListComment extends React.Component<ListCommentProps, ListCommentState> {
           renderItem={(item: any) => (
             <li>
               <Comment
-                actions={[
-                  <Popconfirm
-                    title="Are you sure to delete this feedback ?"
-                    onConfirm={() => {
-                      this.props
-                        .dispatch({
-                          type: 'listcomments/removeFeedback',
-                          payload: item.id,
-                        })
-                        .then(() =>
-                          this.props.dispatch({
-                            type: 'listcomments/fetchData',
-                            payload: { id: this.props.bookGroup.id, page: 1 },
-                          }),
-                        );
-                    }}
-                  >
-                    <span key="comment-list-reply-to-0">
-                      <DeleteOutlined style={{ marginRight: 5 }} />
-                      Remove
-                    </span>
-                  </Popconfirm>,
-                ]}
+                actions={
+                  this.props.user.currentUser.roleId == 1
+                    ? [
+                        <Popconfirm
+                          title="Are you sure to delete this feedback ?"
+                          onConfirm={() => {
+                            this.props
+                              .dispatch({
+                                type: 'listcomments/removeFeedback',
+                                payload: item.id,
+                              })
+                              .then(() =>
+                                this.props.dispatch({
+                                  type: 'listcomments/fetchData',
+                                  payload: { id: this.props.bookGroup.id, page: 1 },
+                                }),
+                              );
+                          }}
+                        >
+                          <span key="comment-list-reply-to-0">
+                            <DeleteOutlined style={{ marginRight: 5 }} />
+                            Remove
+                          </span>
+                        </Popconfirm>,
+                      ]
+                    : []
+                }
                 avatar={<Avatar src={item.image} alt={item.name} />}
                 content={
                   <div>

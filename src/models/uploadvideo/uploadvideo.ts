@@ -136,7 +136,7 @@ const UploadVideoModel: UploadVideoType = {
                   errorMsg.push({
                     errorMessage: `Sách này đã bị xóa khỏi hệ thống`,
                     bookId: wrongResponse.data[0].id,
-                    typeError: 2,
+                    typeError: 7,
                   });
                 } else {
                   errorMsg.push({

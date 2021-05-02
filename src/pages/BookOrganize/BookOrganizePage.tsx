@@ -123,6 +123,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
         <Drawer
           title="Create Bookshelf"
           width={400}
+          destroyOnClose
           closable={false}
           onClose={this.hideCreateBookShelf}
           visible={organizebook.createBookShelfVisible}
@@ -184,47 +185,7 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
             </Col>
           </Row>
         </Drawer>
-        <Drawer
-          mask={false}
-          visible={organizebook.deleteLocationVisible}
-          placement={'bottom'}
-          closeIcon={null}
-          height={70}
-        >
-          <Row align={'middle'} style={{ height: '100%', paddingLeft: 50 }}>
-            <Col span={8}>
-              <p style={{ margin: 0, fontWeight: 'bold' }}>
-                Do you want to delete {organizebook.selectedRowKeys.length} location ?
-              </p>
-            </Col>
-            <Col span={3} offset={13}>
-              <Button
-                type="primary"
-                danger
-                onClick={() =>
-                  this.props
-                    .dispatch({
-                      type: 'organizebook/deleteLocation',
-                      payload: organizebook.selectedRowKeys,
-                    })
-                    .then(() => {
-                      sendNotification(`Delete Successfull !`, ``, 'success');
-                      this.props.dispatch({
-                        type: 'locationtable/fetchData',
-                        payload: {
-                          filterName: locationtable.filterName,
-                          pagination: locationtable.pagination.current,
-                        },
-                      });
-                    })
-                }
-              >
-                Delete
-              </Button>
-              <Button style={{ marginLeft: 15 }}>Cancel</Button>
-            </Col>
-          </Row>
-        </Drawer>
+        
         <Modal
           visible={organizebook.createLocationVisible}
           title="Create Location"

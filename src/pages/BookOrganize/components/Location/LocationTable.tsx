@@ -66,7 +66,7 @@ class LocationTable extends React.Component<LocationTableProps, LocationTableSta
                     type: 'locationtable/fetchData',
                     payload: {
                       filterName: value,
-                      pagination: locationtable.pagination.current,
+                      pagination: 1,
                     },
                   })
                 }

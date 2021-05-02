@@ -212,7 +212,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
             </Title>
             <Space style={{ width: '100%' }} direction={'vertical'}>
               <Description name={'Bookshelf:'} value={this.props.record.bookShelfName} />
-              <Description name={'Date'} value={'18/06/2021'} />
+              <Description name={'Date'} value={this.props.record.time} />
               <Description name={'Staff Upload'} value={this.props.record.staffName} />
             </Space>
           </Col>

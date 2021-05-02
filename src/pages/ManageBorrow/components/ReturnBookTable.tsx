@@ -77,7 +77,7 @@ class ReturnBookTable extends React.Component<ReturnBookTableProps> {
                 type: 'returnbooktable/fetchData',
                 payload: {
                   filterName: value,
-                  pagination: returnbooktable.pagination.current,
+                  pagination: 1,
                 },
               })
             }

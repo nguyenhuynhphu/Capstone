@@ -14,12 +14,7 @@ export async function insertBookShelf(values: any) {
 
 
 export async function deleteBookShelf(bookshelfs: any) {
-  var tmp = '';
-  bookshelfs.forEach((id: any) => {
-    tmp += `id=${id}&`;
-  });
-
-  return request(`/api/BookShelf?` + tmp, {
+  return request(`/api/BookShelf?id=` + bookshelfs, {
     method: 'DELETE',
   });
 }

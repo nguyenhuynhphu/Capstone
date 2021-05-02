@@ -103,7 +103,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                       >
                                         Available
                                       </Tag>
-                                      {this.props.user.currentUser != 1 ? (
+                                      {this.props.user.currentUser.roleId != 1 ? (
                                         <Button
                                           onClick={() => this.deleteBook(item)}
                                           type="primary"
@@ -155,7 +155,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                           Not Available
                                         </Tag>
                                       </Popover>
-                                      {this.props.user.currentUser != 1 ? (
+                                      {this.props.user.currentUser.roleId != 1 ? (
                                         <Button
                                           onClick={() => this.deleteBook(item)}
                                           type="primary"
@@ -219,7 +219,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                       >
                                         Available
                                       </Tag>
-                                      {this.props.user.currentUser != 1 ? (
+                                      {this.props.user.currentUser.roleId != 1 ? (
                                         <Button
                                           onClick={() => this.deleteBook(item)}
                                           type="primary"
@@ -271,7 +271,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                           Not Available
                                         </Tag>
                                       </Popover>
-                                      {this.props.user.currentUser != 1 ? (
+                                      {this.props.user.currentUser.roleId != 1 ? (
                                         <Button
                                           onClick={() => this.deleteBook(item)}
                                           type="primary"
@@ -357,7 +357,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                     >
                                       Available
                                     </Tag>
-                                    {this.props.user.currentUser != 1 ? (
+                                    {this.props.user.currentUser.roleId != 1 ? (
                                       <Button
                                         onClick={() => this.deleteBook(item)}
                                         type="primary"
@@ -409,7 +409,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                         Not Available
                                       </Tag>
                                     </Popover>
-                                    {this.props.user.currentUser != 1 ? (
+                                    {this.props.user.currentUser.roleId != 1 ? (
                                       <Button
                                         onClick={() => this.deleteBook(item)}
                                         type="primary"
@@ -473,7 +473,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                     >
                                       Available
                                     </Tag>
-                                    {this.props.user.currentUser != 1 ? (
+                                    {this.props.user.currentUser.roleId != 1 ? (
                                       <Button
                                         onClick={() => this.deleteBook(item)}
                                         type="primary"
@@ -525,7 +525,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
                                         Not Available
                                       </Tag>
                                     </Popover>
-                                    {this.props.user.currentUser != 1 ? (
+                                    {this.props.user.currentUser.roleId != 1 ? (
                                       <Button
                                         onClick={() => this.deleteBook(item)}
                                         type="primary"

@@ -63,7 +63,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
                 onSearch={(value) =>
                   this.props.dispatch({
                     type: 'bookshelftable/fetchData',
-                    payload: { filterName: value, pagination: bookshelftable.pagination.current },
+                    payload: { filterName: value, pagination: 1 },
                   })
                 }
               />
@@ -137,7 +137,7 @@ class BookShelfTable extends React.Component<BookShelfTableProps, BookShelfTable
                     cancelText="No"
                     onConfirm={() =>
                       this.props
-                        .dispatch({ type: 'organizebook/deleteBookShelf', payload: [id] })
+                        .dispatch({ type: 'organizebook/deleteBookShelf', payload: id })
                         .then(() => {
                           sendNotification('Delete BookShelf Successfull !', '', 'success');
                           this.props.dispatch({

@@ -83,9 +83,9 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
                       bookGroupId: '',
                       drawerId: '',
                       isInDrawer: false,
-                      pageNumber: transferbook.paginationBook.current,
+                      pageNumber: 1,
                       filterName: value, // ddoanj nay roi lam, cai State cua no trong kia khac nhung param truyeen ve server la filter Name
-                      pagination: transferbook.paginationBook.current,
+                      pagination: 1,
                     },
                   });
                 }}
@@ -158,9 +158,9 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
                             bookGroupId: '',
                             drawerId: drawergrid.selectDrawer.id,
                             isInDrawer: true,
-                            pageNumber: transferbook.paginationDrawer.current,
+                            pageNumber: 1,
                             filterName: value, // ddoanj nay roi lam, cai State cua no trong kia khac nhung param truyeen ve server la filter Name
-                            pagination: transferbook.paginationDrawer.current,
+                            pagination: 1,
                           },
                         });
                       }}

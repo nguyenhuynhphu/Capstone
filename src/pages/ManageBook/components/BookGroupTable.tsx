@@ -216,7 +216,7 @@ class BookGroupTable extends React.Component<BookGroupTableProps, BookGroupTable
 
     dispatch({
       type: 'bookgrouptable/fetchData',
-      payload: { filterName: filter, pagination: bookgrouptable.pagination.current },
+      payload: { filterName: filter, pagination: 1 },
     });
   }
 

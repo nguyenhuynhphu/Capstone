@@ -21,16 +21,12 @@ export async function fetchPatronByName(patronName: string): Promise<any> {
 }
 
 export async function confirmBorrow(value: any): Promise<any> {
-  console.log(JSON.stringify(value));
-  
   return request('/api/BorrowBook', {
     method: 'POST',
     body: JSON.stringify(value),
   });
 }
-export async function confirmReturn(value: any): Promise<any> {
-  console.log(JSON.stringify(value));
-  
+export async function confirmReturn(value: any): Promise<any> { 
   return request('/api/ReturnBook', {
     method: 'POST',
     body: JSON.stringify(value),

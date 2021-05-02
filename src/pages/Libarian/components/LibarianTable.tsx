@@ -1,5 +1,5 @@
-import { DeleteOutlined, EditOutlined, MoreOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Popconfirm, Popover, Space, Table, Tooltip, Typography } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+import { Avatar, Popconfirm, Space, Table, Tooltip, Typography } from 'antd';
 import Column from 'antd/lib/table/Column';
 import React from 'react';
 import { connect, Dispatch } from 'umi';
@@ -62,13 +62,14 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
           )}
         />
         <Column
-          title={'#'}
+          title={'No'}
           dataIndex={'id'}
           key={'id'}
           width={50}
-          render={(text: any, record: any) => (
+          align={'center'}
+          render={(text: any, record: any, index: number) => (
             <>
-              <p style={{ marginBottom: '0px' }}>#{text}</p>
+              <p style={{ marginBottom: '0px' }}>{index + 1}</p>
             </>
           )}
         />

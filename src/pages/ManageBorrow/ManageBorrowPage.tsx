@@ -502,7 +502,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                 <Space direction="vertical" style={{ width: '100%', justifyContent: 'center' }}>
                   <p style={{ marginBottom: 0 }}>Select Patron</p>
                   <Search
-                    placeholder="input search text"
+                    placeholder="Type patron username"
                     enterButton="Search"
                     size="middle"
                     suffix={<UserOutlined style={{ color: '#40A9FF' }} />}
@@ -611,7 +611,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
           connection.on('ReceiveMessageToBorrow', async (value) => {
             //tung cuon
             console.log('MOT CUON', value);
-            if (value.staffId !== this.props.user.currentUser.id) {
+            if (value.staffId == this.props.user.currentUser.id) {
               var book: any = await fetchBookByBarcode(value.barcode); // get Book infor
               if (book.data[0] != undefined) {
                 var bookGroup = await fetchBooks(book.data[0].bookGroupId); // get BookGroup infor
@@ -629,7 +629,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
           connection.on('ReceiveMessage', async (value) => {
             //wishlist
             console.log('WISHLIST', value);
-            if (value.staffId !== this.props.user.currentUser.id) {
+            if (value.staffId == this.props.user.currentUser.id) {
               var promiese: any = [];
               if (value.wishlist != undefined) {
                 value.wishlist.forEach((id: any) => {
@@ -659,7 +659,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
           });
 
           connection.on('ReceiveMessageToReturnBook', async (value) => {
-            if (value.staffId !== this.props.user.currentUser.id) {
+            if (value.staffId == this.props.user.currentUser.id) {
               console.log('manageborrow.borrowDetail', manageborrow.borrowDetail);
               dispatch({
                 type: 'manageborrow/fetchBorrowDetail',

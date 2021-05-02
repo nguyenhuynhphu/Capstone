@@ -13,7 +13,7 @@ interface UploadRecordTableProps {
 }
 interface UploadRecordTableState {}
 
-const columns = [
+const columns: any = [
   {
     title: '#',
     dataIndex: 'id',
@@ -40,7 +40,7 @@ const columns = [
     dataIndex: 'time',
     key: 'time',
     align: 'left',
-    render: (text: string) => <p>{text.split('T')[0]}</p>,
+    render: (text: string) => <p style={{marginBottom: 0}}>{text.split('T')[0]}</p>,
   },
 ];
 
@@ -65,7 +65,7 @@ class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRe
           dataSource={uploadrecordtable.data}
           pagination={uploadrecordtable.pagination}
           loading={uploadrecordtable.isLoading}
-          size='small'
+          size='middle'
           onChange={(pagination) => {
             dispatch({
               type: 'uploadrecordtable/fetchData',
