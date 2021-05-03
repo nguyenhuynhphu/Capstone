@@ -53,11 +53,10 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
 
     var isAdmin = currentUser?.role == '1';
     if(url.indexOf('/manage-user') != -1 && !isAdmin){
-      console.log("DONT HAVE PERMISSION !");
       return <Redirect to={`/no-permission`} />;
     }
     if(url.indexOf('/borrow-book') != -1 && isAdmin){
-      console.log("DONT HAVE PERMISSION !");
+    
       return <Redirect to={`/no-permission`} />;
     }
     

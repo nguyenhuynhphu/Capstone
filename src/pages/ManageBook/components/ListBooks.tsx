@@ -559,7 +559,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
 
   async loadBorrow(bookId: number) {
     const response = await fetchBookById(bookId);
-    console.log('response', response);
+
     var tmp: any = {
       patronId: response.data.patronId,
       patronImage: response.data.patronImage,
@@ -580,7 +580,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
       content: (
         <>
           <div>
-            {console.log('book', book)}
+   
             {book.patronId ? (
               <Text>
                 {book?.patronName} - {book?.username}, have borrowed with Borrow ID:{' '}
@@ -601,7 +601,7 @@ class ListBook extends React.Component<ListBookProps, ListBookState> {
       okText: 'Remove',
       cancelText: 'Cancel',
       onOk: async () => {
-        console.log('reason', reason);
+
         book.note = reason;
         if (reason.trim().length != 0) {
           await deleteBook(book).finally(() => {

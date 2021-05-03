@@ -245,7 +245,7 @@ class UpdateForm extends React.Component<UpdateFormProps, UpdateFormState> {
               rules={[
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
-                    console.log('validator', value);
+
                     if (value != undefined) {
                       var file = value.fileList[0];
                       if (file != undefined) {
@@ -279,7 +279,7 @@ class UpdateForm extends React.Component<UpdateFormProps, UpdateFormState> {
                   return false;
                 }}
                 onChange={(info: any) => {
-                  console.log(info);
+          
                   if (info.fileList.length != 0) {
                     info.fileList = [];
                     var file = info.file;

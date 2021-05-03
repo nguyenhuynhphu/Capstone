@@ -1,23 +1,5 @@
 import sendNotification from '@/utils/Notification';
-import { TagsOutlined } from '@ant-design/icons';
-import {
-  Space,
-  Image,
-  Select,
-  Typography,
-  Descriptions,
-  Alert,
-  Row,
-  Col,
-  Table,
-  Form,
-  DatePicker,
-  Button,
-  Divider,
-  Tag,
-} from 'antd';
-import Column from 'antd/lib/table/Column';
-import Title from 'antd/lib/typography/Title';
+import { Space, Descriptions, Row, Col, Form, Button, Divider, Tag } from 'antd';
 import moment from 'moment';
 
 import React from 'react';
@@ -40,7 +22,6 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
 
   render() {
     const { borrowBook } = this.props;
-    console.log('borrow', borrowBook);
 
     return (
       <>
@@ -167,11 +148,9 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
   }
   handelConfirm(value: any) {
     var { user, dispatch, borrowBook } = this.props;
-    console.log('borrowBook', borrowBook);
 
     var tmp: any = [];
     borrowBook.borrowDetail.forEach((book: any) => {
-      console.log('BOOK', book);
       if (!book.isReturn && book.isReturnToday) {
         tmp.push({
           bookId: book.bookId,
@@ -186,7 +165,7 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
       staffId: user.currentUser.id,
       returnDetail: tmp,
     };
-    console.log('msgToServer', msgToServer);
+    console.log('MSG', msgToServer);
 
     dispatch({
       type: 'manageborrow/confirmReturn',
@@ -209,7 +188,7 @@ class BorrowBookSection extends React.Component<BorrowBookSectionProps, {}> {
   }
   handelFee() {
     const { borrowBook } = this.props;
-    console.log('borrowBook.startTime', borrowBook);
+
     var diffDate = moment().diff(borrowBook.endTime, 'days');
 
     if (diffDate > 0) {

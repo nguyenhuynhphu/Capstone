@@ -403,7 +403,6 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
 
   insertLocation(location: any) {
     const { dispatch, locationtable } = this.props;
-    console.log('LOCATION', location);
 
     dispatch({
       type: 'organizebook/insertLocation',

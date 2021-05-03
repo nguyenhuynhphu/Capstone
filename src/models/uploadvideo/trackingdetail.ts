@@ -64,9 +64,6 @@ const TrackingDetailModel: TrackingDetailType = {
           });
           drawer.error = tmp2;
         }
-
-        console.log("detectDrawer", detectDrawer);
-        
       }
       yield put({
         type: 'loadData',

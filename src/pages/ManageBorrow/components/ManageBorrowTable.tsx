@@ -110,13 +110,7 @@ class ManageBorrowTable extends React.Component<ManageBorrowPageProps, ManageBor
         align: 'center',
         width: 90
       },
-      {
-        title: 'Total',
-        dataIndex: 'total',
-        key: 'total',
-        align: 'center',
-        width: 80
-      },
+  
     ];
 
     return (

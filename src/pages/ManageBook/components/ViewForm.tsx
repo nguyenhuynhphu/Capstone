@@ -447,7 +447,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
   async createBooks() {
     const { inputBooks } = this.state;
     const { bookGroup, dispatch, bookgrouptable } = this.props;
-    console.log('inputBooks', inputBooks);
+
     dispatch({
       type: 'listbooks/createBook',
       payload: { bookGroupId: bookGroup.id, inputBooks: inputBooks },

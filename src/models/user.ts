@@ -59,8 +59,7 @@ const UserModel: UserModelType = {
 
       if (jwtToken.length !== 0) {
         var user: any = decodeToken(jwtToken);
-        console.log(">>>>>>", user);
-        
+   
         // user.name = user.userName;
       
         user.avatar = user.image;

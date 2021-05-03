@@ -464,7 +464,6 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
       message.error(`File upload is not a video file`);
       fileList = [];
     }
-    console.log('fileList', fileList);
 
     this.setState({ fileList });
   };

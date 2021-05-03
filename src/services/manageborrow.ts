@@ -53,7 +53,7 @@ export async function fetchEarnByMonth(): Promise<any> {
 
 
 export async function fetchBookAvailable(isAvailable: boolean): Promise<any> {
-  return request(`/api/Book?IsAvailable=${isAvailable}`);
+  return request(`/api/Book?IsAvailable=${isAvailable}&IsDeleted=false`);
 }
 ///api/ReturnBook?PageSize=1
 export async function fetchTotalReturn(): Promise<any> {

@@ -39,14 +39,13 @@ const NewDetectModel: NewDetectType = {
       const notFoundDrawer = yield call(fetchDrawer, detect.data[0].bookShelfId);
       var allDrawer: any = [];
       if(detect.data.length != 0){
-        console.log("detect", detect);
+   
         allDrawer = yield call(fetchTrackingDetail, detect.data[0].id);
       }
       const totalDetect = yield call(fetchDetectionByBookShelfName, detect.data[0].bookShelfName);
       var compareError: any = [];
       if(totalDetect.data.length != 1){
-        console.log("totalDetect", totalDetect);
-        
+
         compareError = yield call(fetchTrackingDetail, totalDetect.data[1].id);
       }
        
@@ -57,8 +56,7 @@ const NewDetectModel: NewDetectType = {
       var tmpError = 0;
       if (allDrawer.length != 0) {
         allDrawer.forEach((drawer: any) => {
-          console.log("drawer", drawer);
-          
+      
           if (drawer.errorType != 6) totalError += drawer.count;
         });
       }

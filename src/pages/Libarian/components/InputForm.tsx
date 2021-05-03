@@ -281,8 +281,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                 onChange={(images: any) => {
                   var error: string = '';
                   var fileError: any = [];
-                  console.log(images);
-
+   
                   if (images.fileList.length != 0) {
                     images.fileList.forEach((file: any) => {
                       if (

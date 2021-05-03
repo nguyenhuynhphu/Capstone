@@ -125,7 +125,6 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
       });
       payload.borrowDetail = _.concat(payload.borrowDetail, refBorrowDetail.data);
       payload.borrowInfo = refBorrow.data;
-      console.log('PAYLOAD', payload);
 
       yield put({
         type: 'displayViewReturn',
@@ -136,8 +135,7 @@ const ManageBorrowPageModel: ManageBorrowPageType = {
       var viewBorrowVisible = yield select(
         (state: any) => state.manageborrowpage?.viewBorrowVisible,
       );
-      console.log('viewBorrowVisible', viewBorrowVisible);
-
+  
       if (!viewBorrowVisible) {
         yield put({
           type: 'displayScrollBar',

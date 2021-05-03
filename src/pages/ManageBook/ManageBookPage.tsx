@@ -96,7 +96,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
       var bookGroupId = this.props.location.state.bookGroupId;
       var filterBook = this.props.location.state.filterBook;
       this.setState({ filterBook: filterBook });
-      console.log('props.location.state', this.props.location.state);
+
       this.props
         .dispatch({
           type: 'managebook/showViewBook',
@@ -313,12 +313,9 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
 
   async handelSubmit(bookGroup: any) {
     const { dispatch, bookgrouptable, managebook } = this.props;
-    console.log('BOOKGROUP >>', bookGroup);
 
-    console.log('InForm');
     if (managebook.choiceBook.id != undefined) {
       //update
-      console.log('UPDATE');
 
       bookGroup.quantity = managebook.choiceBook.quantity;
       //bookGroup.publishDate = bookGroup.publishDate.format();
@@ -435,8 +432,7 @@ class ManageBookPage extends React.Component<ManageBookPageProps, ManageBookPage
       );
     } else {
       //insert
-      console.log('INSERT');
-
+ 
       var promises: any = [];
       var promises2: any = [];
       bookGroup.images.forEach((image: any) => {

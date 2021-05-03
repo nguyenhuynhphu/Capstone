@@ -233,7 +233,6 @@ class LibarianPage extends React.Component<LibarianPageProps, LibarianPageState>
     libarian.id = libarianpage.choiceLibarian.id;
     libarian.password = libarianpage.choiceLibarian.password;
     libarian.roleId = libarianpage.choiceLibarian.roleId;
-    console.log('LIBRARIAN', libarian);
 
     if (libarian.image.url == undefined) {
       // co up hinh moi

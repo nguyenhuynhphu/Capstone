@@ -111,33 +111,28 @@ const ManageBorrowModel: ManageBorrowType = {
     //#endregion
     *fetchBorrowDetail({ payload }, { call, put, select }) {
       var borrowDetail = yield select((state: any) => state.manageborrow?.borrowDetail);
-
+      console.log("borrowDetail borrowDetail", borrowDetail);
+      
       if (borrowDetail.borrowDetail != undefined) {
-        console.log('CHANGE STATUS');
-
         yield put({
           type: 'addToReturnBorrow',
           payload: payload.barcode,
         });
       } else {
-        console.log('NEW ORDER');
-
         var listBorrow = yield call(fetchBorrowDetailByBarcode, payload.barcode);
         var tmp = listBorrow.data?.find((x: any) => x.barcode == payload.barcode);
 
         if (tmp != undefined) {
           tmp.isReturnToday = true;
         }
-        console.log('listBorrow', listBorrow);
+
         if (listBorrow.data.length != 0) {
           const response = yield call(fetchBorrowBook, listBorrow.data[0].borrowId);
           const patron = yield call(fetchPatron, response.data.patronId);
-          console.log('listBorrow', listBorrow);
 
           response.data.patron = patron.data;
           response.data.borrowDetail = listBorrow.data;
 
-          console.log('response', response);
           yield put({
             type: 'loadBorrowDetail',
             payload: response.data,
@@ -215,8 +210,6 @@ const ManageBorrowModel: ManageBorrowType = {
 
       _.pullAll(payload, payloadRemoveList);
       _.pullAll(state.scanId, scanIdRemoveList);
-      console.log('scanId', state.scanId);
-      console.log('payload', payload);
 
       return {
         ...state,

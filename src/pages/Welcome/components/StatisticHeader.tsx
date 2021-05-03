@@ -65,9 +65,7 @@ class StatisticHeader extends React.Component<StatisticHeaderProps> {
                           </p>
                         </div>
                       </Space>
-                      <p style={{ marginBottom: 0, color: 'green', fontSize: 16 }}>
-                        + {record.total}$
-                      </p>
+                     
                     </Space>
                   ))}
                 </>

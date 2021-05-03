@@ -69,8 +69,7 @@ const Model: LoginModelType = {
       yield put({ type: 'user/saveCurrentUser', payload: null });
       // remove currentUser
       const { redirect } = getPageQuery();
-      console.log("PAGE_QUERY >>", redirect);
-      
+
       // Note: There may be security issues, please note
       if (window.location.pathname !== '/user/login' && !redirect) {
         history.replace({

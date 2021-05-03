@@ -39,7 +39,6 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
 
   render() {
     const { borrowItem } = this.props;
-    // console.log("borrowItem", borrowItem);
 
     return (
       <>

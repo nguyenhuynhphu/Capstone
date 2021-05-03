@@ -126,8 +126,7 @@ class ReturnItem extends React.Component<ReturnItemrops, {}> {
     const { returnItem } = this.props;
 
     var diffDate = moment().diff(returnItem.returnTime, 'days');
-    console.log('returnItem', returnItem);
-    
+
     if (diffDate > 0) {
       var diffDate = moment(returnItem.returnTime).diff(returnItem.startTime, 'days');
     } else {

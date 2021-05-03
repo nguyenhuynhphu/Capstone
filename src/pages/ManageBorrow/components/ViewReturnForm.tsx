@@ -15,7 +15,6 @@ class ViewReturnForm extends React.Component<ViewReturnFormProps> {
   render() {
     const { manageborrowpage } = this.props;
     const { choiceReturn } = manageborrowpage;
-    console.log('choiceReturn', choiceReturn);
 
     return (
       <div>
@@ -55,7 +54,6 @@ class ViewReturnForm extends React.Component<ViewReturnFormProps> {
             dataSource={choiceReturn.borrowDetail}
             renderItem={(item: any) => (
               <List.Item>
-                {console.log('ITEM', item)}
                 <Space style={{ width: '100%', opacity: item.isMissing ? 0.5 : 1 }}>
                   <Image width={50} height={77} src={item.image != undefined ? item.image : null} />
                   <Space direction="vertical">
@@ -85,16 +83,20 @@ class ViewReturnForm extends React.Component<ViewReturnFormProps> {
                         #{item.barcode}
                       </p>
                     </Space>
-                    <Space direction="horizontal">
-                      <p style={{ marginBottom: 0 }}>
-                        Fee: {item.fee}{' '}
-                        <EuroCircleOutlined style={{ color: 'rgb(238, 187, 51)' }} />
-                      </p>
-                      <p style={{ marginBottom: 0, marginLeft: 25 }}>
-                        Punish Fee: {item.punishFee}{' '}
-                        <EuroCircleOutlined style={{ color: '#FF4D4F' }} />
-                      </p>
-                    </Space>
+                    {item.isMissing ? (
+                      <></>
+                    ) : (
+                      <Space direction="horizontal">
+                        <p style={{ marginBottom: 0 }}>
+                          Fee: {item.fee}{' '}
+                          <EuroCircleOutlined style={{ color: 'rgb(238, 187, 51)' }} />
+                        </p>
+                        <p style={{ marginBottom: 0, marginLeft: 25 }}>
+                          Punish Fee: {item.punishFee}{' '}
+                          <EuroCircleOutlined style={{ color: '#FF4D4F' }} />
+                        </p>
+                      </Space>
+                    )}
                   </Space>
                 </Space>
               </List.Item>

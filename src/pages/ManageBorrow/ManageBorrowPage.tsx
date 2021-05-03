@@ -357,8 +357,6 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
   }
 
   handelStep(step: number) {
-    console.log('handelStep', this.props.manageborrow.scanId);
-
     switch (step) {
       case 0:
         return (
@@ -480,6 +478,17 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                       required
                       initialValue={moment().add(7, 'days')}
                       style={{ marginBottom: 25 }}
+                      rules={[
+                        ({ getFieldValue }) => ({
+                          validator(rule, value) {
+                            if (value != undefined) {
+                              return Promise.resolve();
+                            } else {
+                              return Promise.reject(`Return date must not empty`);
+                            }
+                          },
+                        }),
+                      ]}
                     >
                       <DatePicker
                         onChange={() => {}}
@@ -616,7 +625,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
         .then(() => {
           connection.on('ReceiveMessageToBorrow', async (value) => {
             //tung cuon
-            console.log('MOT CUON', value);
+
             if (value.staffId == this.props.user.currentUser.id) {
               var book: any = await fetchBookByBarcode(value.barcode); // get Book infor
               if (book.data[0] != undefined) {
@@ -634,7 +643,7 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
           });
           connection.on('ReceiveMessage', async (value) => {
             //wishlist
-            console.log('WISHLIST', value);
+
             if (value.staffId == this.props.user.currentUser.id) {
               var promiese: any = [];
               if (value.wishlist != undefined) {
@@ -666,7 +675,6 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
 
           connection.on('ReceiveMessageToReturnBook', async (value) => {
             if (value.staffId == this.props.user.currentUser.id) {
-              console.log('manageborrow.borrowDetail', manageborrow.borrowDetail);
               dispatch({
                 type: 'manageborrow/fetchBorrowDetail',
                 payload: value,
@@ -711,7 +719,6 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
         book.isInStorage = true;
       }
     }
-    console.log('manageborrow.scanId', manageborrow.scanId);
 
     if (patronId != undefined) {
       dispatch({ type: 'manageborrow/fetchPatron', payload: patronId });
@@ -742,19 +749,19 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
   onConfirm(dateValue: any) {
     const { manageborrow, user, dispatch } = this.props;
     var tmp: any = [];
-    console.log(manageborrow.scanId);
-
+    dateValue.return;
     manageborrow.scanId.forEach((book: any) => {
       if (book.selectedBook) {
-        if (book.selectedBook.isDeleted == false && book.selectedBook.isAvailable == true) {
-          tmp.push({
-            bookId: book.selectedBook.id,
-          });
-        }
+        if (book.selectedBook.bookShelfName)
+          if (book.selectedBook.isDeleted == false && book.selectedBook.isAvailable == true) {
+            tmp.push({
+              bookId: book.selectedBook.id,
+            });
+          }
       }
     });
 
-    if (tmp.length == manageborrow.scanId.length) {
+    if (tmp.length == manageborrow.scanId.length &&  manageborrow.scanId.length != 0) {
       var msgToServer: any = {
         patronId: manageborrow.patron.id,
         patronName: manageborrow.patron.name,
@@ -772,7 +779,6 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
         dispatch({ type: 'manageborrow/changeProcess', payload: 2 });
       });
     } else {
-      console.log('ERROR DO');
       sendNotification(
         'Confirm Borrow Fail',
         'Please check status of borrow items, there all should be available',

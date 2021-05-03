@@ -97,7 +97,7 @@ const TransferModel: TransferBookType = {
         type: 'isLoading',
         payload: {},
       });
-      console.log("payload", payload);
+  
       var response = yield call(fetchBookInSystem, payload);
 
       yield put({
@@ -156,8 +156,7 @@ const TransferModel: TransferBookType = {
     *removeBookToDrawer({ payload }, { call }) {
       let arrayLength = payload.data;
       let tmp: any = [];
-      console.log(payload);
-
+ 
       arrayLength.forEach((ele: any) => {
         tmp.push({
           id: ele,

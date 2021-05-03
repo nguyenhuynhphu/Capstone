@@ -48,8 +48,7 @@ const PeriorChartModel: PeriorChartType = {
           return { day: name, value: items.length };
         })
         .value();
-        console.log("day", result);
-        
+ 
 
       //   const response = yield call(fetchAllBookGroup, payload);
       yield put({

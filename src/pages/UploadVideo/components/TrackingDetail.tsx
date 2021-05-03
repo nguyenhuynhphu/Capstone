@@ -91,7 +91,6 @@ const columns2: any = [
     width: 100,
     align: 'left',
     render: (text: string, record: any, index: number) => {
-      console.log('REOCOSAODSAOD', record);
 
       if (record.errorMessage.includes('Phát hiện barcode lạ')) {
         return {
@@ -140,7 +139,6 @@ const columns2: any = [
     key: 'issue',
     align: 'right',
     render: (text: string, record: any) => {
-      //console.log("RECRD", record);
 
       if (record.typeError == 6) {
         //no Error
@@ -502,13 +500,12 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
     this.showDrawer();
   }
   handelConfirm(record: any) {
-    console.log(record);
 
     const { dispatch } = this.props;
     record.isConfirm = true;
     record.isRejected = false;
     if (record.typeError != 1) {
-      console.log('DEFI');
+
       var tmp: any = {
         id: record.id,
         drawerDetectionId: record.drawerDetectionId,
@@ -521,7 +518,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
       };
       dispatch({ type: 'trackingdetail/updateError', payload: tmp });
     } else {
-      console.log('UNDEFI');
+    
       var tmp: any = {
         id: record.id,
         drawerDetectionId: record.drawerDetectionId,
@@ -540,7 +537,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
     record.isConfirm = false;
     record.isRejected = true;
     if (record.typeError != 1) {
-      console.log('DEFI');
+     
       var tmp: any = {
         id: record.id,
         drawerDetectionId: record.drawerDetectionId,
@@ -553,7 +550,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
       };
       dispatch({ type: 'trackingdetail/updateError', payload: tmp });
     } else {
-      console.log('UNDEFI');
+
       var tmp: any = {
         id: record.id,
         drawerDetectionId: record.drawerDetectionId,

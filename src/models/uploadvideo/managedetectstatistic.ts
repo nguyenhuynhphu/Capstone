@@ -65,12 +65,12 @@ const ManageDetectStatisticModel: ManageDetectStatisticType = {
         return { day: name, values: items.length };
       })
       .value();
-      console.log("day", result);
+
 
       tmp.totalAvailable = result.length;
       tmp.totalNotAvailable = totalBookShelf.meta.totalCount - result.length;
       tmp.totalBook = tmp.totalAvailable + tmp.totalNotAvailable;
-      console.log("REUSLT", result);
+ 
       var max: any = result[0];
       result.forEach((compare: any) => {
         if(compare.values > max){

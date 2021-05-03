@@ -86,8 +86,7 @@ const ManageBookModel: ManageBookType = {
         payload: false,
       });
       const response = yield call(fetchBookById, payload);
-      console.log("response", response);
-      
+
       yield put({
         type: 'displayViewBook',
         payload: { visible: true, record: response.data },
@@ -209,8 +208,7 @@ const ManageBookModel: ManageBookType = {
   reducers: {
     //#region Forms
     displayViewBook(state, { payload }) {
-      console.log("payload", payload);
-      
+
       return {
         ...state,
         viewBookVisible: payload.visible,
