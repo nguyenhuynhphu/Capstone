@@ -28,6 +28,7 @@ interface TrackingDetailProps {
   dispatch: Dispatch;
   record: any;
   trackingdetail?: any;
+  user?: any;
 }
 interface TrackingDetailState {
   visible: boolean;
@@ -300,28 +301,31 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                                       style={{ width: '100%', justifyContent: 'space-between' }}
                                     >
                                       <Alert message={book.errorMessage} type="error" showIcon />
-                                      <Space style={{ width: 125 }}>
-                                        <Tooltip title="Confirm Error">
-                                          <Button
-                                            shape="round"
-                                            type="primary"
-                                            size="small"
-                                            icon={<CheckOutlined />}
-                                            onClick={() => this.handelConfirm(book)}
-                                          ></Button>
-                                          {/* <Button type="primary" size="small" icon={<CheckOutlined />} onClick={() => {}} /> */}
-                                        </Tooltip>
-                                        <Tooltip title="Reject Error">
-                                          <Button
-                                            shape="round"
-                                            type="primary"
-                                            danger
-                                            size="small"
-                                            icon={<CloseOutlined />}
-                                            onClick={() => this.handelReject(book)}
-                                          ></Button>
-                                        </Tooltip>
-                                      </Space>
+                                      {this.props.user.currentUser.roleId != 1 ? (
+                                        <Space style={{ width: 125 }}>
+                                          <Tooltip title="Confirm Error">
+                                            <Button
+                                              shape="round"
+                                              type="primary"
+                                              size="small"
+                                              icon={<CheckOutlined />}
+                                              onClick={() => this.handelConfirm(book)}
+                                            ></Button>
+                                          </Tooltip>
+                                          <Tooltip title="Reject Error">
+                                            <Button
+                                              shape="round"
+                                              type="primary"
+                                              danger
+                                              size="small"
+                                              icon={<CloseOutlined />}
+                                              onClick={() => this.handelReject(book)}
+                                            ></Button>
+                                          </Tooltip>
+                                        </Space>
+                                      ) : (
+                                        <></>
+                                      )}
                                     </Space>
                                   );
                                 },
