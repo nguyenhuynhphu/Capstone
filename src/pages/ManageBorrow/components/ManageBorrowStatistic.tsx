@@ -1,15 +1,13 @@
 import React from 'react';
 import { connect } from 'umi';
-import { Button, Col, Descriptions, Row, Statistic } from 'antd';
+import { Col, Descriptions, Row, Statistic } from 'antd';
 import 'antd/dist/antd.css';
 import PineChartCompare from './PineChartCompare';
 import {
   BookOutlined,
   FileDoneOutlined,
-  LikeOutlined,
   RadiusUpleftOutlined,
 } from '@ant-design/icons';
-import TableHeader from '@/components/CustomDesign/TableHeader';
 import moment from 'moment';
 
 interface ManageBorrowStatisticProps {
