@@ -17,6 +17,9 @@ class PineChartCompare extends React.Component<PineChartCompareProps> {
         innerRadius={0.5}
         padAngle={0.7}
         cornerRadius={3}
+        startAngle={-90}
+        
+        endAngle={90}
         colors={{ scheme: 'nivo' }}
         borderWidth={1}
         borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}

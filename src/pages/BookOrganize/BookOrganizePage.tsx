@@ -217,10 +217,10 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
                     if (value != undefined) {
-                      if (value.trim().length != 0) {
+                      if (value.trim().length <= 100) {
                         return Promise.resolve();
                       } else {
-                        return Promise.reject(`Location name must not empty`);
+                        return Promise.reject(`Name must be less than 100 characters`);
                       }
                     } else {
                       return Promise.reject(`Location name must not empty`);
@@ -304,10 +304,10 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
                     ({ getFieldValue }) => ({
                       validator(rule, value) {
                         if (value != undefined) {
-                          if (value.trim().length != 0) {
+                          if (value.trim().length <= 100) {
                             return Promise.resolve();
                           } else {
-                            return Promise.reject(`Location name must not empty`);
+                            return Promise.reject(`Name must be less than 100 characters`);
                           }
                         } else {
                           return Promise.reject(`Location name must not empty`);

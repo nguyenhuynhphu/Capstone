@@ -41,7 +41,7 @@ class LibarianTable extends React.Component<LibarianPageProps, LibarianPageState
 
         onRow={(record, rowIndex) => {
           return {
-            onClick: (event) => {
+            onDoubleClick: (event) => {
               this.props.dispatch({
                 type: 'libarianpage/showViewLibarian',
                 payload: { ...record },

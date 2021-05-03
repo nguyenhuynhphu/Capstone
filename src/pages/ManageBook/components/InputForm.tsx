@@ -1,14 +1,4 @@
-import {
-  Form,
-  Button,
-  Col,
-  Row,
-  Input,
-  DatePicker,
-  Upload,
-  Select,
-  InputNumber,
-} from 'antd';
+import { Form, Button, Col, Row, Input, DatePicker, Upload, Select, InputNumber } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import React from 'react';
 import moment from 'moment';
@@ -64,7 +54,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             value.images = this.state.fileList;
             this.props.handelSubmit(value);
           } else {
-            this.setState({ errorFile: 'Book image is required' });
+            this.setState({ errorFile: 'Book Image must no empty' });
           }
         }}
         onFinishFailed={(value: any) => {
@@ -72,7 +62,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             value.id = managebook.choiceBook.id;
           }
           if (this.state.fileList.length == 0) {
-            this.setState({ errorFile: 'Book image is required' });
+            this.setState({ errorFile: 'Book Image must no empty' });
           }
         }}
       >
@@ -88,7 +78,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                     if (value != undefined) {
                       return Promise.resolve();
                     } else {
-                      return Promise.reject('Book Group Name is required');
+                      return Promise.reject('Name must no empty');
                     }
                   },
                 }),
@@ -106,10 +96,12 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
                     if (value != undefined) {
-                      return Promise.resolve();
-                    } else {
-                      return Promise.reject('Author is required');
+                      if (value.trim().length <= 100) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject('Author must be less than 100 characters');
                     }
+                    return Promise.reject('Author must no empty');
                   },
                 }),
               ]}
@@ -121,7 +113,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item name="pageNumber" label="Page Number">
-              <Input placeholder="Please enter page number" />
+              <InputNumber min={0} placeholder="Please enter page number" />
             </Form.Item>
           </Col>
           <Col span={6}>
@@ -157,7 +149,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                         if (value != undefined) {
                           return Promise.resolve();
                         } else {
-                          return Promise.reject('Quantity is required');
+                          return Promise.reject('Quantity must no empty');
                         }
                       },
                     }),
@@ -181,13 +173,13 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                         if (value != undefined) {
                           return Promise.resolve();
                         } else {
-                          return Promise.reject('Fee is required');
+                          return Promise.reject('Fee must no empty');
                         }
                       },
                     }),
                   ]}
                 >
-                  <InputNumber min={0.5} placeholder="Please enter Fee" style={{ width: '100%' }} />
+                  <InputNumber min={0.1} placeholder="Please enter Fee" style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
               <Col span={6}>
@@ -201,14 +193,14 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                         if (value != undefined) {
                           return Promise.resolve();
                         } else {
-                          return Promise.reject('Punish Fee is required');
+                          return Promise.reject('Punish fee must no empty');
                         }
                       },
                     }),
                   ]}
                 >
                   <InputNumber
-                    min={1}
+                    min={0.1}
                     placeholder="Please enter Punish Fee"
                     style={{ width: '100%' }}
                   />
@@ -228,13 +220,13 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                         if (value != undefined) {
                           return Promise.resolve();
                         } else {
-                          return Promise.reject('Fee is required');
+                          return Promise.reject('Fee must no empty');
                         }
                       },
                     }),
                   ]}
                 >
-                  <InputNumber min={0.5} placeholder="Please enter Fee" style={{ width: '100%' }} />
+                  <InputNumber min={0.1} placeholder="Please enter Fee" style={{ width: '100%' }} />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -248,14 +240,14 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                         if (value != undefined) {
                           return Promise.resolve();
                         } else {
-                          return Promise.reject('Punish Fee is required');
+                          return Promise.reject('Punish fee must no empty');
                         }
                       },
                     }),
                   ]}
                 >
                   <InputNumber
-                    min={1}
+                    min={0.1}
                     placeholder="Please enter Punish Fee"
                     style={{ width: '100%' }}
                   />
@@ -266,8 +258,23 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         </Row>
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item name="price" label="Book Price" required>
-              <Input placeholder="Please enter book price" />
+            <Form.Item
+              name="price"
+              label="Book Price"
+              required
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (value != undefined) {
+                      return Promise.resolve();
+                    } else {
+                      return Promise.reject('Book Price must no empty');
+                    }
+                  },
+                }),
+              ]}
+            >
+              <InputNumber style={{ width: '100%' }} placeholder="Please enter book price" />
             </Form.Item>
             <Form.Item
               name="category"
@@ -279,7 +286,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                     if (value != undefined) {
                       return Promise.resolve();
                     } else {
-                      return Promise.reject(`Please choice at lease one category`);
+                      return Promise.reject(`Category must be choice`);
                     }
                   },
                 }),
@@ -375,7 +382,9 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         category: this.handelCate(managebook.choiceBook.category),
         images: { fileList: tmp },
         publishCompany: managebook.choiceBook.publishCompany,
-        publishDate: managebook.choiceBook.publishDate ? moment.utc(managebook.choiceBook.publishDate) : null,
+        publishDate: managebook.choiceBook.publishDate
+          ? moment.utc(managebook.choiceBook.publishDate)
+          : null,
         edition: managebook.choiceBook.edition,
         publishPlace: managebook.choiceBook.publishPlace,
         description: managebook.choiceBook.description,
@@ -399,7 +408,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         )
       ) {
         fileError.push(file);
-        error = 'File not valid';
+        error = 'File invalid';
       }
     });
 

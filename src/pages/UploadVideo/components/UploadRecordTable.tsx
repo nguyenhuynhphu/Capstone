@@ -72,7 +72,7 @@ class UploadRecordTable extends React.Component<UploadRecordTableProps, UploadRe
               payload: { filterRecord: uploadrecordtable.filterRecord, pagination: pagination.current },
             });
           }}
-          scroll={{y: 540}}
+          scroll={{y: 400}}
           className={styles.uploadVideo}
           onRow={(record) => {
             return {

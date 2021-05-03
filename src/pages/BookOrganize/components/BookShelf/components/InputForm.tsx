@@ -71,7 +71,7 @@ const InputForm = (props: any) => {
                       return Promise.resolve();
                     }
                   }
-                  return Promise.reject(`Bookshelf Name must no empty`);
+                  return Promise.reject(`Name must no empty`);
                 },
               }),
             ]}

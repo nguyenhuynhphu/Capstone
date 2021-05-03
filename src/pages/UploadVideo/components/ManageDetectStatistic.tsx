@@ -3,7 +3,16 @@ import { connect } from 'umi';
 import { Button, Col, Descriptions, Row, Statistic } from 'antd';
 import 'antd/dist/antd.css';
 
-import { AppstoreOutlined, BookOutlined, CarryOutOutlined, FileDoneOutlined, HddOutlined, RadiusUpleftOutlined, SafetyCertificateOutlined, SecurityScanOutlined } from '@ant-design/icons';
+import {
+  AppstoreOutlined,
+  BookOutlined,
+  CarryOutOutlined,
+  FileDoneOutlined,
+  HddOutlined,
+  RadiusUpleftOutlined,
+  SafetyCertificateOutlined,
+  SecurityScanOutlined,
+} from '@ant-design/icons';
 
 import moment from 'moment';
 import PineChartCompare from './PineChartCompare';
@@ -59,25 +68,17 @@ class ManageDetectStatistic extends React.Component<ManageDetectStatisticProps> 
             </div>
           </Col>
         </Row>
-        <Descriptions title="Statistic" column={2} size="default">
-          <Descriptions.Item label="Most Scanned">{data.mostScannedBookshelf?.day}</Descriptions.Item>
-          <Descriptions.Item label="Return Late">{data.totalLate}</Descriptions.Item>
-          <Descriptions.Item label="Total Returns">{data.totalReturn}</Descriptions.Item>
-          <Descriptions.Item label="Total Borrows">{data.totalBorrow}</Descriptions.Item>
-          <Descriptions.Item
-            label=""
-            contentStyle={{
-              color: 'rgba(0 ,0, 0, .4)',
-              fontStyle: 'italic',
-              textAlign: 'right',
-              display: 'block',
-              position: 'relative',
-              top: 10,
-            }}
-          >
-            This statistics as of {moment().format('DD/MM/YYYY')}
-          </Descriptions.Item>
-        </Descriptions>
+        <p
+          style={{
+            marginBottom: 0,
+            marginTop: 10,
+            color: 'rgba(0, 0, 0, .4)',
+            fontStyle: 'italic',
+            textAlign: 'right'
+          }}
+        >
+          This statistics as of {moment().format('DD/MM/YYYY')}
+        </p>
       </>
     );
   }

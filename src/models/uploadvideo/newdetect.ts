@@ -37,9 +37,19 @@ const NewDetectModel: NewDetectType = {
       });
       const detect = yield call(fetchNewestDetect);
       const notFoundDrawer = yield call(fetchDrawer, detect.data[0].bookShelfId);
-      const allDrawer = yield call(fetchTrackingDetail, detect.data[0].id);
+      var allDrawer: any = [];
+      if(detect.data.length != 0){
+        console.log("detect", detect);
+        allDrawer = yield call(fetchTrackingDetail, detect.data[0].id);
+      }
       const totalDetect = yield call(fetchDetectionByBookShelfName, detect.data[0].bookShelfName);
-      const compareError = yield call(fetchTrackingDetail, totalDetect.data[1].id);
+      var compareError: any = [];
+      if(totalDetect.data.length != 1){
+        console.log("totalDetect", totalDetect);
+        
+        compareError = yield call(fetchTrackingDetail, totalDetect.data[1].id);
+      }
+       
 
       var result: any = { ...detect.data[0] };
       result.drawerDetection = allDrawer;

@@ -15,6 +15,7 @@ import {
   Popconfirm,
   Skeleton,
   ConfigProvider,
+  Descriptions,
 } from 'antd';
 import React from 'react';
 
@@ -29,9 +30,6 @@ import {
   fecthDrawer,
   fetchBookByBarcode,
   fetchBooks,
-  fetchBorrowBook,
-  fetchBorrowDetailByBarcode,
-  fetchPatron,
   fetchPatronByName,
 } from '@/services/manageborrow';
 import Title from 'antd/lib/typography/Title';
@@ -447,24 +445,25 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                       </Button>
                     </Popconfirm>
                   </Space>
+                  <Descriptions column={1} size="middle">
+                    <Descriptions.Item label="Name">
+                      {this.props.manageborrow?.patron.name}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Username">
+                      {this.props.manageborrow?.patron.username}
+                    </Descriptions.Item>
 
-                  <Row>
-                    <Col span={8}>Name:</Col>
-                    <Col span={16}>{this.props.manageborrow?.patron.name}</Col>
-                  </Row>
-                  <Row>
-                    <Col span={8}>Email:</Col>
-                    <Col span={16}>{this.props.manageborrow?.patron.email}</Col>
-                  </Row>
-                  <Row>
-                    <Col span={8}>Address:</Col>
-                    <Col span={16}>{this.props.manageborrow?.patron.address}</Col>
-                  </Row>
-                  <Row>
-                    <Col span={8}>Phone:</Col>
-                    <Col span={16}>{this.props.manageborrow?.patron.phone}</Col>
-                  </Row>
+                    <Descriptions.Item label="Email">
+                      {this.props.manageborrow?.patron.email}
+                    </Descriptions.Item>
 
+                    <Descriptions.Item label="Phone">
+                      {this.props.manageborrow?.patron.phone}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Address" span={2}>
+                      {this.props.manageborrow?.patron.address}
+                    </Descriptions.Item>
+                  </Descriptions>
                   <Form onFinish={(value) => this.onConfirm(value)}>
                     <Form.Item
                       name="date"
@@ -545,7 +544,14 @@ class ManageBorrowPage extends React.Component<ManageBorrowPageProps, ManageBorr
                           <Skeleton avatar title={false} loading={item.loading} active>
                             <List.Item.Meta
                               avatar={<Avatar src={item.image} />}
-                              title={item.name}
+                              title={
+                                <Space>
+                                  <span>{item.name}</span>
+                                  <span style={{ color: 'rgba(0, 0, 0, .4)', fontStyle: 'italic' }}>
+                                    - {item.username}
+                                  </span>
+                                </Space>
+                              }
                               description={`User ID: #${item.id}`}
                             />
                           </Skeleton>

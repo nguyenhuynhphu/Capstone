@@ -40,13 +40,13 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
           if (value.image) {
             this.props.handelSubmit(value);
           } else {
-            this.setState({ errorFile: 'Avartar is required' });
+            this.setState({ errorFile: 'Avatar must no empty' });
           }
         }}
         onFinishFailed={(value: any) => {
           value.image = this.state.fileList[0];
           if (!value.image) {
-            this.setState({ errorFile: 'Avartar is required' });
+            this.setState({ errorFile: 'Avatar must no empty' });
           }
         }}
       >
@@ -59,12 +59,12 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
               rules={[
                 {
                   required: true,
-                  message: 'Name field is required!',
+                  message: 'Name must no empty',
                 },
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
-                    if (value?.length <= 8) {
-                      return Promise.reject("Name's length should be upper than 8");
+                    if (value?.length >= 100) {
+                      return Promise.reject('Name must be less than 100 characters');
                     }
                     return Promise.resolve();
                   },
@@ -82,8 +82,16 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
               rules={[
                 {
                   required: true,
-                  message: 'Address field is required!',
+                  message: 'Address must no empty',
                 },
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (value?.length >= 100) {
+                      return Promise.reject('Address must be less than 250 characters');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
               ]}
             >
               <Input placeholder="Please address" />
@@ -109,11 +117,11 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                   validator(rule, value) {
                     if (value != undefined) {
                       if (moment().diff(value, 'years') <= 18) {
-                        return Promise.reject('Librarian not enough 18 year old');
+                        return Promise.reject('Librarian is less than 18 years old');
                       }
                       return Promise.resolve();
                     } else {
-                      return Promise.reject('Date Of Birth is required');
+                      return Promise.reject('Date of birth must no empty');
                     }
                   },
                 }),
@@ -131,15 +139,14 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
                     if (value == undefined) {
-                      return Promise.reject('Phone is required');
-                    } else if (value.trim().length == 0) {
-                      return Promise.reject('Phone is required');
+                      return Promise.reject('Phone must no empty');
                     }
+
                     var regex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
                     if (value?.match(regex)) {
                       return Promise.resolve();
                     } else {
-                      return Promise.reject('Phone invalid');
+                      return Promise.reject('Phone number must be have 10 digits');
                     }
                   },
                 }),
@@ -154,20 +161,24 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Form.Item
               name="username"
               label="Username"
-        
               required
               rules={[
                 ({ getFieldValue }) => ({
                   async validator(rule, value) {
-                    if (value?.trim().length != 0) {
+                    if (value == undefined) {
+                      return Promise.reject('Username must no empty');
+                    }
+                    if (value?.trim().length >= 3 && value?.trim().length <= 30) {
                       const response = await fetchLibariansByUsername(value);
                       if (response.data[0] == undefined) {
                         return Promise.resolve();
                       } else {
-                        return Promise.reject('Username is exits');
+                        return Promise.reject('Username already exist');
                       }
                     } else {
-                      return Promise.reject('Username is required');
+                      return Promise.reject(
+                        'Username must be greater than 3 characters and less than 30 characters',
+                      );
                     }
                   },
                 }),
@@ -183,7 +194,6 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
             <Form.Item
               name="email"
               label="Email"
-        
               required
               rules={[
                 ({ getFieldValue }) => ({
@@ -199,10 +209,10 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                           return Promise.reject('Email is exits');
                         }
                       } else {
-                        return Promise.reject('Email invalid');
+                        return Promise.reject('Email must be correct format');
                       }
                     } else {
-                      return Promise.reject('Email is required');
+                      return Promise.reject('Email must no empty');
                     }
                   },
                 }),
@@ -222,10 +232,14 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                 rules={[
                   ({ getFieldValue }) => ({
                     validator(rule, value) {
-                      if (value.length >= 8) {
-                        return Promise.resolve();
+                      if (value != undefined) {
+                        if (value.length >= 8) {
+                          return Promise.resolve();
+                        } else {
+                          return Promise.reject('Password must upper than 8 character');
+                        }
                       } else {
-                        return Promise.reject('Password must upper than 8 character');
+                        return Promise.reject('Password must no empty');
                       }
                     },
                   }),

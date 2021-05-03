@@ -127,13 +127,15 @@ class ReturnItem extends React.Component<ReturnItemrops, {}> {
 
     var diffDate = moment().diff(returnItem.returnTime, 'days');
     console.log('returnItem', returnItem);
+    
     if (diffDate > 0) {
-      var diffDate = moment(returnItem.endTime).diff(returnItem.startTime, 'days');
+      var diffDate = moment(returnItem.returnTime).diff(returnItem.startTime, 'days');
     } else {
       var diffDate = moment().diff(returnItem.startTime, 'days');
     }
     if (diffDate == 0) diffDate = 1;
     else diffDate += 1;
+
     var fee = 0;
     fee += returnItem.fee * diffDate;
 

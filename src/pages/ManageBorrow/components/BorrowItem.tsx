@@ -1,4 +1,10 @@
-import { CheckOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  DeleteOutlined,
+  DownOutlined,
+  RightOutlined,
+} from '@ant-design/icons';
 import {
   Space,
   Image,
@@ -9,10 +15,13 @@ import {
   Tag,
   Popconfirm,
   Popover,
+  TreeSelect,
+  List,
 } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
+import { TreeNode } from 'antd/lib/tree-select';
 import moment from 'moment';
-
+import styles from '../ManageBorrowPage.less';
 import React from 'react';
 
 import { connect } from 'umi';
@@ -146,29 +155,42 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
       } else {
         return (
           <>
-            <p>Choice Book:</p>
-            <Select
-              placeholder="Select Book"
-              style={{ width: 150 }}
-              value={borrowItem.selectedBook ? borrowItem.selectedBook.id : null}
-              onChange={(bookId: any) => {
-                var tmp = borrowItem.drawer?.find((book: any) => book.bookId == bookId);
-                borrowItem.selectedBook = {
-                  barCode: tmp.barcode?.trim(),
-                  bookShelfName: tmp.bookShelfName,
-                  drawerId: tmp.id,
-                  id: tmp.bookId,
-                };
-                this.setState({});
-                //borrowItem.choiceBook = bookId;
-              }}
+            <p>Book in System:</p>
+            <Popover
+              trigger="click"
+              placement="right"
+              content={
+                <>
+                  <List
+                    style={{ maxHeight: 500, overflow: 'auto' }}
+                    className={styles.locationBook}
+                  >
+                    {borrowItem.drawer?.map((value: any) => (
+                      <List.Item>
+                        <Space direction="vertical">
+                          <p style={{ marginBottom: 0 }}>Bookshelf: {value.bookShelfName}</p>
+                          <p style={{ marginBottom: 0 }}>Drawer: {value.drawerName}</p>
+                          <p style={{ marginBottom: 0 }}>Book ID: {value.bookId}</p>
+                        </Space>
+                      </List.Item>
+                    ))}
+                  </List>
+                </>
+              }
             >
-              {borrowItem.drawer?.map((value: any) => (
-                <Select.Option key={`${value?.bookId}`} value={value?.bookId}>
-                  {value.bookId}
-                </Select.Option>
-              ))}
-            </Select>
+              <Space
+                style={{
+                  border: '1px solid rgba(0, 0, 0, .2)',
+                  padding: '5px 10px',
+                  width: 150,
+                  cursor: 'pointer',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <p style={{ marginBottom: 0, color: 'rgba(0, 0, 0, .4)' }}>Book Location</p>
+                <RightOutlined style={{ color: 'rgba(0, 0, 0, .4)' }} />
+              </Space>
+            </Popover>
           </>
         );
       }
@@ -187,7 +209,7 @@ class BorrowItem extends React.Component<BorrowItemProps, {}> {
       return (
         <Alert
           style={{ width: 'fit-content' }}
-          message="Please seleted book in drawer"
+          message="Get book's location in select"
           type="warning"
         />
       );

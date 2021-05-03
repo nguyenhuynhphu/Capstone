@@ -17,7 +17,7 @@ export async function fetchPatron(patronId: number): Promise<any> {
 }
 
 export async function fetchPatronByName(patronName: string): Promise<any> {
-  return request(`/api/Patron?Name=${patronName}`);
+  return request(`/api/Patron?Username=${patronName}`);
 }
 
 export async function confirmBorrow(value: any): Promise<any> {
