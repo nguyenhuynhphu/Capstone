@@ -107,7 +107,7 @@ class Welcome extends React.Component<WelcomeProps, WelcomeState> {
                   <Descriptions.Item
                     label={
                       <>
-                        <PhoneOutlined style={{ marginRight: 5, color: '#40A9FF' }} /> User Name
+                        <PhoneOutlined style={{ marginRight: 5, color: '#40A9FF' }} /> Phone
                       </>
                     }
                   >

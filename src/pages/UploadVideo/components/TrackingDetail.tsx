@@ -90,9 +90,11 @@ const columns2: any = [
     width: 100,
     align: 'left',
     render: (text: string, record: any, index: number) => {
-      if (record.id == 'Strange Barcode') {
+      console.log('REOCOSAODSAOD', record);
+
+      if (record.errorMessage.includes('Phát hiện barcode lạ')) {
         return {
-          children: <Text>{text}</Text>,
+          children: <Text>Issue</Text>,
           props: {
             colSpan: 2,
           },
@@ -108,7 +110,7 @@ const columns2: any = [
     align: 'left',
     width: 250,
     render: (text: string, record: any, index: number) => {
-      if (record.id == 'Strange Barcode') {
+      if (record.errorMessage.includes('Phát hiện barcode lạ')) {
         return {
           children: <Text>{text}</Text>,
           props: {
@@ -167,22 +169,21 @@ const columns2: any = [
         }
       } else if (value == 'confirm') {
         if (record != undefined) {
-          if (record.isConfirm  && record.typeError != 6) {
+          if (record.isConfirm && record.typeError != 6) {
             return record;
           }
         }
       } else if (value == 'reject') {
         if (record != undefined) {
-          if (record.isRejected  && record.typeError != 6) {
+          if (record.isRejected && record.typeError != 6) {
             return record;
           }
         }
-      } else if(value == 'no-issue') {
+      } else if (value == 'no-issue') {
         if (record.typeError == 6) {
           return record;
         }
-       
-      }else{
+      } else {
         return record;
       }
     },
@@ -212,7 +213,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
             </Title>
             <Space style={{ width: '100%' }} direction={'vertical'}>
               <Description name={'Bookshelf:'} value={this.props.record.bookShelfName} />
-              <Description name={'Date'} value={this.props.record.time} />
+              <Description name={'Date'} value={this.props.record.time.split('T')[0]} />
               <Description name={'Staff Upload'} value={this.props.record.staffName} />
             </Space>
           </Col>
@@ -280,11 +281,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                                       <Space
                                         style={{ width: '100%', justifyContent: 'space-between' }}
                                       >
-                                        <Alert
-                                          message={book.errorMessage}
-                                          type="error"
-                                          showIcon
-                                        />
+                                        <Alert message={book.errorMessage} type="error" showIcon />
                                         <Tag color="blue">Confirm</Tag>
                                       </Space>
                                     );
@@ -293,11 +290,7 @@ class TrackingDetail extends React.Component<TrackingDetailProps, TrackingDetail
                                       <Space
                                         style={{ width: '100%', justifyContent: 'space-between' }}
                                       >
-                                        <Alert
-                                          message={book.errorMessage}
-                                          type="error"
-                                          showIcon
-                                        />
+                                        <Alert message={book.errorMessage} type="error" showIcon />
                                         <Tag color="red">Reject</Tag>
                                       </Space>
                                     );

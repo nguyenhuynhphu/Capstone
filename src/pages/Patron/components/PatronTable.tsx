@@ -52,7 +52,7 @@ const column: any = [
     ),
   },
   {
-    title: 'Created Time',
+    title: 'Created',
     dataIndex: 'createdTime',
     key: 'createdTime',
     render: (text: any, record: any) => (

@@ -86,7 +86,7 @@ const UploadVideoModel: UploadVideoType = {
           const response = yield call(fetchBookInDrawer, drawer.id);
           drawer.books = response.data;
         }
- 
+
         found.forEach((drawer: any) => {
           var correctMsg: any = [];
           // xác định vị trí cho những cuốn sai
@@ -133,11 +133,19 @@ const UploadVideoModel: UploadVideoType = {
               const wrongResponse = yield call(checkingPosition, book);
               if (wrongResponse.data.length != 0) {
                 if (wrongResponse.data[0].bookShelfName == undefined) {
-                  errorMsg.push({
-                    errorMessage: `Sách này đã bị xóa khỏi hệ thống`,
-                    bookId: wrongResponse.data[0].id,
-                    typeError: 7,
-                  });
+                  if (wrongResponse.data[0].isDeleted) {
+                    errorMsg.push({
+                      errorMessage: `Sách này đã bị xóa khỏi hệ thống`,
+                      bookId: wrongResponse.data[0].id,
+                      typeError: 7,
+                    });
+                  } else {
+                    errorMsg.push({
+                      errorMessage: `Sách chưa được thêm vào kệ`,
+                      bookId: wrongResponse.data[0].id,
+                      typeError: 8,
+                    });
+                  }
                 } else {
                   errorMsg.push({
                     errorMessage: `Sách nằm sai vị trí, bị trí thực sự ở: Bookshelf: ${wrongResponse.data[0].bookShelfName} Drawer: ${wrongResponse.data[0].drawerId} !`,
@@ -190,13 +198,15 @@ const UploadVideoModel: UploadVideoType = {
             detectionError: errorMsg,
             undefinedError: undefinedError,
           });
-         
         }
         drawerDetection.forEach((drawerDetection: any) => {
           var tmp = drawerDetectionCorrect.find((x: any) => x.drawerId == drawerDetection.drawerId);
           if (tmp != undefined) {
-            drawerDetection.detectionError = _.concat(drawerDetection.detectionError, tmp.correctMsg);
-          } 
+            drawerDetection.detectionError = _.concat(
+              drawerDetection.detectionError,
+              tmp.correctMsg,
+            );
+          }
         });
       }
       Object.assign(msgToServer, {

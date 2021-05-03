@@ -113,7 +113,7 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item name="pageNumber" label="Page Number">
-              <InputNumber min={0} placeholder="Please enter page number" />
+              <InputNumber style={{width: '100% '}} min={0} placeholder="Please enter page number" />
             </Form.Item>
           </Col>
           <Col span={6}>

@@ -12,6 +12,7 @@ import {
   Table,
   InputNumber,
   Descriptions,
+  Popconfirm,
 } from 'antd';
 import styles from './ComponentsStyle.less';
 import React from 'react';
@@ -134,13 +135,57 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
                 >
                   Edit
                 </Button>
-                <Button
-                  className={styles.buttonCustom}
-                  onClick={() => {}}
-                  icon={<DeleteOutlined style={{ color: 'red' }} />}
+                <Popconfirm
+                  title="Are you sure?"
+                  placement='bottomLeft'
+                  onConfirm={() => {
+                    this.props
+                      .dispatch({
+                        type: 'managebook/deleteBookGroup',
+                        payload: [bookGroup.id],
+                      })
+                      .then(() => {
+                        sendNotification(
+                          'Delete Success !',
+                          `Successfull delete bookgroup`,
+                          'success',
+                        );
+                        this.props
+                          .dispatch({
+                            type: 'bookgrouptable/fetchData',
+                            payload: {
+                              filterName: this.props.bookgrouptable.filterName,
+                              pagination: this.props.bookgrouptable.pagination.current,
+                            },
+                          })
+                          .then(() => {
+                            this.props.dispatch({
+                              type: 'managebook/hideDeleteBook',
+                              payload: {},
+                            }),
+                              this.props
+                                .dispatch({
+                                  type: 'managebook/hideViewBook',
+                                  payload: {},
+                                })
+                                .then(
+                                  this.props.dispatch({
+                                    type: 'listcomments/resetData',
+                                    payload: {},
+                                  }),
+                                );
+                          });
+                      });
+                  }}
                 >
-                  Delete
-                </Button>
+                  <Button
+                    className={styles.buttonCustom}
+                    onClick={() => {}}
+                    icon={<DeleteOutlined style={{ color: 'red' }} />}
+                  >
+                    Delete
+                  </Button>
+                </Popconfirm>
               </Space>
             ) : (
               <></>
@@ -257,7 +302,7 @@ class ViewForm extends React.Component<ViewFormProps, ViewFormState> {
           title="Disable Book"
           visible={this.state.isDisabelBookVisible}
           //className={styles.exportSection}
-          
+
           centered
           bodyStyle={{ paddingTop: 10, paddingBottom: 10 }}
           onCancel={() => this.setState({ isDisabelBookVisible: false })}
