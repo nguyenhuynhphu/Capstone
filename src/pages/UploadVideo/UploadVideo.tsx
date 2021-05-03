@@ -54,6 +54,7 @@ interface UploadVideoProps {
   uploadrecordtable?: any;
   newdetect?: any;
   managedetectstatistic?: any;
+  location?: any;
 }
 interface UploadVideoState {
   uploadStep: number;
@@ -145,6 +146,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
 
   render() {
     const { uploadvideo } = this.props;
+
     return (
       <>
         <PageHeaderWrapper />
@@ -608,6 +610,7 @@ class UploadVideo extends React.Component<UploadVideoProps, UploadVideoState> {
 
   trackingDetail(record: any) {
     this.setState({ selectedRecord: record, uploadStep: 3, modalWidth: 1400 });
+
     this.props.dispatch({
       type: 'uploadvideo/renderModel',
       payload: true,

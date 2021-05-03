@@ -141,7 +141,6 @@ class InputForm extends React.Component<InputFormProps, InputFormState> {
                     if (value == undefined) {
                       return Promise.reject('Phone must no empty');
                     }
-
                     var regex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
                     if (value?.match(regex)) {
                       return Promise.resolve();

@@ -4,6 +4,11 @@ import request from '@/utils/request';
 export async function fetchAllBook(bookGroupId: number, count: number): Promise<any> {
   return request(`/api/Book?BookGroupId=${bookGroupId}&PageSize=1000`);
 }
+
+export async function fetchDeletedBook(): Promise<any> {
+  return request(`/api/Book?IsDeleted=true`);
+}
+
 export async function fetchBookById(bookId: number): Promise<any> {
   return request(`/api/Book/${bookId}`);
 }

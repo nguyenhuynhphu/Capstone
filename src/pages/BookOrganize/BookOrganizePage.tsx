@@ -155,13 +155,13 @@ class BookOrganizePage extends React.Component<BookOrganizePageProps, BookOrgani
           placement={'bottom'}
           bodyStyle={{ padding: 0 }}
         >
-          <Row style={{ height: 670 }} className={'organizeRow'}>
+          <Row style={{ height: '100%' }} className={'organizeRow'}>
             <Col span={7} style={{ height: '100%', borderRight: '1px solid rgba(0, 0, 0, 0.2)' }}>
               <AddBookForm onPassingFilter={this.onPassingFilter} />
             </Col>
             <Col
               span={10}
-              style={{ height: 670, transition: 'all 0.5s', overflow: 'auto' }}
+              style={{ height: '100%', transition: 'all 0.5s', overflow: 'auto' }}
               className={styles.spinningCustom}
             >
               <Spin

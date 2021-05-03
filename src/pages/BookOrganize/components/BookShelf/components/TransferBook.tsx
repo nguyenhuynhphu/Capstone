@@ -144,7 +144,7 @@ class TransferBook extends React.Component<TransferBookProps, TransferBookState>
               <Spin spinning={transferbook.isLoadingDrawer}>
                 <Space style={{ width: '100%', justifyContent: 'space-between', margin: '10px 0' }}>
                   <TableHeader
-                    title={`Drawer: #${drawergrid.selectDrawer.id}`}
+                    title={`Drawer: ${drawergrid.selectDrawer.name}`}
                     description="Books in Drawer"
                   />
                   <Space direction="horizontal">
